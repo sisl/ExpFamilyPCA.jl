@@ -1,4 +1,5 @@
-using CompressedBeliefMDPs: Compressor, fit!, compress, decompress
+using CompressedBeliefMDPs
+using Optim
 using Symbolics
 using NonlinearSolve
 
@@ -61,20 +62,24 @@ function make_loss(epca::EPCA, X)
     return L
 end
 
+
 # TODO: maybe add type hinting for X from compressor.jl in BeliefCompression
+# TODO: perhaps add early exit for some ϵ
+# TODO: make sure printing happens on 1 line
 function CompressedBeliefMDPs.fit!(epca::EPCA, X; verbose=false, maxiter::Integer=50)
     @assert maxiter > 0
-    L(A, V) = make_loss(epca, X)
     n, _ = size(X)
     l, _ = size(epca.V)
     Â = zeros(n, l)
     V̂ = epca.V
+    L = make_loss(epca, X)
     for _ in 1:maxiter
         if verbose println("Loss: ", L(Â, V̂)) end
-        V̂ = Optim.minimizer(optimize(V->epca.L(Â, V), V̂))
+        V̂ = Optim.minimizer(optimize(V->L(Â, V), V̂))
         Â = Optim.minimizer(optimize(A->L(A, V̂), Â))
     end
     copyto!(epca.V, V̂)
+    return
 end
 
 
@@ -87,9 +92,8 @@ function CompressedBeliefMDPs.compress(epca::EPCA, X; verbose=false, maxiter::In
         if verbose println("Loss: ", L(Â, epca.V)) end
         Â = Optim.minimizer(optimize(A->L(A, epca.V), Â))
     end
-    X̃ = Â * epca.V
-    return X̃
+    return Â
 end
 
 
-CompressedBeliefMDPs.decompress(epca::EPCA, X̃) = epca.g(X̃)
+CompressedBeliefMDPs.decompress(epca::EPCA, A) = epca.g(A * epca.V)

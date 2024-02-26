@@ -1,5 +1,5 @@
 # TODO: add caveat that this works best w/ data in [0, 1] and might fail otherwise
-function BernoulliPCA(l::Integer, d::Integer, μ0::Real)
+function BernoulliPCA(l::Integer, d::Integer; μ0::Real=0.5)
     ϵ = eps()
     @. begin
         g(θ) = exp(θ) / (1 + exp(θ))

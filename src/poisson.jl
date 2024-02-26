@@ -1,4 +1,4 @@
-function PoissonPCA(l::Integer, d::Integer, μ0::Real)
+function PoissonPCA(l::Integer, d::Integer; μ0::Real=1)
     ϵ = eps()
     @. begin
         g(θ) = exp(θ)
@@ -10,3 +10,7 @@ end
 
 
 # TODO: include a normalized Poisson w/ link function in footnote 5 of long paper
+function NormalizedPCA(l::Integer, d::Integer; μ0::Real=1)
+    # TODO: handle possible problem w/ dimension of theta
+    return
+end
