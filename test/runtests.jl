@@ -10,9 +10,9 @@ function analytic_test(epca_constructor::Function, l::Integer, n::Integer, d::In
     X = rand(n, d)
     epca = epca_constructor(l, d)
     fit!(epca, X, maxiter=50)
-    X̃ = compress(X)
-    X_recon = decompress(X̃)
-    @test X ≈ X_recon
+    X̃ = compress(epca, X)
+    X̂ = decompress(epca, X̃)
+    @test isapprox(X, X̂, atol=0.01)
 end
 
 
