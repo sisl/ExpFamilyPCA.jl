@@ -13,32 +13,32 @@ end
 
 
 function EPCA(l::Integer, d::Integer, g::Function, Bregman::Function, μ0::Real)
-    @assert 0 < l < d
+    @assert 0 < l ≤ d
     V = rand(l, d)
+    # TODO: change this to accept the loss function instead --> this allows faster 
     return EPCA(V, g, Bregman, μ0)
 end
 
 
 function calc_inverse(g::Function, X)
+    # TODO: remove debugging code
+    # println("inverse called! this is slowing us down!")
+
     g_inv(u, p) = @. g(u) - p
     u0 = rand(size(X)...)
     prob = NonlinearProblem(g_inv, u0, X)
-    sol = solve(prob)
+    sol = NonlinearSolve.solve(prob)
     return sol.u
 end
 
 
-function EPCA(l::Integer, d::Integer, G::Num, μ0::Real)
-    vars = Symbolics.get_variables(G)
-    @assert length(vars) == 1 "G must be univariate"
-    @assert size(vars[1]) == ()  "G must be ℝ → ℝ"
-
-    # calculate F and f = F'
-    θ = vars[1]
+function EPCA(l::Integer, d::Integer, G::Function, μ0::Real)
+    @variables θ
+    G = G(θ)
     D = Differential(θ)
     g = expand_derivatives(D(G))
     Fg = g * θ - G
-    fg = D(Fg)
+    fg = expand_derivatives(D(Fg))
 
     # convert to callable Julia functions
     ex = quote
@@ -50,12 +50,12 @@ function EPCA(l::Integer, d::Integer, G::Num, μ0::Real)
     eval(ex)
 
     # build Bregman divergence
+    # TODO: move this outside so that this only has to be calculated once
     _F(x) = @. _g(x) * calc_inverse(_g, x) - _G(x)
     Bregman(p, q) = @. _F(p) - _Fg(q) - _fg(q) * (p - q)
-    
+
     return EPCA(l, d, x->_g.(x), Bregman, μ0)
 end
-
 
 function make_loss(epca::EPCA, X)
     L(A, V) = sum(epca.Bregman(X, epca.g(A * V)) + eps() * epca.Bregman(epca.μ0, epca.g(A * V)))
@@ -70,13 +70,13 @@ function CompressedBeliefMDPs.fit!(epca::EPCA, X; verbose=false, maxiter::Intege
     @assert maxiter > 0
     n, _ = size(X)
     l, _ = size(epca.V)
-    Â = zeros(n, l)
+    Â = rand(n, l)
     V̂ = epca.V
     L = make_loss(epca, X)
     for _ in 1:maxiter
-        if verbose println("Loss: ", L(Â, V̂)) end
         V̂ = Optim.minimizer(optimize(V->L(Â, V), V̂))
         Â = Optim.minimizer(optimize(A->L(A, V̂), Â))
+        if verbose println(L(Â, V̂)) end
     end
     copyto!(epca.V, V̂)
     return
@@ -86,11 +86,11 @@ end
 function CompressedBeliefMDPs.compress(epca::EPCA, X; verbose=false, maxiter::Integer=50)
     @assert maxiter > 0
     n, _ = size(X)
-    Â = zeros(n, size(epca.V)[1])
+    Â = rand(n, size(epca.V)[1])
     L = make_loss(epca, X)
     for _ in 1:maxiter
-        if verbose println("Loss: ", L(Â, epca.V)) end
         Â = Optim.minimizer(optimize(A->L(A, epca.V), Â))
+        if verbose println(L(Â, epca.V)) end
     end
     return Â
 end
