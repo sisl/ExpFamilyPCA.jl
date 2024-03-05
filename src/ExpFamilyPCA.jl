@@ -1,5 +1,15 @@
 module ExpFamilyPCA
 
+# TODO: remove this
+using Infiltrator
+
+# export
+#     EPCA,
+#     fit!,
+#     compress,
+#     decompress
+# include("faster_epca.jl")
+
 export
     EPCA,
     fit!,

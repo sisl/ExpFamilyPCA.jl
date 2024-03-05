@@ -5,66 +5,75 @@ using NonlinearSolve
 
 
 struct EPCA <: Compressor
-    V::Matrix{<:Real}
-    g::Function
-    Bregman::Function
+    V::Matrix{<:Real}  # basis matrix
+    G::Function
+    g::Function  # link function
+    L::Function  # loss function
     μ0::Real
 end
 
 
-function EPCA(l::Integer, d::Integer, g::Function, Bregman::Function, μ0::Real)
+function EPCA(l::Integer, d::Integer, G::Function, g::Function, L::Function, μ0::Real)
     @assert 0 < l ≤ d
-    V = rand(l, d)
-    # TODO: change this to accept the loss function instead --> this allows faster 
-    return EPCA(V, g, Bregman, μ0)
+    V = zeros(l, d)
+    return EPCA(V, G, g, L, μ0)
 end
 
-# TODO: don't use randomness
 
 function calc_inverse(g::Function, X)
-    # TODO: remove debugging code
-    # println("inverse called! this is slowing us down!")
-    # TODO: replace w/ a binary search
+    # TODO: remove TEMP
+    # TODO: perhaps replace w/ a binary search to make use of g's monotonicity
+    println("inverse called! this is slowing us down!")
+
     g_inv(u, p) = @. g(u) - p
-    u0 = rand(size(X)...)
-    prob = NonlinearProblem(g_inv, u0, X)
-    sol = NonlinearSolve.solve(prob)
-    return sol.u
+    problem = NonlinearProblem(g_inv, zeros(size(X)...), X)
+    solution = NonlinearSolve.solve(probem)
+    return solution.u
 end
 
 
-function EPCA(l::Integer, d::Integer, G::Function, μ0::Real)
+function find_functions(G::Function)
     @variables θ
+    G = G(θ)
     D = Differential(θ)
-    g = expand_derivatives(D(G(θ)))
-    Fg = g * θ - G(θ)
+    g = expand_derivatives(D(G))
+    Fg = g * θ - G
     fg = expand_derivatives(D(Fg))
 
     # convert to callable Julia functions
     ex = quote
         # TODO: replace w/ G = θ->$(Symbolics.toexpr(G)) to trick compiler
+        _G(θ) = $(Symbolics.toexpr(G))
         _g(θ) = $(Symbolics.toexpr(g))
         _Fg(θ) = $(Symbolics.toexpr(Fg))
         _fg(θ) = $(Symbolics.toexpr(fg))
     end
     eval(ex)
-
-    # build Bregman divergence
-    # TODO: move this outside so that this only has to be calculated once
-    _F(x) = @. x * calc_inverse(_g, x) - G(calc_inverse(_g, x))
-    Bregman(p, q) = @. _F(p) - _Fg(q) - _fg(q) * (p - q)
-
-    # TODO: finish this
-    # Fμ = 1
-    # function L(A, V, Fx, X)
-    #     breg1(q) = Fx .- _Fg.(q) .+ _fg.(q) .* (p .- X)
-    #     breg2(q) = Fμ
-
-    return EPCA(l, d, x->_g.(x), Bregman, μ0)
+    return _g, _Fg, _fg
 end
 
+
+function EPCA(l::Integer, d::Integer, G::Function, μ0::Real)
+    (g, Fg, fg) = find_functions(G)
+
+    # build objective function; precompute values
+    Fμ = @. g(μ0) * calc_inverse(g, μ0) - G(μ0)
+    function L(A, V, Fx, X)
+        θ = g.(A * V)
+        Fθ = Fg.(θ)
+        fθ = fg.(θ)
+        breg1 = @. Fx - Fθ - fθ * (X - θ)
+        breg2 = @. Fμ - Fθ - fθ * (μ0 - θ)
+        return sum(breg1 + eps() * breg2)
+    end
+
+    return EPCA(l, d, x->G.(x), x->g.(x), L, μ0)
+end
+
+
 function make_loss(epca::EPCA, X)
-    L(A, V) = sum(epca.Bregman(X, epca.g(A * V)) + eps() * epca.Bregman(epca.μ0, epca.g(A * V)))
+    Fx = @. epca.g(X) * calc_inverse(epca.g, X) - epca.G(X) 
+    L(A, V) = epca.L(A, V, Fx, X)
     return L
 end
 
@@ -76,7 +85,7 @@ function CompressedBeliefMDPs.fit!(epca::EPCA, X; verbose=false, maxiter::Intege
     @assert maxiter > 0
     n, _ = size(X)
     l, _ = size(epca.V)
-    Â = rand(n, l)
+    Â = zeros(n, l)
     V̂ = epca.V
     L = make_loss(epca, X)
     for _ in 1:maxiter
@@ -92,7 +101,7 @@ end
 function CompressedBeliefMDPs.compress(epca::EPCA, X; verbose=false, maxiter::Integer=50)
     @assert maxiter > 0
     n, _ = size(X)
-    Â = rand(n, size(epca.V)[1])
+    Â = zeros(n, size(epca.V)[1])
     L = make_loss(epca, X)
     for _ in 1:maxiter
         Â = Optim.minimizer(optimize(A->L(A, epca.V), Â))
