@@ -1,3 +1,5 @@
+using Revise
+
 using ExpFamilyPCA
 
 
@@ -7,7 +9,7 @@ X = rand(0:1, n_samples, n_dims)  # generate random binary data
 
 n_components = 2
 epca = BernoulliPCA(n_components, n_dims)
-fit!(epca, X; verbose=true, maxiter=30)
+fit!(epca, X; verbose=true, maxiter=5)
 
 X̃ = compress(epca, X)
 X_recon = decompress(epca, X̃)

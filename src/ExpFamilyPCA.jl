@@ -25,5 +25,9 @@ export
     BernoulliPCA
 include("bernoulli.jl")
 
+export
+    GaussianPCA
+include("gaussian.jl")
+
 
 end # module ExpFamilyPCA
