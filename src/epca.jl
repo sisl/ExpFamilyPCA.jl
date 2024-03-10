@@ -100,6 +100,7 @@ function CompressedBeliefMDPs.compress(epca::EPCA, X; verbose=false, maxiter::In
     end
     return Â
 end
-
+CompressedBeliefMDPs.compress(epca::EPCA, X::Vector; verbose=false, maxiter::Integer=50) = vec(compress(epca, X'; verbose=verbose, maxiter=maxiter))
 
 CompressedBeliefMDPs.decompress(epca::EPCA, A) = epca.g(A * epca.V)
+CompressedBeliefMDPs.decompress(epca::EPCA, A::Vector) = vec(epca.g(A' * epca.V))
