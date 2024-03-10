@@ -102,5 +102,13 @@ function CompressedBeliefMDPs.compress(epca::EPCA, X; verbose=false, maxiter::In
 end
 CompressedBeliefMDPs.compress(epca::EPCA, X::Vector; verbose=false, maxiter::Integer=50) = vec(compress(epca, X'; verbose=verbose, maxiter=maxiter))
 
-CompressedBeliefMDPs.decompress(epca::EPCA, A) = epca.g(A * epca.V)
-CompressedBeliefMDPs.decompress(epca::EPCA, A::Vector) = vec(epca.g(A' * epca.V))
+function CompressedBeliefMDPs.decompress(epca::EPCA, A)
+    if ndims(A) == 1
+        return vec(epca.g((A' * epca.V)))
+    else
+        return epca.g(A * epca.V)
+    end
+end
+
+# CompressedBeliefMDPs.decompress(epca::EPCA, A) = epca.g((ndims(A) == 1 ? A' : A) * epca.V)
+# CompressedBeliefMDPs.decompress(epca::EPCA, A::Vector) = vec(epca.g(A' * epca.V))
