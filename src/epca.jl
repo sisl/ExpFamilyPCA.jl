@@ -11,6 +11,16 @@ struct EPCA <: Compressor
     μ0::Real
 end
 
+# TODO: before publishing --> announce on Julia discourse --> take a week of comments --> then register as a package
+# TODO: make a JSS latex template 
+# TODO: send Prof. Hastie epca papers
+# TODO: look into correspondance analysis --> logratio analysis 
+# TODO: --> reaad composition data analysis book from Hastie --> read about 10 pages to get the idea; (chapter 22) constance sum in our case is 1
+
+# TODO: benchmark -->
+# k-dimensional corresopndance analysis (CA) --> get a fitted matrix --> then softmax to get the probabilities --> then compare KL divergence 
+# TODO: recreate POMDP from Roy paper
+#TODO: lookup Michael greenacre
 
 function EPCA(l::Integer, d::Integer, g::Function, Bregman::Function, μ0::Real)
     @assert 0 < l ≤ d
@@ -20,7 +30,8 @@ function EPCA(l::Integer, d::Integer, g::Function, Bregman::Function, μ0::Real)
 end
 
 # TODO: don't use randomness
-
+# try look up table
+# Brent-Decker line search --> more robust newton's method
 function calc_inverse(g::Function, X)
     # TODO: remove debugging code
     # println("inverse called! this is slowing us down!")
@@ -32,6 +43,11 @@ function calc_inverse(g::Function, X)
     return sol.u
 end
 
+# exponential family: Poisson, normalized Poisson, bernoulli w/ probit link, normal
+
+# look into GLM.jl for API structure guidance
+
+# JSS --> unit testing; look into timing limitations for JSS; 
 
 function EPCA(l::Integer, d::Integer, G::Function, μ0::Real)
     @variables θ
@@ -88,6 +104,7 @@ function CompressedBeliefMDPs.fit!(epca::EPCA, X; verbose=false, maxiter::Intege
     return
 end
 
+# TODO: normalize A to average 0 --> amounts to Frobenius norm regularization
 
 function CompressedBeliefMDPs.compress(epca::EPCA, X; verbose=false, maxiter::Integer=50)
     @assert maxiter > 0
