@@ -4,9 +4,7 @@ authors = ["Logan-Mondal-Bhamidipaty"]
 version = "1.0.0-DEV"
 
 [deps]
-CompressedBeliefMDPs = "0a809e47-b8eb-4578-b4e8-4c2c5f9f833c"
 Infiltrator = "5903a43b-9cc3-4c30-8d17-598619ec4e9b"
-NonlinearSolve = "8913a72c-1f9b-4ce2-8d82-65094dcecaec"
 Optim = "429524aa-4258-5aef-a3af-852621145aeb"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"

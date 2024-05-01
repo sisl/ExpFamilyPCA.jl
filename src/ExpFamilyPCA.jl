@@ -1,14 +1,6 @@
 module ExpFamilyPCA
 
-# TODO: remove this
 using Infiltrator
-
-# export
-#     EPCA,
-#     fit!,
-#     compress,
-#     decompress
-# include("faster_epca.jl")
 
 export
     EPCA,
@@ -18,16 +10,14 @@ export
 include("epca.jl")
 
 export
-    PoissonPCA
-include("poisson.jl")
+    ImplicitEPCA
+include("implicit.jl")
 
 export
-    BernoulliPCA
-include("bernoulli.jl")
-
-export
-    GaussianPCA
-include("gaussian.jl")
-
+    ExplicitEPCA,
+    NormalEPCA,
+    BernoulliEPCA,
+    PoissonEPCA
+include("explicit.jl")
 
 end # module ExpFamilyPCA

@@ -18,7 +18,7 @@ Let $F_g = F \circ g$ and let $f_g = f \circ g$. It can be shown that $f(x) = g^
 $$
 B_F(X \| g(\Theta))
 = F(X) - F_g(\Theta)
-- g^{-1}(\Theta) (X - g(\Theta)).
+- f_g(\Theta) (X - g(\Theta)).
 $$
 Similarly, we can rewrite the second term as
 $$
@@ -26,7 +26,7 @@ $$
 = 
 \epsilon F(\mu) 
 - \epsilon F_g(\Theta)
-- \epsilon g^{-1}(\Theta) (\mu - g(\Theta)).
+- \epsilon f_g(\Theta) (\mu - g(\Theta)).
 $$
 
 We are given $G$. From $G$, we can use symbolic differentiation to easily and programmatically find $g$ (thanks to Julia's multiple dispatch and metaprogramming). Since $F$ is defined parametrically, we know $F_g$ and $f_g$; however, defining $F$ directly is difficult because we would have to solve an equation with symbolic manipulation and Julia currently isn't good at this. Luckily, our objective doesn't require us to know $F$ symbolically, since we're only asked for $F(X)$ and $F(\mu)$ which are both constants. It thus suffices to simply *evaluate* $F$ at $X$ and $\mu$. To do so, first recall that $F$ is defined as
@@ -40,3 +40,5 @@ $$
 Since $g$ is monotone (since $G$ is convex and differentiable), not only do we know that the inverse *exists*, but we can also find it efficiently with a binary search. 
 
 Explicitly, we can frame our problem like this. Given $g$, evaluate an unknown $g^{-1}$ and some point $a$. Let $b = g^{-1}(a)$, then $g(b) = g(g^{-1}(a)) = a$, so we simply need to find $b$ such that $g(b) = a$ and then $b = g^{-1}(g(b)) = g^{-1}(a)$. Since $g$ is monotone, we can quickly find such a $b$ by searching for the condition that $g(b) = a$.
+
+Since we only need to evaluate $F(X)$ and $F(\mu)$, this means we need to find $b, b'$ such that $g(b) = X$ and $g(b') = \mu$.
