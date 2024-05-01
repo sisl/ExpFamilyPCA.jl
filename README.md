@@ -21,19 +21,13 @@ where the second term is a stabilizer, $\epsilon$ is some small positive constan
 Let $F_g = F \circ g$ and let $f_g = f \circ g$. It can be shown that $f(x) = g^{-1}(x)$ under mild conditions. Then, we can write the first term as 
 
 $$
-B_F(X \| g(\Theta))
-= F(X) - F_g(\Theta)
-- f_g(\Theta) (X - g(\Theta)).
+B_F(X \| g(\Theta)) = F(X) - F_g(\Theta) - f_g(\Theta) (X - g(\Theta)).
 $$
 
 Similarly, we can rewrite the second term as
 
 $$
-\epsilon B_F(\mu \| g(\Theta))
-= 
-\epsilon F(\mu) 
-- \epsilon F_g(\Theta)
-- \epsilon f_g(\Theta) (\mu - g(\Theta)).
+\epsilon B_F(\mu \| g(\Theta)) = \epsilon F(\mu) - \epsilon F_g(\Theta) - \epsilon f_g(\Theta) (\mu - g(\Theta)).
 $$
 
 We are given $G$. From $G$, we can use symbolic differentiation to easily and programmatically find $g$ (thanks to Julia's multiple dispatch and metaprogramming). Since $F$ is defined parametrically, we know $F_g$ and $f_g$; however, defining $F$ directly is difficult because we would have to solve an equation with symbolic manipulation and Julia currently isn't good at this. Luckily, our objective doesn't require us to know $F$ symbolically, since we're only asked for $F(X)$ and $F(\mu)$ which are both constants. It thus suffices to simply *evaluate* $F$ at $X$ and $\mu$. To do so, first recall that $F$ is defined as
