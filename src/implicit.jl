@@ -32,14 +32,16 @@ function ImplicitEPCA(G::Function)
 end
 
 
-function _binary_search_monotone(f, target; low=-1e10, high=1e10, tol=eps())
-    while high - low > tol
+function _binary_search_monotone(f, target; low=-1e10, high=1e10, tol=1e-10, maxiter=1e6)
+    iter = 0
+    while high - low > tol && iter < maxiter
         mid = (low + high) / 2
         if f(mid) < target
             low = mid
         else
             high = mid
         end
+        iter += 1
     end
     return (low + high) / 2
 end
@@ -64,8 +66,6 @@ function _make_loss(epca::ImplicitEPCA, X, mu, epsilon; tol=eps())
 end
 
 
-# TODO: change to StatsAPI?
-# TODO: support "refitting"
 function fit!(
     epca::ImplicitEPCA, 
     X,
@@ -73,18 +73,21 @@ function fit!(
     maxoutdim=1, 
     maxiter=100,
     verbose=false,
+    print_steps=10,
     epsilon=eps(),
     tol=eps()
 )
     L = _make_loss(epca, X, mu, epsilon; tol=tol)
     n, d = size(X)
     A = ones(n, maxoutdim)
-    V = ones(maxoutdim, d)
-    for _ in 1:maxiter
+    V = ismissing(epca.V) ? ones(maxoutdim, d) : epca.V
+    for i in 1:maxiter
         V = Optim.minimizer(optimize(V_hat->L(A * V_hat), V))
-        A = Optim.minimizer(optimize(A_hat->L(A_hat * V), A))
-        if verbose
-            @show L(A * V)
+        result = optimize(A_hat->L(A_hat * V), A)
+        loss = Optim.minimum(result)
+        A = Optim.minimizer(result)
+        if verbose && (i % print_steps == 0 || i == 1)
+            println("Iteration: $i/$maxiter | Loss: $loss")
         end
     end
     epca.V = V
@@ -97,6 +100,7 @@ function compress(
     mu;
     maxiter=100,
     verbose=false,
+    print_steps=10,
     epsilon=eps(),
     tol=eps()
 )
@@ -104,10 +108,10 @@ function compress(
     n, _ = size(X)
     A = ones(n, maxoutdim)
     V = epca.V
-    for _ in 1:maxiter
+    for i in 1:maxiter
         A = Optim.minimizer(optimize(A_hat->L(A_hat * V), A))
-        if verbose
-            @show L(A * V)
+        if verbose && (i % print_steps == 0 || i == 1)
+            println("Iteration: $i/$maxiter | Loss: $loss")
         end
     end
     return A

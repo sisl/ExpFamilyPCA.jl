@@ -50,9 +50,10 @@ function fit!(
     X;
     mu=epca.mu,
     maxoutdim=1, 
-    maxiter=100,
+    maxiter=1000,
     verbose=false,
-    epsilon=eps()
+    print_steps=10,
+    epsilon=eps(),
 )
     B, g = epca.Bregman, epca.g
     L(theta) = begin
@@ -61,12 +62,14 @@ function fit!(
     end    
     n, d = size(X)
     A = ones(n, maxoutdim)
-    V = ones(maxoutdim, d)
-    for _ in 1:maxiter
+    V = ismissing(epca.V) ? ones(maxoutdim, d) : epca.V
+    for i in 1:maxiter
         V = Optim.minimizer(optimize(V_hat->L(A * V_hat), V))
-        A = Optim.minimizer(optimize(A_hat->L(A_hat * V), A))
-        if verbose
-            @show L(A * V)
+        result = optimize(A_hat->L(A_hat * V), A)
+        loss = Optim.minimum(result)
+        A = Optim.minimizer(result)
+        if verbose && (i % print_steps == 0 || i == 1)
+            println("Iteration: $i/$maxiter | Loss: $loss")
         end
     end
     epca.V = V
@@ -81,6 +84,7 @@ function compress(
     maxoutdim=1, 
     maxiter=100,
     verbose=false,
+    print_stesp=10,
     epsilon=eps()
 )
     B, g, V = epca.Bregman, epca.g, epca.V
@@ -92,8 +96,8 @@ function compress(
     A = ones(n, maxoutdim)
     for _ in 1:maxiter
         A = Optim.minimizer(optimize(A_hat->L(A_hat * V), A))
-        if verbose
-            @show L(A * V)
+        if verbose && (i % print_steps == 0 || i == 1)
+            println("Iteration: $i/$maxiter | Loss: $loss")
         end
     end
     return A
