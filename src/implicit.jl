@@ -84,9 +84,9 @@ function fit!(
     for i in 1:maxiter
         V = Optim.minimizer(optimize(V_hat->L(A * V_hat), V))
         result = optimize(A_hat->L(A_hat * V), A)
-        loss = Optim.minimum(result)
         A = Optim.minimizer(result)
         if verbose && (i % print_steps == 0 || i == 1)
+            loss = Optim.minimum(result)
             println("Iteration: $i/$maxiter | Loss: $loss")
         end
     end
@@ -96,8 +96,8 @@ end
 
 function compress(
     epca::ImplicitEPCA, 
-    X,
-    mu;
+    X;
+    mu=1,  # NOTE: mu = 1 may not be valid for all link functions. 
     maxiter=100,
     verbose=false,
     print_steps=10,
@@ -106,11 +106,14 @@ function compress(
 )
     L = _make_loss(epca, X, mu, epsilon; tol=tol)
     n, _ = size(X)
-    A = ones(n, maxoutdim)
     V = epca.V
+    outdim = size(V)[1]
+    A = ones(n, outdim)
     for i in 1:maxiter
-        A = Optim.minimizer(optimize(A_hat->L(A_hat * V), A))
+        result = optimize(A_hat->L(A_hat * V), A)
+        A = Optim.minimizer(result)
         if verbose && (i % print_steps == 0 || i == 1)
+            loss = Optim.minimum(result)
             println("Iteration: $i/$maxiter | Loss: $loss")
         end
     end
