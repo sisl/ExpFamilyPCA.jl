@@ -1,7 +1,3 @@
-using Symbolics
-using Optim
-
-
 mutable struct ImplicitEPCA <: EPCA
     V
     G::Function
@@ -9,6 +5,7 @@ mutable struct ImplicitEPCA <: EPCA
     Fg::Function
     fg::Function
 end
+
 
 function EPCA(G::Function)
     return ImplicitEPCA(G::Function)
@@ -73,24 +70,12 @@ function fit!(
     maxoutdim=1, 
     maxiter=100,
     verbose=false,
-    print_steps=10,
+    steps_per_print=10,
     epsilon=eps(),
     tol=eps()
 )
     L = _make_loss(epca, X, mu, epsilon; tol=tol)
-    n, d = size(X)
-    A = ones(n, maxoutdim)
-    V = ismissing(epca.V) ? ones(maxoutdim, d) : epca.V
-    for i in 1:maxiter
-        V = Optim.minimizer(optimize(V_hat->L(A * V_hat), V))
-        result = optimize(A_hat->L(A_hat * V), A)
-        A = Optim.minimizer(result)
-        if verbose && (i % print_steps == 0 || i == 1)
-            loss = Optim.minimum(result)
-            println("Iteration: $i/$maxiter | Loss: $loss")
-        end
-    end
-    epca.V = V
+    A =  _fit!(epca, X, maxoutdim, L, verbose, steps_per_print, maxiter)
     return A
 end
 
@@ -100,26 +85,12 @@ function compress(
     mu=1,  # NOTE: mu = 1 may not be valid for all link functions. 
     maxiter=100,
     verbose=false,
-    print_steps=10,
+    steps_per_print=10,
     epsilon=eps(),
     tol=eps()
 )
     L = _make_loss(epca, X, mu, epsilon; tol=tol)
-    n, _ = size(X)
-    V = epca.V
-    outdim = size(V)[1]
-    A = ones(n, outdim)
-    for i in 1:maxiter
-        result = optimize(A_hat->L(A_hat * V), A)
-        A = Optim.minimizer(result)
-        if verbose && (i % print_steps == 0 || i == 1)
-            loss = Optim.minimum(result)
-            println("Iteration: $i/$maxiter | Loss: $loss")
-        end
-    end
+    A = _compress(epca, X, L, maxiter, verbose, steps_per_print)
     return A
 end
-
-decompress(epca::ImplicitEPCA, A) = epca.g(A * epca.V)
-
     

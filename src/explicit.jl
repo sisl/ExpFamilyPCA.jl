@@ -45,6 +45,16 @@ function NormalEPCA()
 end
 
 
+function _make_loss(epca::ExplicitEPCA, X, epsilon, mu)
+    B, g = epca.Bregman, epca.g
+    L(theta) = begin
+        X_hat = g.(theta)
+        sum(@. B(X, X_hat) + epsilon * B(mu, X_hat))
+    end
+    return L
+end
+
+
 function fit!(
     epca::ExplicitEPCA, 
     X;
@@ -52,27 +62,11 @@ function fit!(
     maxoutdim=1, 
     maxiter=1000,
     verbose=false,
-    print_steps=10,
+    steps_per_print=10,
     epsilon=eps(),
 )
-    B, g = epca.Bregman, epca.g
-    L(theta) = begin
-        X_hat = g.(theta)
-        sum(B(X, X_hat) + epsilon * B(mu, X_hat))
-    end    
-    n, d = size(X)
-    A = ones(n, maxoutdim)
-    V = ismissing(epca.V) ? ones(maxoutdim, d) : epca.V
-    for i in 1:maxiter
-        V = Optim.minimizer(optimize(V_hat->L(A * V_hat), V))
-        result = optimize(A_hat->L(A_hat * V), A)
-        A = Optim.minimizer(result)
-        if verbose && (i % print_steps == 0 || i == 1)
-            loss = Optim.minimum(result)
-            println("Iteration: $i/$maxiter | Loss: $loss")
-        end
-    end
-    epca.V = V
+    L = _make_loss(epca, X, epsilon, mu)
+    A =  _fit!(epca, X, maxoutdim, L, verbose, steps_per_print, maxiter)
     return A
 end
 
@@ -83,25 +77,11 @@ function compress(
     mu=epca.mu,
     maxiter=100,
     verbose=false,
-    print_steps=10,
+    steps_per_print=10,
     epsilon=eps()
 )
-    B, g, V = epca.Bregman, epca.g, epca.V
-    L(theta) = begin
-        X_hat = g.(theta)
-        sum(@. B(X, X_hat) + epsilon * B(mu, X_hat))
-    end    
-    n, _ = size(X)
-    outdim = size(V)[1]
-    A = ones(n, outdim)
-    for _ in 1:maxiter
-        result = optimize(A_hat->L(A_hat * V), A)
-        A = Optim.minimizer(result)
-        if verbose && (i % print_steps == 0 || i == 1)
-            loss = Optim.minimum(result)
-            println("Iteration: $i/$maxiter | Loss: $loss")
-        end
-    end
+    L = _make_loss(epca, X, epsilon, mu)
+    A = _compress(epca, X, L, maxiter, verbose, steps_per_print)
     return A
 end
 

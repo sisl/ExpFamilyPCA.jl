@@ -2,6 +2,9 @@ module ExpFamilyPCA
 
 using Infiltrator
 
+using Symbolics
+using Optim
+
 export
     EPCA,
     fit!,
@@ -9,12 +12,10 @@ export
     decompress
 include("epca.jl")
 
-export
-    ImplicitEPCA
+include("utils.jl")
 include("implicit.jl")
 
 export
-    ExplicitEPCA,
     NormalEPCA,
     BernoulliEPCA,
     PoissonEPCA
