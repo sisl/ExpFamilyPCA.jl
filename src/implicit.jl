@@ -49,8 +49,9 @@ function _make_loss(epca::ImplicitEPCA, X, mu, epsilon; tol=eps())
     g_inv_X = map(x->_binary_search_monotone(g, x; tol=tol), X)
     g_inv_mu = _binary_search_monotone(g, mu; tol=eps())  # NOTE: mu is scalar, so we can have very low tol
     F_X = @. g_inv_X * X - G(g_inv_X)
-    F_mu = @. g_inv_mu * mu - G(g_inv_mu)
+    F_mu = g_inv_mu * mu - G(g_inv_mu)
     function bregman(theta)
+        @infiltrate
         Fg_theta = Fg.(theta)
         fg_theta = fg.(theta)
         g_theta = g.(theta)
@@ -65,8 +66,8 @@ end
 
 function fit!(
     epca::ImplicitEPCA, 
-    X,
-    mu;
+    X;
+    mu=1,  # NOTE: mu = 1 may not be valid for all link functions. 
     maxoutdim=1, 
     maxiter=10,
     verbose=false,
