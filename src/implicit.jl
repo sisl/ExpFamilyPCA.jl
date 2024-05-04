@@ -68,14 +68,14 @@ function fit!(
     X,
     mu;
     maxoutdim=1, 
-    maxiter=100,
+    maxiter=10,
     verbose=false,
     steps_per_print=10,
     epsilon=eps(),
     tol=eps()
 )
     L = _make_loss(epca, X, mu, epsilon; tol=tol)
-    A =  _fit!(epca, X, maxoutdim, L, verbose, steps_per_print, maxiter)
+    A =  _fit!(epca, X, maxoutdim, L, maxiter, verbose, steps_per_print)
     return A
 end
 
@@ -83,7 +83,7 @@ function compress(
     epca::ImplicitEPCA, 
     X;
     mu=1,  # NOTE: mu = 1 may not be valid for all link functions. 
-    maxiter=100,
+    maxiter=10,
     verbose=false,
     steps_per_print=10,
     epsilon=eps(),

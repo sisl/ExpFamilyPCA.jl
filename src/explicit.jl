@@ -60,13 +60,13 @@ function fit!(
     X;
     mu=epca.mu,
     maxoutdim=1, 
-    maxiter=1000,
+    maxiter=10,
     verbose=false,
     steps_per_print=10,
     epsilon=eps(),
 )
     L = _make_loss(epca, X, epsilon, mu)
-    A =  _fit!(epca, X, maxoutdim, L, verbose, steps_per_print, maxiter)
+    A =  _fit!(epca, X, maxoutdim, L, maxiter, verbose, steps_per_print)
     return A
 end
 
@@ -75,7 +75,7 @@ function compress(
     epca::ExplicitEPCA, 
     X;
     mu=epca.mu,
-    maxiter=100,
+    maxiter=10,
     verbose=false,
     steps_per_print=10,
     epsilon=eps()
