@@ -27,7 +27,6 @@ end
 
 function BernoulliEPCA(; epsilon=eps())
     # assumes X = {0, 1}
-    epsilon = eps()
     @. begin
         Bregman(p, q) = p * (log(p + epsilon) - log(q + epsilon)) + (1 - p) * (log(1 - p + epsilon) - log(1 - q + epsilon))
         g(theta) = exp(theta) / (1 + exp(theta))
