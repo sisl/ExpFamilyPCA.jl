@@ -2,26 +2,30 @@ mutable struct ExplicitEPCA <: EPCA
     V
     Bregman::Function  # Bregman divergence
     g::Function  # link function
+
+    # hyperparameters
     mu
+    epsilon
 end
 
-function EPCA(Bregman::Function, g::Function, mu)
-    ExplicitEPCA(missing, Bregman, g, mu)
+
+function EPCA(Bregman::Function, g::Function, mu, epsilon=eps())
+    ExplicitEPCA(missing, Bregman, g, mu, epsilon)
 end
 
-function PoissonEPCA()
+
+function PoissonEPCA(; epsilon=eps())
     # assumes X = {integers}
-    epsilon = eps()
     @. begin
         Bregman(p, q) = p * (log(p + epsilon) - log(q + epsilon)) + q - p
         g(theta) = exp(theta)
     end
     mu = g(0)
-    EPCA(Bregman, g, mu)
+    EPCA(Bregman, g, mu, epsilon)
 end
 
 
-function BernoulliEPCA()
+function BernoulliEPCA(; epsilon=eps())
     # assumes X = {0, 1}
     epsilon = eps()
     @. begin
@@ -29,11 +33,11 @@ function BernoulliEPCA()
         g(theta) = exp(theta) / (1 + exp(theta))
     end
     mu = g(1)
-    EPCA(Bregman, g, mu)
+    EPCA(Bregman, g, mu, epsilon)
 end
 
 
-function NormalEPCA()
+function NormalEPCA(; epsilon=eps())
     # NOTE: equivalent to generic PCA
     # assume X = {reals}
     @. begin
@@ -41,48 +45,15 @@ function NormalEPCA()
         g(theta) = theta
     end
     mu = g(0)
-    EPCA(Bregman, g, mu)
+    EPCA(Bregman, g, mu, epsilon)
 end
 
 
-function _make_loss(epca::ExplicitEPCA, X, epsilon, mu)
-    B, g = epca.Bregman, epca.g
+function _make_loss(epca::ExplicitEPCA, X)
+    B, g, mu, epsilon = epca.Bregman, epca.g, epca.mu, epca.epsilon
     L(theta) = begin
         X_hat = g.(theta)
         sum(@. B(X, X_hat) + epsilon * B(mu, X_hat))
     end
     return L
 end
-
-
-function fit!(
-    epca::ExplicitEPCA, 
-    X;
-    mu=epca.mu,
-    maxoutdim=1, 
-    maxiter=10,
-    verbose=false,
-    steps_per_print=10,
-    epsilon=eps(),
-)
-    L = _make_loss(epca, X, epsilon, mu)
-    A =  _fit!(epca, X, maxoutdim, L, maxiter, verbose, steps_per_print)
-    return A
-end
-
-
-function compress(
-    epca::ExplicitEPCA, 
-    X;
-    mu=epca.mu,
-    maxiter=10,
-    verbose=false,
-    steps_per_print=10,
-    epsilon=eps()
-)
-    L = _make_loss(epca, X, epsilon, mu)
-    A = _compress(epca, X, L, maxiter, verbose, steps_per_print)
-    return A
-end
-
-decompress(epca::ExplicitEPCA, A) = epca.g(A * epca.V)

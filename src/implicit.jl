@@ -4,6 +4,11 @@ mutable struct ImplicitEPCA <: EPCA
     g::Function
     Fg::Function
     fg::Function
+
+    # hyperparameters
+    tol
+    mu
+    epsilon
 end
 
 
@@ -12,7 +17,8 @@ function EPCA(G::Function)
 end
 
 
-function ImplicitEPCA(G::Function)
+function ImplicitEPCA(G::Function; tol=eps(), mu=1, epsilon=eps())
+    # NOTE: mu must be in the range of g, so g_inv(mu) is finite. It is up to the user to enforce this.
     # G induces g, Fg = F(g(theta)), and fg = f(g(theta))
     @variables theta
     D = Differential(theta)
@@ -25,7 +31,7 @@ function ImplicitEPCA(G::Function)
         fg(theta) = $(Symbolics.toexpr(_fg))
     end
     eval(ex)
-    ImplicitEPCA(missing, G, g, Fg, fg)
+    ImplicitEPCA(missing, G, g, Fg, fg, tol, mu, epsilon)
 end
 
 
@@ -44,8 +50,8 @@ function _binary_search_monotone(f, target; low=-1e10, high=1e10, tol=1e-10, max
 end
 
 
-function _make_loss(epca::ImplicitEPCA, X, mu, epsilon; tol=eps())
-    G, g, Fg, fg = epca.G, epca.g, epca.Fg, epca.fg
+function _make_loss(epca::ImplicitEPCA, X)
+    G, g, Fg, fg, tol, mu, epsilon = epca.G, epca.g, epca.Fg, epca.fg, epca.tol, epca.mu, epca.epsilon
     g_inv_X = map(x->_binary_search_monotone(g, x; tol=tol), X)
     g_inv_mu = _binary_search_monotone(g, mu; tol=eps())  # NOTE: mu is scalar, so we can have very low tol
     F_X = @. g_inv_X * X - G(g_inv_X)
@@ -62,36 +68,3 @@ function _make_loss(epca::ImplicitEPCA, X, mu, epsilon; tol=eps())
     end
     return bregman
 end
-
-
-function fit!(
-    epca::ImplicitEPCA, 
-    X;
-    mu=1,  # NOTE: mu = 1 may not be valid for all link functions. 
-    maxoutdim=1, 
-    maxiter=10,
-    verbose=false,
-    steps_per_print=10,
-    epsilon=eps(),
-    tol=eps()
-)
-    L = _make_loss(epca, X, mu, epsilon; tol=tol)
-    A =  _fit!(epca, X, maxoutdim, L, maxiter, verbose, steps_per_print)
-    return A
-end
-
-function compress(
-    epca::ImplicitEPCA, 
-    X;
-    mu=1,  # NOTE: mu = 1 may not be valid for all link functions. 
-    maxiter=10,
-    verbose=false,
-    steps_per_print=10,
-    epsilon=eps(),
-    tol=eps()
-)
-    L = _make_loss(epca, X, mu, epsilon; tol=tol)
-    A = _compress(epca, X, L, maxiter, verbose, steps_per_print)
-    return A
-end
-    

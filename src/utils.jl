@@ -25,6 +25,7 @@ function _fit!(epca::EPCA, X, maxoutdim::Integer, L::Function, maxiter::Integer,
     return A
 end
 
+
 function _compress(epca::EPCA, X, L::Function, maxiter::Integer, verbose::Bool, steps_per_print::Integer)
     n, _ = size(X)
     outdim = size(epca.V)[1]
@@ -34,5 +35,20 @@ function _compress(epca::EPCA, X, L::Function, maxiter::Integer, verbose::Bool, 
     end
     return A
 end
+
+
+function fit!(epca::EPCA, X; maxoutdim=1, maxiter=10, verbose=false, steps_per_print=10)
+    L = _make_loss(epca, X)
+    A =  _fit!(epca, X, maxoutdim, L, maxiter, verbose, steps_per_print)
+    return A
+end
+
+
+function compress(epca::EPCA, X; maxiter=10, verbose=false, steps_per_print=10)
+    L = _make_loss(epca, X)
+    A = _compress(epca, X, L, maxiter, verbose, steps_per_print)
+    return A
+end
+
 
 decompress(epca::EPCA, A) = epca.g(A * epca.V)
