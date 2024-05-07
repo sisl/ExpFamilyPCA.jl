@@ -53,18 +53,17 @@ end
 function _make_loss(epca::ImplicitEPCA, X)
     G, g, Fg, fg, tol, mu, epsilon = epca.G, epca.g, epca.Fg, epca.fg, epca.tol, epca.mu, epca.epsilon
     g_inv_X = map(x->_binary_search_monotone(g, x; tol=tol), X)
-    g_inv_mu = _binary_search_monotone(g, mu; tol=eps())  # NOTE: mu is scalar, so we can have very low tol
+    g_inv_mu = _binary_search_monotone(g, mu; tol=0)  # NOTE: mu is scalar, so we can have very low tol
     F_X = @. g_inv_X * X - G(g_inv_X)
     F_mu = g_inv_mu * mu - G(g_inv_mu)
-    function bregman(theta)
-        @infiltrate
+    L(theta) = @. begin
+        X_hat = g.(theta)
         Fg_theta = Fg.(theta)
         fg_theta = fg.(theta)
-        g_theta = g.(theta)
-        BF_X = @. F_X - Fg_theta - fg_theta * (X - g_theta)
-        BF_mu = @. F_mu - Fg_theta - fg_theta * (mu - g_theta)
+        BF_X = @. F_X - Fg_theta - fg_theta * (X - X_hat)
+        BF_mu = @. F_mu - Fg_theta - fg_theta * (mu - X_hat)
         divergence = @. BF_X - epsilon * BF_mu
         return sum(divergence)
     end
-    return bregman
+    return L
 end

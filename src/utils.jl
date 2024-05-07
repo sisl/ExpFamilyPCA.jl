@@ -40,7 +40,8 @@ end
 function fit!(epca::EPCA, X; maxoutdim=1, maxiter=10, verbose=false, steps_per_print=10)
     L = _make_loss(epca, X)
     A =  _fit!(epca, X, maxoutdim, L, maxiter, verbose, steps_per_print)
-    return A
+    # TODO: remove returning the loss function
+    return A, L
 end
 
 
