@@ -52,7 +52,9 @@ function _make_loss(epca::ExplicitEPCA, X)
     B, g, mu, epsilon = epca.Bregman, epca.g, epca.mu, epca.epsilon
     L(theta) = begin
         X_hat = g.(theta)
-        sum(@. B(X, X_hat) + epsilon * B(mu, X_hat))
+        divergence = @. B(X, X_hat) + epsilon * B(mu, X_hat)
+        # @show sum(divergence)
+        return sum(divergence)
     end
     return L
 end

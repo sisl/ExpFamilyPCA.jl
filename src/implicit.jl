@@ -12,8 +12,8 @@ mutable struct ImplicitEPCA <: EPCA
 end
 
 
-function EPCA(G::Function)
-    return ImplicitEPCA(G::Function)
+function EPCA(G::Function; tol=eps(), mu=1, epsilon=eps())
+    return ImplicitEPCA(G::Function; tol=tol, mu=mu, epsilon=epsilon)
 end
 
 
@@ -24,7 +24,7 @@ function ImplicitEPCA(G::Function; tol=eps(), mu=1, epsilon=eps())
     D = Differential(theta)
     _g = expand_derivatives(D(G(theta)))
     _Fg = _g * theta - G(theta)
-    _fg = expand_derivatives(D(_Fg))
+    _fg = expand_derivatives(D(_Fg) / D(_g))
     ex = quote
         g(theta) = $(Symbolics.toexpr(_g))
         Fg(theta) = $(Symbolics.toexpr(_Fg))
@@ -56,13 +56,31 @@ function _make_loss(epca::ImplicitEPCA, X)
     g_inv_mu = _binary_search_monotone(g, mu; tol=0)  # NOTE: mu is scalar, so we can have very low tol
     F_X = @. g_inv_X * X - G(g_inv_X)
     F_mu = g_inv_mu * mu - G(g_inv_mu)
-    L(theta) = @. begin
+    L(theta) = begin
         X_hat = g.(theta)
         Fg_theta = Fg.(theta)
         fg_theta = fg.(theta)
         BF_X = @. F_X - Fg_theta - fg_theta * (X - X_hat)
         BF_mu = @. F_mu - Fg_theta - fg_theta * (mu - X_hat)
-        divergence = @. BF_X - epsilon * BF_mu
+        divergence = @. BF_X + epsilon * BF_mu
+        return sum(divergence)
+    end
+    return L
+end
+
+
+function _make_loss_old(epca::ImplicitEPCA, X)
+    G, g, Fg, fg, tol, mu, epsilon = epca.G, epca.g, epca.Fg, epca.fg, epca.tol, epca.mu, epca.epsilon
+    g_inv_X = map(x->_binary_search_monotone(g, x; tol=tol), X)
+    g_inv_mu = _binary_search_monotone(g, mu; tol=0)  # NOTE: mu is scalar, so we can have very low tol
+    F_X = @. X * g_inv_X - G(g_inv_X)
+    F_mu = mu * g_inv_mu - G(g_inv_mu)
+    L(theta) = begin
+        @infiltrate
+        X_hat = g.(theta)
+        B1 = @. F_X - Fg(theta) - fg(theta) * (X - X_hat)
+        B2 = @. F_mu - Fg(theta) - fg(theta) * (mu - X_hat)
+        divergence = @. B1 + epsilon * B2
         return sum(divergence)
     end
     return L
