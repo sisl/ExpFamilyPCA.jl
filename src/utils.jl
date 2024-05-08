@@ -1,12 +1,12 @@
 function _single_fit_iter(L::Function, V, A, verbose::Bool, i::Integer, steps_per_print::Integer, maxiter::Integer)
-    V = Optim.minimizer(optimize(V_hat->L(A * V_hat), V))
+    V = Optim.minimizer(optimize(V̂->L(A * V̂), V))
     A = _single_compress_iter(L, V, A, verbose, i, steps_per_print, maxiter)
     return V, A
 end
 
 
 function _single_compress_iter(L::Function, V, A, verbose::Bool, i::Integer, steps_per_print::Integer, maxiter::Integer)
-    result = optimize(A_hat->L(A_hat * V), A)
+    result = optimize(Â->L(Â * V), A)
     A = Optim.minimizer(result)
     if verbose && (i % steps_per_print == 0 || i == 1)
         loss = Optim.minimum(result)
