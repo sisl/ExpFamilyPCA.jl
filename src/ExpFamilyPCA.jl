@@ -5,6 +5,8 @@ using Infiltrator
 using Symbolics
 using Optim
 
+import Distances
+
 export
     EPCA,
     fit!,
