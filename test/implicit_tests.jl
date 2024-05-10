@@ -17,5 +17,4 @@ end
     d = 5
     test_implicit("Normal", EPCA(x->x^2/2), rand(n, d) * 100, 1)
     test_implicit("Poisson", EPCA(x->exp(x)), rand(0:100, n, d), 1)
-    # test_implicit("Bernoulli", EPCA(@. x->exp(x)/(1 + exp(x))), rand(0:1, n, d), 0.5)
 end
