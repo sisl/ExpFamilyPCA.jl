@@ -1,8 +1,6 @@
-function test_explicit(model::Function, X, rtol)
-    @testset "$model" begin
-        _, d = size(X)
-        epca = model()
-        Y1 = fit!(epca, X; maxoutdim=d)
+function test_explicit(name, epca::EPCA, X, rtol)
+    @testset "$name" begin
+        Y1 = fit!(epca, X)
         Y2 = compress(epca, X)
         @test isapprox(Y1, Y2, rtol=rtol)
         Z1 = decompress(epca, Y1)
@@ -16,7 +14,8 @@ end
 @testset "Explicit Models" begin
     n = 10
     d = 5
-    test_explicit(NormalEPCA, rand(n, d) * 100, 1)
-    test_explicit(PoissonEPCA, rand(0:100, n, d), 1)
-    test_explicit(BernoulliEPCA, rand(0:1, n, d), 0.5)
+    l = d
+    test_explicit("Normal", NormalEPCA(d, l), rand(n, d) * 100, 1)
+    test_explicit("Poisson", PoissonEPCA(d, l), rand(0:100, n, d), 1)
+    test_explicit("Bernoulli", BernoulliEPCA(d, l), rand(0:1, n, d), 0.5)
 end

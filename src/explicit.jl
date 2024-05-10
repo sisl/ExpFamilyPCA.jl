@@ -1,4 +1,4 @@
-mutable struct ExplicitEPCA <: EPCA
+struct ExplicitEPCA <: EPCA
     V
     Bregman  # Bregman divergence
     g::Function  # link function
@@ -9,19 +9,19 @@ mutable struct ExplicitEPCA <: EPCA
 end
 
 """Explicitly specify the Bregman divergence."""
-function EPCA(Bregman::Function, g::Function; μ=1, ϵ=eps())
-    ExplicitEPCA(missing, Bregman, g, μ, ϵ)
+function EPCA(indim, outdim, Bregman::Function, g::Function; μ=1, ϵ=eps())
+    ExplicitEPCA(ones(outdim, indim), Bregman, g, μ, ϵ)
 end
 
 
 """Induces the Bregman divergence from F and f."""
-function EPCA(F::Function, f::Function, g::Function; μ=1, ϵ=eps())
-    ExplicitEPCA(missing, Distances.Bregman(F, f), g, μ, ϵ)
+function EPCA(indim, outdim, F::Function, f::Function, g::Function; μ=1, ϵ=eps())
+    ExplicitEPCA(ones(outdim, indim), Distances.Bregman(F, f), g, μ, ϵ)
 end
 
 # TODO: could create EPCA entirely from F
 
-function PoissonEPCA(; ϵ=eps())
+function PoissonEPCA(indim, outdim; ϵ=eps())
     # assumes χ = ℤ
     @. begin
         F(x) = x * log(x + ϵ) - x
@@ -29,11 +29,11 @@ function PoissonEPCA(; ϵ=eps())
         g(θ) = exp(θ)
     end
     μ = g(0)
-    EPCA(F, f, g; μ=μ, ϵ=ϵ)
+    EPCA(indim, outdim, F, f, g; μ=μ, ϵ=ϵ)
 end
 
 
-function BernoulliEPCA(; ϵ=eps())
+function BernoulliEPCA(indim, outdim; ϵ=eps())
     # assumes χ = {0, 1}
     @. begin
         F(x) = x * log(x + ϵ) + (1 - x) * log(1 - x + ϵ)
@@ -41,19 +41,19 @@ function BernoulliEPCA(; ϵ=eps())
         g(x) = exp(x) / (1 + exp(x))
     end
     μ = g(0)
-    EPCA(F, f, g; μ=μ, ϵ=ϵ)
+    EPCA(indim, outdim, F, f, g; μ=μ, ϵ=ϵ)
 end
 
 
-function NormalEPCA(; ϵ=eps())
+function NormalEPCA(indim, outdim; ϵ=eps())
     # NOTE: equivalent to generic PCA
     # assume χ = ℝ
     @. begin
         Bregman(p, q) = (p - q)^2 / 2
         g(θ) = θ
     end
-    μ = g(0)
-    EPCA(Bregman, g; μ=μ, ϵ=ϵ)
+    μ = g(1)
+    EPCA(indim, outdim, Bregman, g; μ=μ, ϵ=ϵ)
 end
 
 

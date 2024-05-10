@@ -16,16 +16,16 @@ function _single_compress_iter(L::Function, V, A, verbose::Bool, i::Integer, ste
 end
 
 
-function _fit!(epca::EPCA, X, maxoutdim::Integer, L::Function, maxiter::Integer, verbose::Bool, steps_per_print::Integer, A_init)
-    n, d = size(X)
-    V = ismissing(epca.V) ? ones(maxoutdim, d) : epca.V
-    @assert size(V) == (maxoutdim, d)
-    A = isnothing(A_init) ? ones(n, maxoutdim) : A_init
-    @assert size(A) == (n, maxoutdim)
+function _fit!(epca::EPCA, X, L::Function, maxiter::Integer, verbose::Bool, steps_per_print::Integer, A_init)
+    n, _ = size(X)
+    V = epca.V
+    outdim, _ = size(V) 
+    A = isnothing(A_init) ? ones(n, outdim) : A_init
+    @assert size(A) == (n, outdim)
     for i in 1:maxiter
         V, A = _single_fit_iter(L, V, A, verbose, i, steps_per_print, maxiter)
     end
-    epca.V = V
+    epca.V[:] = V
     return A
 end
 
@@ -42,9 +42,9 @@ function _compress(epca::EPCA, X, L::Function, maxiter::Integer, verbose::Bool, 
 end
 
 
-function fit!(epca::EPCA, X; maxoutdim=1, maxiter=10, verbose=false, steps_per_print=10, A_init=nothing)
+function fit!(epca::EPCA, X; maxiter=10, verbose=false, steps_per_print=10, A_init=nothing)
     L = _make_loss(epca, X)
-    A =  _fit!(epca, X, maxoutdim, L, maxiter, verbose, steps_per_print, A_init)
+    A =  _fit!(epca, X, L, maxiter, verbose, steps_per_print, A_init)
     return A
 end
 

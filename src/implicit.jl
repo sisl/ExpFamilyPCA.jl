@@ -1,4 +1,4 @@
-mutable struct ImplicitEPCA <: EPCA
+struct ImplicitEPCA <: EPCA
     V
     G::Function
     g::Function
@@ -12,12 +12,12 @@ mutable struct ImplicitEPCA <: EPCA
 end
 
 
-function EPCA(G::Function; tol=eps(), μ=1, ϵ=eps())
-    return ImplicitEPCA(G::Function; tol=tol, μ=μ, ϵ=ϵ)
+function EPCA(indim, outdim, G::Function; tol=eps(), μ=1, ϵ=eps())
+    return ImplicitEPCA(indim, outdim, G::Function; tol=tol, μ=μ, ϵ=ϵ)
 end
 
 
-function ImplicitEPCA(G::Function; tol=eps(), μ=1, ϵ=eps())
+function ImplicitEPCA(indim, outdim, G::Function; tol=eps(), μ=1, ϵ=eps())
     # NOTE: μ must be in the range of g, so g⁻¹(μ) is finite. It is up to the user to enforce this.
     # G induces g, Fg = F(g(θ)), and fg = f(g(θ))
     @variables θ
@@ -31,7 +31,7 @@ function ImplicitEPCA(G::Function; tol=eps(), μ=1, ϵ=eps())
         fg(θ) = $(Symbolics.toexpr(_fg))
     end
     eval(ex)
-    ImplicitEPCA(missing, G, g, Fg, fg, tol, μ, ϵ)
+    ImplicitEPCA(ones(outdim, indim), G, g, Fg, fg, tol, μ, ϵ)
 end
 
 

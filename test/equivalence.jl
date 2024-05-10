@@ -15,7 +15,8 @@ end
 @testset "Equivalence Sanity" begin
     n = 10
     d = 5
-    test_equivalence("Normal", NormalEPCA(), EPCA(x->x^2/2), rand(n, d) * 100)
-    test_equivalence("Poisson", PoissonEPCA(), EPCA(x->exp(x)), rand(0:100, n, d))
-    # test_equivalence("Bernoulli", BernoulliEPCA(), EPCA(x->exp(x)/(1 + exp(x))), rand(0:1, n, d); rtol=0.75)
+    l = 5
+    test_equivalence("Normal", NormalEPCA(d, l), EPCA(d, l, x->x^2/2; μ=1), rand(n, d) * 100)
+    test_equivalence("Poisson", PoissonEPCA(d, l), EPCA(d, l, x->exp(x)), rand(0:100, n, d))
+    # test_equivalence("Bernoulli", BernoulliEPCA(d, l), EPCA(d, l, x->exp(x)/(1 + exp(x)); μ=0.5), rand(0:1, n, d); rtol=0.75)
 end
