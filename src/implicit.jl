@@ -18,7 +18,7 @@ end
 
 
 function ImplicitEPCA(G::Function; tol=eps(), μ=1, ϵ=eps())
-    # NOTE: μ must be in the range of g, so g_inv(μ) is finite. It is up to the user to enforce this.
+    # NOTE: μ must be in the range of g, so g⁻¹(μ) is finite. It is up to the user to enforce this.
     # G induces g, Fg = F(g(θ)), and fg = f(g(θ))
     @variables θ
     D = Differential(θ)

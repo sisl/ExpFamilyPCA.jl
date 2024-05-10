@@ -56,4 +56,4 @@ function compress(epca::EPCA, X; maxiter=10, verbose=false, steps_per_print=10, 
 end
 
 
-decompress(epca::EPCA, A) = epca.g(A * epca.V)
+decompress(epca::EPCA, A) = epca.g.(A * epca.V)
