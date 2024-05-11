@@ -19,17 +19,15 @@ function EPCA(indim, outdim, F::Function, f::Function, g::Function; μ=1, ϵ=eps
     ExplicitEPCA(ones(outdim, indim), Distances.Bregman(F, f), g, μ, ϵ)
 end
 
-# TODO: could create EPCA entirely from F
 
 function PoissonEPCA(indim, outdim; ϵ=eps())
     # assumes χ = ℤ
     @. begin
-        F(x) = x * log(x + ϵ) - x
-        f(x) = log(x + ϵ)
+        Bregman(p, q) = Distances.gkl_divergence(p, q)
         g(θ) = exp(θ)
     end
     μ = g(0)
-    EPCA(indim, outdim, F, f, g; μ=μ, ϵ=ϵ)
+    EPCA(indim, outdim, Bregman, g; μ=μ, ϵ=ϵ)
 end
 
 
@@ -38,7 +36,7 @@ function BernoulliEPCA(indim, outdim; ϵ=eps())
     @. begin
         F(x) = x * log(x + ϵ) + (1 - x) * log(1 - x + ϵ)
         f(x) = log(x + ϵ) - log(1 - x + ϵ)
-        g(x) = exp(x) / (1 + exp(x))
+        g(θ) = exp(θ) / (1 + exp(θ))
     end
     μ = g(0)
     EPCA(indim, outdim, F, f, g; μ=μ, ϵ=ϵ)
@@ -49,11 +47,22 @@ function NormalEPCA(indim, outdim; ϵ=eps())
     # NOTE: equivalent to generic PCA
     # assume χ = ℝ
     @. begin
-        Bregman(p, q) = (p - q)^2 / 2
+        Bregman(p, q) = Distances.sqeuclidean(p, q) / 2
         g(θ) = θ
     end
     μ = g(1)
     EPCA(indim, outdim, Bregman, g; μ=μ, ϵ=ϵ)
+end
+
+
+function ItakuraSaitoEPCA(indim, outdim; ϵ=eps())
+    @. begin
+        F(x) = x * log(x + ϵ)
+        f(x) = 1 + log(x + ϵ)
+        g(θ) = exp(θ - 1)
+    end
+    μ = g(1)
+    EPCA(indim, outdim, F, f, g; μ=μ, ϵ=ϵ)
 end
 
 

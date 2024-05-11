@@ -20,7 +20,8 @@ include("implicit.jl")
 export
     NormalEPCA,
     BernoulliEPCA,
-    PoissonEPCA
+    PoissonEPCA,
+    ItakuraSaitoEPCA
 include("explicit.jl")
 
 end # module ExpFamilyPCA

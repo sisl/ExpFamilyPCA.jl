@@ -13,11 +13,6 @@ end
 
 
 function EPCA(indim, outdim, G::Function; tol=eps(), μ=1, ϵ=eps())
-    return ImplicitEPCA(indim, outdim, G::Function; tol=tol, μ=μ, ϵ=ϵ)
-end
-
-
-function ImplicitEPCA(indim, outdim, G::Function; tol=eps(), μ=1, ϵ=eps())
     # NOTE: μ must be in the range of g, so g⁻¹(μ) is finite. It is up to the user to enforce this.
     # G induces g, Fg = F(g(θ)), and fg = f(g(θ))
     @variables θ
