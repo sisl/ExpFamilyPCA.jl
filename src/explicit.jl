@@ -9,14 +9,46 @@ struct ExplicitEPCA <: EPCA
 end
 
 """Explicitly specify the Bregman divergence."""
-function EPCA(indim, outdim, Bregman::Function, g::Function; μ=1, ϵ=eps())
-    ExplicitEPCA(ones(outdim, indim), Bregman, g, μ, ϵ)
+function EPCA(
+    indim, 
+    outdim, 
+    Bregman::Function, 
+    g::Function; 
+    μ=1, 
+    ϵ=eps()
+)
+    V = ones(outdim, indim)
+    epca = ExplicitEPCA(
+        V, 
+        Bregman, 
+        g, 
+        μ,
+        ϵ
+    )
+    return epca
 end
 
 
 """Induces the Bregman divergence from F and f."""
-function EPCA(indim, outdim, F::Function, f::Function, g::Function; μ=1, ϵ=eps())
-    ExplicitEPCA(ones(outdim, indim), Distances.Bregman(F, f), g, μ, ϵ)
+function EPCA(
+    indim, 
+    outdim, 
+    F::Function, 
+    f::Function, 
+    g::Function; 
+    μ=1, 
+    ϵ=eps()
+)
+    V = ones(outdim, indim)
+    Bregman = Distances.Bregman(F, f)
+    epca = ExplicitEPCA(
+        V,
+        Bregman,
+        g,
+        μ,
+        ϵ
+    )
+    return epca
 end
 
 
@@ -27,7 +59,8 @@ function PoissonEPCA(indim, outdim; ϵ=eps())
         g(θ) = exp(θ)
     end
     μ = g(0)
-    EPCA(indim, outdim, Bregman, g; μ=μ, ϵ=ϵ)
+    epca = EPCA(indim, outdim, Bregman, g; μ=μ, ϵ=ϵ)
+    return epca
 end
 
 
@@ -39,7 +72,8 @@ function BernoulliEPCA(indim, outdim; ϵ=eps())
         g(θ) = exp(θ) / (1 + exp(θ))
     end
     μ = g(0)
-    EPCA(indim, outdim, F, f, g; μ=μ, ϵ=ϵ)
+    epca = EPCA(indim, outdim, F, f, g; μ=μ, ϵ=ϵ)
+    return epca
 end
 
 
@@ -51,7 +85,8 @@ function NormalEPCA(indim, outdim; ϵ=eps())
         g(θ) = θ
     end
     μ = g(1)
-    EPCA(indim, outdim, Bregman, g; μ=μ, ϵ=ϵ)
+    epca = EPCA(indim, outdim, Bregman, g; μ=μ, ϵ=ϵ)
+    return epca
 end
 
 
@@ -62,7 +97,8 @@ function ItakuraSaitoEPCA(indim, outdim; ϵ=eps())
         g(θ) = exp(θ - 1)
     end
     μ = g(1)
-    EPCA(indim, outdim, F, f, g; μ=μ, ϵ=ϵ)
+    epca = EPCA(indim, outdim, F, f, g; μ=μ, ϵ=ϵ)
+    return epca
 end
 
 
