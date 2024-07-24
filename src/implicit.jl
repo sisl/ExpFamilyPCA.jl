@@ -26,11 +26,29 @@ function EPCA(indim, outdim, G::Function; tol=eps(), μ=1, ϵ=eps())
         fg(θ) = $(Symbolics.toexpr(_fg))
     end
     eval(ex)
-    ImplicitEPCA(ones(outdim, indim), G, g, Fg, fg, tol, μ, ϵ)
+    V = ones(outdim, indim)
+    epca = ImplicitEPCA(
+        V, 
+        G,
+        g,
+        Fg,
+        fg,
+        tol,
+        μ,
+        ϵ
+    )
+    return epca
 end
 
 
-function _binary_search_monotone(f, target; low=-1e10, high=1e10, tol=1e-10, maxiter=1e6)
+function _binary_search_monotone(
+    f, 
+    target; 
+    low=-1e10, 
+    high=1e10, 
+    tol=1e-10, 
+    maxiter=1e6
+)
     iter = 0
     while high - low > tol && iter < maxiter
         mid = (low + high) / 2
@@ -46,7 +64,16 @@ end
 
 
 function _make_loss(epca::ImplicitEPCA, X)
-    G, g, Fg, fg, tol, μ, ϵ = epca.G, epca.g, epca.Fg, epca.fg, epca.tol, epca.μ, epca.ϵ
+    # unpack
+    G = epca.G
+    g = epca.g
+    Fg = epca.Fg
+    fg = epca.fg
+    tol = epca.tol
+    μ = epca.μ
+    ϵ = epca.ϵ
+    
+    # construct EPCA objective
     g⁻¹X = map(x->_binary_search_monotone(g, x; tol=tol), X)
     g⁻¹μ = _binary_search_monotone(g, μ; tol=0)  # NOTE: μ is scalar, so we can have very low tol
     FX = @. g⁻¹X * X - G(g⁻¹X)
@@ -58,25 +85,35 @@ function _make_loss(epca::ImplicitEPCA, X)
         BF_X = @. FX - Fgθ - fgθ * (X - X̂)
         BF_μ = @. Fμ - Fgθ - fgθ * (μ - X̂)
         divergence = @. BF_X + ϵ * BF_μ
-        return sum(divergence)
+        loss = sum(divergence)
+        return loss
     end
     return L
 end
 
 
-function _make_loss_old(epca::ImplicitEPCA, X)
-    G, g, Fg, fg, tol, μ, ϵ = epca.G, epca.g, epca.Fg, epca.fg, epca.tol, epca.μ, epca.ϵ
-    g⁻¹X = map(x->_binary_search_monotone(g, x; tol=tol), X)
-    g⁻¹μ = _binary_search_monotone(g, μ; tol=0)  # NOTE: μ is scalar, so we can have very low tol
-    FX = @. X * g⁻¹X - G(g⁻¹X)
-    Fμ = μ * g⁻¹μ - G(g⁻¹μ)
-    L(θ) = begin
-        @infiltrate
-        X̂  = g.(θ)
-        B1 = @. FX - Fg(θ) - fg(θ) * (X - X̂)
-        B2 = @. Fμ - Fg(θ) - fg(θ) * (μ - X̂)
-        divergence = @. B1 + ϵ * B2
-        return sum(divergence)
-    end
-    return L
-end
+# function _make_loss_old(epca::ImplicitEPCA, X)
+#     # unpack
+#     G = epca.G
+#     g = epca.g
+#     Fg = epca.Fg
+#     fg = epca.fg
+#     tol = epca.tol
+#     μ = epca.μ
+#     ϵ = epca.ϵ
+
+#     # make EPCA objective
+#     g⁻¹X = map(x->_binary_search_monotone(g, x; tol=tol), X)
+#     g⁻¹μ = _binary_search_monotone(g, μ; tol=0)  # NOTE: μ is scalar, so we can have very low tol
+#     FX = @. X * g⁻¹X - G(g⁻¹X)
+#     Fμ = μ * g⁻¹μ - G(g⁻¹μ)
+#     L(θ) = begin
+#         @infiltrate
+#         X̂  = g.(θ)
+#         B1 = @. FX - Fg(θ) - fg(θ) * (X - X̂)
+#         B2 = @. Fμ - Fg(θ) - fg(θ) * (μ - X̂)
+#         divergence = @. B1 + ϵ * B2
+#         return sum(divergence)
+#     end
+#     return L
+# end

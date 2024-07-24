@@ -20,5 +20,14 @@ function EPCA(indim, outdim, F::Function; tol=eps(), μ=1, ϵ=eps())
     end
     eval(ex)
     Bregman = Distances.Bregman(F, f)
-    HybridEPCA(ones(outdim, indim), Bregman, f, tol, μ, ϵ)
+    V = ones(outdim, indim)
+    epca = HybridEPCA(
+        V,
+        Bregman,
+        f,
+        tol,
+        μ,
+        ϵ
+    )
+    return epca
 end
