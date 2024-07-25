@@ -31,7 +31,7 @@ bibliography: paper.bib
 
 # Summary
 
-
+Exponential family principal component analysis (EPCA) [@collins2001generalization] is a generalization of principal component analysis (PCA) [@PCA]. We will begin with a quick primer on PCA, and use this to motivate EPCA. Next, we present some popular EPCA objectives and describe how we implement this explicitly in \pkg{ExpFamilyPCA.jl}. Finally, we describe an implicit implementation of EPCA that requires only a convex, twice-differentiable input. 
 
 # Statement of Need
 
