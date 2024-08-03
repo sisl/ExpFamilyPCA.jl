@@ -28,8 +28,18 @@ function EPCA(
     return epca
 end
 
+function _make_loss(epca::ExplicitEPCA, X)
+    B, g, μ, ϵ = epca.Bregman, epca.g, epca.μ, epca.ϵ
+    L(θ) = begin
+        X̂ = g.(θ)
+        divergence = @. B(X, X̂) + ϵ * B(μ, X̂)
+        return sum(divergence)
+    end
+    return L
+end
 
-"""Induces the Bregman divergence from F and f."""
+
+"""Induces the Bregman divergence from F, f, and g."""
 function EPCA(
     indim, 
     outdim, 
@@ -50,6 +60,35 @@ function EPCA(
     )
     return epca
 end
+
+"""
+Induces the Bregman divergence from F.
+
+f ≡ F'
+g_inverse ≡ f implies g ≡ f_inverse
+
+Since F is continuously-diff'able and strictly convex (by definition of the Bregman divergence), f is strictly increasing
+Since f is strictly increasing, f is invertible meaning f_inverse exists and g exists.
+Moreover, we can quickly evaluate g using a binary search. 
+
+
+"""
+# function EPCA(indim, outdim, F::Function; tol=eps(), μ=1, ϵ=eps())
+#     @variables θ
+#     D = Differential(θ)
+#     _f = expand_derivatives(D(F(θ)))
+#     ex = quote
+#         f(θ) = $(Symbolics.toexpr(_f))
+#     end
+#     eval(ex)
+#     epca = EPCA(
+#         indim,
+#         outimd,
+#         F,
+#         f
+#     )
+#     return epca
+# end
 
 
 function PoissonEPCA(indim, outdim; ϵ=eps())
@@ -99,15 +138,4 @@ function ItakuraSaitoEPCA(indim, outdim; ϵ=eps())
     μ = g(1)
     epca = EPCA(indim, outdim, F, f, g; μ=μ, ϵ=ϵ)
     return epca
-end
-
-
-function _make_loss(epca::ExplicitEPCA, X)
-    B, g, μ, ϵ = epca.Bregman, epca.g, epca.μ, epca.ϵ
-    L(θ) = begin
-        X̂ = g.(θ)
-        divergence = @. B(X, X̂) + ϵ * B(μ, X̂)
-        return sum(divergence)
-    end
-    return L
 end

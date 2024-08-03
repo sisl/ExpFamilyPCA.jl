@@ -18,8 +18,8 @@ function EPCA(indim, outdim, G::Function; tol=eps(), μ=1, ϵ=eps())
     @variables θ
     D = Differential(θ)
     _g = expand_derivatives(D(G(θ)))
-    _Fg = _g * θ - G(θ)
-    _fg = expand_derivatives(D(_Fg) / D(_g))
+    _Fg = _g * θ - G(θ)  # By definition, F(g(θ)) + G(θ) = g(θ)⋅θ
+    _fg = expand_derivatives(D(_Fg) / D(_g))  # Chain rule
     ex = quote
         g(θ) = $(Symbolics.toexpr(_g))
         Fg(θ) = $(Symbolics.toexpr(_Fg))
@@ -90,30 +90,3 @@ function _make_loss(epca::ImplicitEPCA, X)
     end
     return L
 end
-
-
-# function _make_loss_old(epca::ImplicitEPCA, X)
-#     # unpack
-#     G = epca.G
-#     g = epca.g
-#     Fg = epca.Fg
-#     fg = epca.fg
-#     tol = epca.tol
-#     μ = epca.μ
-#     ϵ = epca.ϵ
-
-#     # make EPCA objective
-#     g⁻¹X = map(x->_binary_search_monotone(g, x; tol=tol), X)
-#     g⁻¹μ = _binary_search_monotone(g, μ; tol=0)  # NOTE: μ is scalar, so we can have very low tol
-#     FX = @. X * g⁻¹X - G(g⁻¹X)
-#     Fμ = μ * g⁻¹μ - G(g⁻¹μ)
-#     L(θ) = begin
-#         @infiltrate
-#         X̂  = g.(θ)
-#         B1 = @. FX - Fg(θ) - fg(θ) * (X - X̂)
-#         B2 = @. Fμ - Fg(θ) - fg(θ) * (μ - X̂)
-#         divergence = @. B1 + ϵ * B2
-#         return sum(divergence)
-#     end
-#     return L
-# end

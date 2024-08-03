@@ -1,4 +1,4 @@
-struct HybridEPCA <: EPCA
+struct HybridEPCA1 <: EPCA
     V
     Bregman  # Bregman divergence
     f
@@ -8,6 +8,8 @@ struct HybridEPCA <: EPCA
     μ
     ϵ
 end
+
+# TODO: figure out how you get g????
 
 
 """Induce the Bregman divergence from F."""
@@ -21,7 +23,7 @@ function EPCA(indim, outdim, F::Function; tol=eps(), μ=1, ϵ=eps())
     eval(ex)
     Bregman = Distances.Bregman(F, f)
     V = ones(outdim, indim)
-    epca = HybridEPCA(
+    epca = HybridEPCA1(
         V,
         Bregman,
         f,
