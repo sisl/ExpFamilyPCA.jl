@@ -7,6 +7,9 @@ using Optim
 
 import Distances
 
+
+include("utils.jl")
+
 # export
 #     EPCA,
 #     fit!,
