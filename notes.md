@@ -4,28 +4,31 @@
 
 EPCA can be induced from (assumes no verification that the user inputed arguments are correct)[^1]:
 
-1. $F$
-2. $f$
-3. $G$
-4. $G, g$
-5. $G, F$
-6. $G, f$
-7. $F, g$
-8. $F, f$
-9.  $F, Fg$
-10. $F, fg$
-11. $f, Fg$
-12. $f, fg$
-13. Bregman, $g$
-14. Bregman, $G$
-15. $F, f, Fg$
-16. $F, f, fg$
-17. $F, Fg, fg$
-18. $f, Fg, fg$
-19. $G, g$
-20. $L(V, A)$
-21. $F, f, Fg, fg, g$
-22. $F, Fg, fg, g$
+- [x] $F$
+- [ ] $f$
+- [x] $G$
+- [ ] $G, g$  # check for speedups with inverting g
+- [x] $G, F$
+- [ ] $G, f$  # figure out math
+- [x] $F, g$  # check for speedups with inverting g
+- [x] $F, f$
+- [ ] $F, Fg$
+- [ ] $F, fg$
+- [ ] $f, Fg$
+- [ ] $f, fg$
+- [x] Bregman, $g$
+- [x] Bregman, $G$
+- [x] $F, f, G$
+- [x] $F, f, g$
+- [ ] $F, f, Fg$
+- [ ] $F, f, fg$
+- [ ] $F, Fg, fg$
+- [ ] $f, Fg, fg$
+- [ ] $G, g, f$
+- [ ] $G, g$
+- [ ] $L(V, A), g$
+- [ ] $F, f, Fg, fg, g$
+- [ ] $F, Fg, fg, g$
 
 [^1]: These are only the constructions I could come up with in 20 minutes, there may be even more constructions.
 

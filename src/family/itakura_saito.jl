@@ -14,7 +14,8 @@ function ItakuraSaitoEPCA(
         outdim,
         F,
         f,
-        g;
+        g,
+        Val((:F, :f, :g));
         μ=μ,
         ϵ=ϵ
     )

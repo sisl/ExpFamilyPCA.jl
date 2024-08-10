@@ -1,5 +1,5 @@
-struct EPCA2{T} <: EPCA{T}
-    V::AbstractMatrix{T}
+struct EPCA2 <: EPCA
+    V::AbstractMatrix{<:Real}
     G::Function
     g::Function  # link function
     Fg::Function  # Fg = F∘g (F compose g)
@@ -11,7 +11,7 @@ struct EPCA2{T} <: EPCA{T}
     ϵ::Real
 end
 
-function _make_loss(epca::ImplicitEPCA, X)
+function _make_loss(epca::EPCA2, X)
     # unpack
     G = epca.G
     g = epca.g
@@ -41,6 +41,7 @@ end
 
 ### CONSTRUCTORS ###
 
+
 """
 TODO: add amonition about metaprogramming
 
@@ -49,11 +50,12 @@ Uses: G
 function EPCA(
     indim::Integer,
     outdim::Integer,
-    G::Function; 
+    G::Function,
+    ::Val{:G};
     tol=eps(),
     μ=1,
     ϵ=eps(),
-    use_metaprogramming=false,
+    metaprogramming=true,
 )
     # NOTE: μ must be in the range of g, so g⁻¹(μ) is finite. It is up to the user to enforce this.
     # G induces g, Fg = F(g(θ)), and fg = f(g(θ))
@@ -62,13 +64,11 @@ function EPCA(
     _g = expand_derivatives(D(G(θ)))
     _Fg = _g * θ - G(θ)  # By definition, F(g(θ)) + G(θ) = g(θ)⋅θ
     _fg = expand_derivatives(D(_Fg) / D(_g))  # Chain rule
-    if use_metaprogramming
-        ex = quote
-            g(θ) = $(Symbolics.toexpr(_g))
-            Fg(θ) = $(Symbolics.toexpr(_Fg))
-            fg(θ) = $(Symbolics.toexpr(_fg))
-        end
-        eval(ex)
+
+    if metaprogramming
+        g = _symbolics_to_julia(_g)
+        Fg = _symbolics_to_julia(_Fg)
+        fg = _symbolics_to_julia(_fg)
     else
         g = _symbolics_to_julia(_g, θ)
         Fg = _symbolics_to_julia(_Fg, θ)
@@ -76,7 +76,7 @@ function EPCA(
     end
 
     V = ones(outdim, indim)
-    epca = ImplicitEPCA(
+    epca = EPCA2(
         V,
         G,
         g,

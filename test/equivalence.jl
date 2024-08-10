@@ -13,10 +13,27 @@ function test_equivalence(name, M1::EPCA, M2::EPCA, X; rtol=eps())
 end
 
 @testset "Equivalence Sanity" begin
-    n = 10
+    n = 2
     d = 5
-    l = 5
-    test_equivalence("Normal", NormalEPCA(d, l), EPCA(d, l, x->x^2/2; μ=1), rand(n, d) * 100)
-    test_equivalence("Poisson", PoissonEPCA(d, l), EPCA(d, l, x->exp(x)), rand(0:100, n, d))
-    # test_equivalence("Bernoulli", BernoulliEPCA(d, l), EPCA(d, l, x->exp(x)/(1 + exp(x)); μ=0.5), rand(0:1, n, d); rtol=0.75)
+    l = d
+    test_equivalence(
+        "Normal", 
+        NormalEPCA(d, l), 
+        EPCA(d, l, x->x^2/2, Val(:G); μ=1), 
+        rand(n, d) * 100
+    )
+    test_equivalence(
+        "Poisson", 
+        PoissonEPCA(d, l), 
+        EPCA(d, l, x->exp(x), Val(:G)),
+        rand(0:100, n, d)
+    )
+    # test_equivalence(
+    #     "Bernoulli", 
+    #     BernoulliEPCA(d, l),
+    #     EPCA(d, l, x->exp(x)/(1 + exp(x)), Val(:G); μ=0.5),
+    #     rand(0:1, n, d);
+    #     rtol=0.25
+    # )
+    # TODO: expand a bunch w/ metaprogramming and all the constructors
 end

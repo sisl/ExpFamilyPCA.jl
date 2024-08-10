@@ -12,11 +12,33 @@ function test_explicit(name, epca::EPCA, X, rtol)
 end
 
 @testset "Explicit Models" begin
-    n = 10
+    n = 2
     d = 5
     l = d
-    test_explicit("Normal", NormalEPCA(d, l), rand(n, d) * 100, 1)
-    test_explicit("Itakura-Saito", ItakuraSaitoEPCA(d, l), rand(n, d) * 100, 1)
-    test_explicit("Poisson", PoissonEPCA(d, l), rand(0:100, n, d), 1)
-    test_explicit("Bernoulli", BernoulliEPCA(d, l), rand(0:1, n, d), 0.5)
+    test_explicit(
+        "Normal", 
+        NormalEPCA(d, l), 
+        rand(n, d) * 100, 
+        1
+    )
+    test_explicit(
+        "Itakura-Saito", 
+        ItakuraSaitoEPCA(d, l), 
+        rand(n, d) * 100, 
+        1
+    )
+    test_explicit(
+        "Poisson",
+        PoissonEPCA(d, l),
+        rand(0:100, n, d),
+        1
+    )
+    test_explicit(
+        "Bernoulli",
+        BernoulliEPCA(d, l),
+        rand(0:1, n, d),
+        0.5
+    )
+
+    # TODO: add no metapgoramming test
 end

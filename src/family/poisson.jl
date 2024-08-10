@@ -13,7 +13,8 @@ function PoissonEPCA(
         indim,
         outdim,
         Bregman,
-        g; 
+        g,
+        Val((:Bregman, :g)); 
         μ=μ,
         ϵ=ϵ
     )

@@ -15,7 +15,8 @@ function BernoulliEPCA(
         outdim,
         F,
         f,
-        g;
+        g,
+        Val((:F, :f, :g));
         μ=μ,
         ϵ=ϵ
     )
