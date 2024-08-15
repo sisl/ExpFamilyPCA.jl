@@ -35,6 +35,20 @@ Exponential family principal component analysis (EPCA) [@collins2001generalizati
 
 # Statement of Need
 
+## Applications
+
+https://mark.reid.name/blog/meet-the-bregman-divergences.html
+
+Mirror descent
+
+## Important Bregman Divergences
+
+https://people.clas.ufl.edu/yun/files/article-8-1.pdf
+
+https://jmlr.org/papers/volume6/banerjee05b/banerjee05b.pdf
+
+
+
 # Acknowledgments
 
 We thank Arec Jamgochian, Robert Moss, and Dylan Asmar for their help and guidance.

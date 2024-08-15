@@ -74,9 +74,14 @@ function _single_compress_iter(
     verbose::Bool,
     i::Integer,
     steps_per_print::Integer,
-    maxiter::Integer
+    maxiter::Integer,
+    autodiff::Bool
 ) where T <: Real
-    result = optimize(Â->L(Â * V), A)
+    if autodiff
+        result = optimize(Â->L(Â * V), A; autodiff=:forward)
+    else
+        result = optimize(Â->L(Â * V), A)
+    end
     A = Optim.minimizer(result)
     if verbose && (i % steps_per_print == 0 || i == 1)
         loss = Optim.minimum(result)
@@ -92,9 +97,15 @@ function _single_fit_iter(
     verbose::Bool,
     i::Integer,
     steps_per_print::Integer,
-    maxiter::Integer
+    maxiter::Integer,
+    autodiff::Bool
 ) where T <: Real
-    V = Optim.minimizer(optimize(V̂->L(A * V̂), V))
+    if autodiff
+        result = optimize(V̂->L(A * V̂), V; autodiff=:forward)
+    else   
+        result = optimize(V̂->L(A * V̂), V)
+    end
+    V = Optim.minimizer(result)
     A = _single_compress_iter(
         L,
         V,
@@ -102,7 +113,8 @@ function _single_fit_iter(
         verbose,
         i,
         steps_per_print,
-        maxiter
+        maxiter,
+        autodiff
     )
     return V, A
 end
@@ -114,6 +126,7 @@ function _compress(
     maxiter::Integer,
     verbose::Bool,
     steps_per_print::Integer,
+    autodiff::Bool,
 ) where T <: Real
     for i in 1:maxiter
         A = _single_compress_iter(
@@ -123,7 +136,8 @@ function _compress(
             verbose,
             i,
             steps_per_print,
-            maxiter
+            maxiter,
+            autodiff
         )
     end
     return A
@@ -136,6 +150,7 @@ function _fit(
     maxiter::Integer,
     verbose::Bool,
     steps_per_print::Integer,
+    autodiff::Bool
 ) where T <: Real
     for i in 1:maxiter
         V, A = _single_fit_iter(
@@ -145,7 +160,8 @@ function _fit(
             verbose,
             i,
             steps_per_print,
-            maxiter
+            maxiter,
+            autodiff
         )
     end
     return V, A

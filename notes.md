@@ -5,7 +5,6 @@
 EPCA can be induced from (assumes no verification that the user inputed arguments are correct)[^1]:
 
 - [x] $F$
-- [ ] $f$
 - [x] $G$
 - [ ] $G, g$  # check for speedups with inverting g
 - [x] $G, F$
@@ -45,3 +44,4 @@ We want to have multiple constructors for `EPCA`, but the problem is that Julia 
 
 ### TODO
 - [ ] Rewrite utils.jl functions with loops using [seperate kernel functions](https://docs.julialang.org/en/v1/manual/performance-tips/#kernel-functions) to speed up Julia compiler.
+- [ ] Add value initialization

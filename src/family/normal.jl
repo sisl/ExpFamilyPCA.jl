@@ -7,8 +7,8 @@ function NormalEPCA(
     # assume χ = ℝ
     @. begin
         Bregman(p, q) = Distances.sqeuclidean(p, q) / 2
-        g(θ) = θ
     end
+    g = identity
     μ = g(1)
     epca = EPCA(
         indim,

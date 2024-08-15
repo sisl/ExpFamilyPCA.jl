@@ -16,10 +16,18 @@ end
     n = 2
     d = 5
     l = d
+
+    # Normal
     test_equivalence(
         "Normal", 
         NormalEPCA(d, l), 
         EPCA(d, l, x->x^2/2, Val(:G); μ=1), 
+        rand(n, d) * 100
+    )
+    test_equivalence(
+        "Normal", 
+        NormalEPCA(d, l), 
+        EPCA(d, l, x->x^2/2, Val(:G1); μ=1), 
         rand(n, d) * 100
     )
     test_equivalence(
@@ -28,12 +36,12 @@ end
         EPCA(d, l, x->exp(x), Val(:G)),
         rand(0:100, n, d)
     )
-    # test_equivalence(
-    #     "Bernoulli", 
-    #     BernoulliEPCA(d, l),
-    #     EPCA(d, l, x->exp(x)/(1 + exp(x)), Val(:G); μ=0.5),
-    #     rand(0:1, n, d);
-    #     rtol=0.25
-    # )
+    test_equivalence(
+        "Bernoulli", 
+        BernoulliEPCA(d, l),
+        EPCA(d, l, x->exp(x)/(1 + exp(x)), Val(:G); μ=0.5),
+        rand(0:1, n, d);
+        rtol=0.25
+    )
     # TODO: expand a bunch w/ metaprogramming and all the constructors
 end

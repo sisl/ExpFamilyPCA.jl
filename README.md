@@ -47,3 +47,7 @@ Since $g$ is monotone (since $G$ is convex and differentiable), not only do we k
 Explicitly, we can frame our problem like this. Given $g$, evaluate an unknown $g^{-1}$ and some point $a$. Let $b = g^{-1}(a)$, then $g(b) = g(g^{-1}(a)) = a$, so we simply need to find $b$ such that $g(b) = a$ and then $b = g^{-1}(g(b)) = g^{-1}(a)$. Since $g$ is monotone, we can quickly find such a $b$ by searching for the condition that $g(b) = a$.
 
 Since we only need to evaluate $F(X)$ and $F(\mu)$, this means we need to find $b, b'$ such that $g(b) = X$ and $g(b') = \mu$.
+
+## Notes
+
+If we have $F$, we only need $f$ to evaluate $g$ during decompression. Since $f(g(x)) = x$. 

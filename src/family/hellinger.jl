@@ -1,0 +1,1 @@
+# TODO: https://www.seas.ucla.edu/~vandenbe/236C/lectures/bregman.pdf (slide 8)

@@ -3,19 +3,19 @@ function ItakuraSaitoEPCA(
     outdim::Integer;
     ϵ=eps()
 )
+    # χ = ℝ++
+
     @. begin
-        F(x) = x * log(x + ϵ)
-        f(x) = 1 + log(x + ϵ)
-        g(θ) = exp(θ - 1)
+        F(x) = -x * log(x)
+        g(θ) = -1 / θ
     end
     μ = g(1)
     epca = EPCA(
         indim,
         outdim,
         F,
-        f,
         g,
-        Val((:F, :f, :g));
+        Val((:F, :g));
         μ=μ,
         ϵ=ϵ
     )

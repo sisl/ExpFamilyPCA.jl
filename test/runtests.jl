@@ -5,8 +5,11 @@ using Random
 Random.seed!(1)
 
 
+include("utils.jl")
+
+
 @testset "ExpFamilyPCA.jl" begin
-    # include("explicit_tests.jl")
-    # include("implicit_tests.jl")
+    include("test_epca2.jl")
+    include("test_family.jl")
     include("equivalence.jl")
 end
