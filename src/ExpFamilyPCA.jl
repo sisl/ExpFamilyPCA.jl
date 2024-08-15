@@ -20,15 +20,25 @@ include("constructors/epca3.jl")
 
 
 export
-    NormalEPCA,
     BernoulliEPCA,
-    PoissonEPCA,
+    BinomialEPCA,
+    ExponentialEPCA,
+    GammaEPCA,
     ItakuraSaitoEPCA,
-    MahalanobisEPCA
+    GeometricEPCA,
+    HyperbolicSecantEPCA,
+    InverseGaussianEPCA,
+    NegativeBinomialEPCA,
+    NormalEPCA,
+    GaussianEPCA,
+    PoissonEPCA
 include("family/normal.jl")
 include("family/bernoulli.jl")
 include("family/poisson.jl")
-include("family/itakura_saito.jl")
-include("family/mahalanobis.jl")
+include("family/gamma.jl")
+
+export
+    MahalanobisEPCA
+include("bregman/mahalanobis.jl")
 
 end # module ExpFamilyPCA

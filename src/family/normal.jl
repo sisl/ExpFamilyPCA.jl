@@ -21,3 +21,17 @@ function NormalEPCA(
     )
     return epca
 end
+
+# alias
+function GaussianEPCA(
+    indim::Integer,
+    outdim::Integer;
+    ϵ=eps()
+)
+    epca = NormalEPCA(
+        indim,
+        outim;
+        ϵ=ϵ
+    )
+    return epca
+end

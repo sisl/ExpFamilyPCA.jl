@@ -30,6 +30,13 @@ function EPCA(
     μ=1,
     ϵ=eps()
 )
+    # assertions
+    @assert indim > 0 "Input dimension (indim) must be a positive integer."
+    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
+    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
+    @assert μ > 0 "μ must be a positive number."
+    @assert ϵ >= 0 "ϵ must be nonnegative."
+
     V = ones(outdim, indim)
     epca = EPCA3(
         V,
@@ -51,6 +58,12 @@ function EPCA(
     ϵ=eps(),
     metaprogramming=true
 )
+    # assertions
+    @assert indim > 0 "Input dimension (indim) must be a positive integer."
+    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
+    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
+    @assert μ > 0 "μ must be a positive number."
+    @assert ϵ >= 0 "ϵ must be nonnegative."
 
     @variables θ
     G = G(θ)

@@ -56,6 +56,13 @@ function EPCA(
     ϵ=eps(),
     metaprogramming=true,
 )
+    # assertions
+    @assert indim > 0 "Input dimension (indim) must be a positive integer."
+    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
+    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
+    @assert μ > 0 "μ must be a positive number."
+    @assert ϵ >= 0 "ϵ must be nonnegative."
+
     V = ones(outdim, indim)
     epca = EPCA2(
         V,
@@ -80,6 +87,13 @@ function EPCA(
     ϵ=eps(),
     metaprogramming=true,
 )
+    # assertions
+    @assert indim > 0 "Input dimension (indim) must be a positive integer."
+    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
+    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
+    @assert μ > 0 "μ must be a positive number."
+    @assert ϵ >= 0 "ϵ must be nonnegative."
+
     # NOTE: μ must be in the range of g, so g⁻¹(μ) is finite. It is up to the user to enforce this.
     # G induces g, Fg = F(g(θ)), and fg = f(g(θ))
     @variables θ

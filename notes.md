@@ -41,6 +41,9 @@ EPCA can be induced from (assumes no verification that the user inputed argument
 ## Implementation Journey
 We want to have multiple constructors for `EPCA`, but the problem is that Julia *only dispatches on positional arguments*, not keyword arguments. Moreover, it only dispatches on the *type* of positional arguments not their value. This means that you can't dispatch on the value of a boolean flag `foo(flag=true)` overwrites `foo(flag=false)` because both are `Bool` instances, i.e., `typeof(true) === typeof(false)`. This problem is addressed with Julia's ["Value types"](https://docs.julialang.org/en/v1/manual/types/#%22Value-types%22). While 
 
+## Resources
+- [List of exponential family distributions](https://stats.libretexts.org/Bookshelves/Probability_Theory/Probability_Mathematical_Statistics_and_Stochastic_Processes_(Siegrist)/05%3A_Special_Distributions/5.02%3A_General_Exponential_Families#:~:text=The%20Pareto%20distribution%20is%20a,a%20one%2Dparameter%20exponential%20family.)
+
 
 ### TODO
 - [ ] Rewrite utils.jl functions with loops using [seperate kernel functions](https://docs.julialang.org/en/v1/manual/performance-tips/#kernel-functions) to speed up Julia compiler.

@@ -40,6 +40,14 @@ function EPCA(
     μ=1,
     ϵ=eps(),
 )
+    # assertions
+    @assert indim > 0 "Input dimension (indim) must be a positive integer."
+    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
+    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
+    @assert μ > 0 "μ must be a positive number."
+    @assert ϵ >= 0 "ϵ must be nonnegative."
+    @assert isfinite(f(μ)) "μ must be in the range of g (meaning f(μ) = g⁻¹(μ) should be finite)."
+
     V = ones(outdim, indim)
     epca = EPCA1(
         V,
@@ -64,6 +72,17 @@ function EPCA(
     tol=1e-10, 
     maxiter=1e6
 )
+    # assertions
+    @assert indim > 0 "Input dimension (indim) must be a positive integer."
+    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
+    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
+    @assert μ > 0 "μ must be a positive number."
+    @assert ϵ >= 0 "ϵ must be nonnegative."
+    @assert low < high "Low bound (low) must be less than high bound (high)."
+    @assert tol > 0 "Tolerance (tol) must be a positive number."
+    @assert maxiter > 0 "Maximum iterations (maxiter) must be a positive number."
+    @assert isfinite(f(μ)) "μ must be in the range of g (meaning f(μ) = g⁻¹(μ) should be finite)."
+
     g = _invert_legrende(
         f;
         low=low,
@@ -98,16 +117,14 @@ function EPCA(
     # assertions
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
     @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
-    @assert indim >= outdim
+    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
     @assert μ > 0 "μ must be a positive number."
-    @assert ϵ >= 0 "ϵ must be nonnegative"
+    @assert ϵ >= 0 "ϵ must be nonnegative."
     @assert low < high "Low bound (low) must be less than high bound (high)."
     @assert tol > 0 "Tolerance (tol) must be a positive number."
-    @assert maxiter > 0 "Maximum iterations (maxiter) must be a positive number."
-
+    @assert maxiter > 0 "Maximum iterations (maxiter) must be a positive number."    
 
     # math
-
     @variables θ
     F = F(θ)
     D = Differential(θ)
@@ -118,6 +135,8 @@ function EPCA(
     else
         f = _symbolics_to_julia(_f, θ)
     end
+
+    @assert isfinite(f(μ)) "μ must be in the range of g (meaning f(μ) = g⁻¹(μ) should be finite)."
 
     epca = EPCA(
         indim,
@@ -145,6 +164,13 @@ function EPCA(
     ϵ=eps(),
     metaprogramming=true
 )
+    # assertions
+    @assert indim > 0 "Input dimension (indim) must be a positive integer."
+    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
+    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
+    @assert μ > 0 "μ must be a positive number."
+    @assert ϵ >= 0 "ϵ must be nonnegative."
+
     @variables θ
     D = Differential(θ)
     _g = expand_derivatives(D(G(θ)))
