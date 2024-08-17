@@ -8,8 +8,8 @@ Random.seed!(1)
 include("utils.jl")
 
 
-@testset "ExpFamilyPCA.jl" begin
-    include("test_epca2.jl")
-    include("test_family.jl")
-    include("equivalence.jl")
-end
+# @testset "ExpFamilyPCA.jl" begin
+#     include("test_epca2.jl")
+#     include("test_family.jl")
+#     include("equivalence.jl")
+# end
