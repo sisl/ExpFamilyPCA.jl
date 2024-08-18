@@ -1,6 +1,6 @@
 @testset "Poisson" begin
     n = 2
-    d = 5
+    d = 4
     l = d
 
     # TODO: add other constructors
