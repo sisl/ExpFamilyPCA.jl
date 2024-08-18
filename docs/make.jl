@@ -9,7 +9,7 @@ bib = CitationBibliography(
 
 makedocs(
     sitename = "ExpFamilyPCA",
-    # checkdocs = :exports,
+    checkdocs = :exports,
     format = Documenter.HTML(),
     # modules = [ExpFamilyPCA],
     pages = [
