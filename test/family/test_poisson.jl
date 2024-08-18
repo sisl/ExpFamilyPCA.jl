@@ -1,42 +1,177 @@
 @testset "Poisson" begin
     n = 2
-    d = 4
-    l = d
+    indim = 5
+    outdim = 5
+    X = rand(0:100, n, indim)
 
-    # TODO: add other constructors
-    @testset "Metaprogramming" begin
-        simple_smoke_check(
-            "Normal", 
+    test_epca(
+        "Poisson",
+        PoissonEPCA(indim, outdim),
+        X,
+        atol=0.5
+    )
+
+    ϵ = eps()
+    G(θ) = exp(θ)
+    g(θ) = exp(θ)
+    F(x) = x * log(x + ϵ) - x
+    f(x) = log(x + ϵ)
+    Bregman1(p, q) = Distances.gkl_divergence(p, q)
+    Bregman2(p, q) = p * log(p / (q + ϵ) + ϵ) + q - p
+    μ = g(0)
+
+    @testset "EPCA1" begin
+        test_equivalence(
+            "F, g",
+            PoissonEPCA(indim, outdim),
             EPCA(
-                d, 
-                l, 
-                x -> x^2 / 2, 
-                Val(:G)
-            ), 
-            rand(n, d) * 100, 
-            1
+                indim,
+                outdim,
+                F,
+                g,
+                Val((:F, :g));
+                μ=μ,
+                ϵ=ϵ
+            ),
+            X
         )
-        simple_smoke_check(
-            "Poisson", 
+
+
+        test_equivalence(
+            "F, f",
+            PoissonEPCA(indim, outdim),
             EPCA(
-                d, 
-                l, 
-                x -> exp(x), 
-                Val(:G)
-            ), 
-            rand(0:100, n, d), 
-            1
+                indim,
+                outdim,
+                F,
+                f,
+                Val((:F, :f));
+                μ=μ,
+                ϵ=ϵ
+            ),
+            X
         )
-        simple_smoke_check(
-            "Bernoulli", 
+
+        test_equivalence(
+            "F",
+            PoissonEPCA(indim, outdim),
             EPCA(
-                d, 
-                l, 
-                x -> exp(x) / (1 + exp(x)), 
-                Val(:G)
-            ), 
-            rand(0:1, n, d), 
-            0.5
+                indim,
+                outdim,
+                F,
+                Val((:F));
+                μ=μ,
+                ϵ=ϵ
+            ),
+            X
+        )
+
+        test_equivalence(
+            "F, G",
+            PoissonEPCA(indim, outdim),
+            EPCA(
+                indim,
+                outdim,
+                F,
+                G,
+                Val((:F, :G));
+                μ=μ,
+                ϵ=ϵ
+            ),
+            X
+        )
+    end
+
+    @testset "EPCA2" begin
+        test_equivalence(
+            "G, g",
+            PoissonEPCA(indim, outdim),
+            EPCA(
+                indim,
+                outdim,
+                G,
+                g,
+                Val((:G, :g));
+                μ=μ,
+                ϵ=ϵ
+            ),
+            X
+        )
+
+        test_equivalence(
+            "G",
+            PoissonEPCA(indim, outdim),
+            EPCA(
+                indim,
+                outdim,
+                G,
+                Val((:G));
+                μ=μ,
+                ϵ=ϵ
+            ),
+            X
+        )
+    end
+
+    @testset "EPCA3" begin
+        test_equivalence(
+            "Bregman1, g",
+            PoissonEPCA(indim, outdim),
+            EPCA(
+                indim,
+                outdim,
+                Bregman1,
+                g,
+                Val((:Bregman, :g));
+                μ=μ,
+                ϵ=ϵ
+            ),
+            X
+        )
+
+        test_equivalence(
+            "Bregman2, g",
+            PoissonEPCA(indim, outdim),
+            EPCA(
+                indim,
+                outdim,
+                Bregman2,
+                g,
+                Val((:Bregman, :g));
+                μ=μ,
+                ϵ=ϵ
+            ),
+            X
+        )
+
+        test_equivalence(
+            "Bregman1, G",
+            PoissonEPCA(indim, outdim),
+            EPCA(
+                indim,
+                outdim,
+                Bregman1,
+                G,
+                Val((:Bregman, :G));
+                μ=μ,
+                ϵ=ϵ
+            ),
+            X
+        )
+
+        test_equivalence(
+            "Bregman2, G",
+            PoissonEPCA(indim, outdim),
+            EPCA(
+                indim,
+                outdim,
+                Bregman2,
+                G,
+                Val((:Bregman, :G));
+                μ=μ,
+                ϵ=ϵ
+            ),
+            X
         )
     end
 end

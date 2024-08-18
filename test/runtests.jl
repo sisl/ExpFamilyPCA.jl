@@ -1,15 +1,14 @@
 using ExpFamilyPCA
 using Test
 
+using Distances
 using Random
-Random.seed!(1)
+Random.seed!(1)  # used to generate random matrices for testing
 
 
 include("utils.jl")
 
 
-# @testset "ExpFamilyPCA.jl" begin
-#     include("test_epca2.jl")
-#     include("test_family.jl")
-#     include("equivalence.jl")
-# end
+@testset "ExpFamilyPCA.jl" begin
+    include("family/test_poisson.jl")
+end

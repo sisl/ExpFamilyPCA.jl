@@ -1,22 +1,28 @@
-function simple_smoke_check(
+function test_epca(
     name::String, 
     epca::EPCA, 
-    X, 
-    rtol
+    X;
+    atol=0
 )
-    @testset "$name" begin
+    @testset "$name Smoke Test" begin
         Y1 = fit!(epca, X)
         Y2 = compress(epca, X)
-        @test isapprox(Y1, Y2, rtol=rtol)
+        @test isapprox(Y1, Y2, atol=atol)
         Z1 = decompress(epca, Y1)
         Z2 = decompress(epca, Y2)
-        @test isapprox(Z1, Z2, rtol=rtol)
-        @test isapprox(Z1, X, rtol=rtol)
-        @test isapprox(Z2, X, rtol=rtol)
+        @test isapprox(Z1, Z2, atol=atol)
+        @test isapprox(Z1, X, atol=atol)
+        @test isapprox(Z2, X, atol=atol)
     end
 end
 
-function test_equivalence(name, M1::EPCA, M2::EPCA, X; rtol=eps())
+function test_equivalence(
+    name, 
+    M1::EPCA, 
+    M2::EPCA, 
+    X; 
+    rtol=1e-12
+)
     @testset "$name" begin
         A1 = fit!(M1, X)
         A2 = fit!(M2, X)

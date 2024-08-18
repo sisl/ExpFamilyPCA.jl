@@ -54,7 +54,6 @@ function EPCA(
     tol=eps(),
     μ=1,
     ϵ=eps(),
-    metaprogramming=true,
 )
     # assertions
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
@@ -72,6 +71,7 @@ function EPCA(
         μ,
         ϵ
     )
+    return epca
 end
 
 """
@@ -106,7 +106,6 @@ function EPCA(
         g = _symbolics_to_julia(_g, θ)
     end
 
-    V = ones(outdim, indim)
     epca = EPCA(
         indim,
         outdim,
@@ -116,7 +115,6 @@ function EPCA(
         tol=tol,
         μ=μ,
         ϵ=ϵ,
-        metaprogramming=metaprogramming,
     )
     return epca
 end

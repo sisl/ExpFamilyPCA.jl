@@ -21,7 +21,7 @@ function _make_loss(epca::EPCA1, X)
     Fμ = F(μ)
     L(θ) = begin
         X̂ = g.(θ)
-        Fgθ = F(X̂)
+        Fgθ = F.(X̂)
         BF_X = @. FX - Fgθ - θ * (X - X̂)
         BF_μ = @. Fμ - Fgθ - θ * (μ - X̂)
         divergence = @. BF_X + ϵ * BF_μ
@@ -34,8 +34,8 @@ end
 function EPCA(
     indim::Integer,
     outdim::Integer,
-    g::Function,
     F::Function,
+    g::Function,
     ::Val{(:F, :g)};
     μ=1,
     ϵ=eps(),
@@ -46,7 +46,6 @@ function EPCA(
     @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
     @assert μ > 0 "μ must be a positive number."
     @assert ϵ >= 0 "ϵ must be nonnegative."
-    @assert isfinite(f(μ)) "μ must be in the range of g (meaning f(μ) = g⁻¹(μ) should be finite)."
 
     V = ones(outdim, indim)
     epca = EPCA1(
@@ -81,7 +80,6 @@ function EPCA(
     @assert low < high "Low bound (low) must be less than high bound (high)."
     @assert tol > 0 "Tolerance (tol) must be a positive number."
     @assert maxiter > 0 "Maximum iterations (maxiter) must be a positive number."
-    @assert isfinite(f(μ)) "μ must be in the range of g (meaning f(μ) = g⁻¹(μ) should be finite)."
 
     g = _invert_legrende(
         f;
@@ -126,17 +124,15 @@ function EPCA(
 
     # math
     @variables θ
-    F = F(θ)
+    _F = F(θ)
     D = Differential(θ)
-    _f = expand_derivatives(D(F))
+    _f = expand_derivatives(D(_F))
 
     if metaprogramming
         f = _symbolics_to_julia(_f)
     else
         f = _symbolics_to_julia(_f, θ)
     end
-
-    @assert isfinite(f(μ)) "μ must be in the range of g (meaning f(μ) = g⁻¹(μ) should be finite)."
 
     epca = EPCA(
         indim,
