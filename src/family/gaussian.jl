@@ -30,7 +30,7 @@ function GaussianEPCA(
 )
     epca = NormalEPCA(
         indim,
-        outim;
+        outdim;
         ϵ=ϵ
     )
     return epca

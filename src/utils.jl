@@ -46,9 +46,8 @@ function _binary_search_monotone(
     return (low + high) / 2
 end
 
-# TODO: rename these
-# TODO double check math
-function _invert_legrende(
+"""Invert Legendre transformation"""
+function _invert_legendre(
     f;
     low=-1e10, 
     high=1e10, 

@@ -1,29 +1,29 @@
-@testset "Poisson" begin
+@testset "Gaussian" begin
     n = 2
     indim = 5
     outdim = 5
-    X = rand(0:100, n, indim)
+    X = (rand(n, indim) .- 0.5) .* 100
 
     test_epca(
-        "Poisson",
-        PoissonEPCA(indim, outdim),
+        "Gaussian",
+        GaussianEPCA(indim, outdim),
         X,
         atol=0.5
     )
 
     ϵ = eps()
-    G(θ) = exp(θ)
-    g(θ) = exp(θ)
-    F(x) = x * log(x + ϵ) - x
-    f(x) = log(x + ϵ)
-    Bregman1(p, q) = Distances.gkl_divergence(p, q)  # TODO: turn this into a premetric
-    Bregman2(p, q) = p * log(p / (q + ϵ) + ϵ) + q - p
-    μ = g(0)
+    G(θ) = θ^2 / 2
+    g(θ) = identity(θ)
+    F(x) = x^2 / 2
+    f(x) = identity(x)
+    Bregman1(p, q) = Distances.sqeuclidean(p, q)  # TODO: turn this into a premetric
+    Bregman2(p, q) = (p - q)^2 / 2
+    μ = g(1)
 
     @testset "EPCA1" begin
         test_equivalence(
             "F, g",
-            PoissonEPCA(indim, outdim),
+            GaussianEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
@@ -39,7 +39,7 @@
 
         test_equivalence(
             "F, f",
-            PoissonEPCA(indim, outdim),
+            GaussianEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
@@ -54,7 +54,7 @@
 
         test_equivalence(
             "F",
-            PoissonEPCA(indim, outdim),
+            GaussianEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
@@ -68,7 +68,7 @@
 
         test_equivalence(
             "F, G",
-            PoissonEPCA(indim, outdim),
+            GaussianEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
@@ -85,7 +85,7 @@
     @testset "EPCA2" begin
         test_equivalence(
             "G, g",
-            PoissonEPCA(indim, outdim),
+            GaussianEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
@@ -100,7 +100,7 @@
 
         test_equivalence(
             "G",
-            PoissonEPCA(indim, outdim),
+            GaussianEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
@@ -116,7 +116,7 @@
     @testset "EPCA3" begin
         test_equivalence(
             "Bregman1, g",
-            PoissonEPCA(indim, outdim),
+            GaussianEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
@@ -131,7 +131,7 @@
 
         test_equivalence(
             "Bregman2, g",
-            PoissonEPCA(indim, outdim),
+            GaussianEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
@@ -146,7 +146,7 @@
 
         test_equivalence(
             "Bregman1, G",
-            PoissonEPCA(indim, outdim),
+            GaussianEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
@@ -156,12 +156,12 @@
                 μ=μ,
                 ϵ=ϵ
             ),
-            X
+            X;
         )
 
         test_equivalence(
             "Bregman2, G",
-            PoissonEPCA(indim, outdim),
+            GaussianEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,

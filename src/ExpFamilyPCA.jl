@@ -22,6 +22,11 @@ export
     PoissonEPCA
 include("family/poisson.jl")
 
+export
+    GaussianEPCA,
+    NormalEPCA
+include("family/gaussian.jl")
+
 
 # export
 #     BernoulliEPCA,
@@ -44,5 +49,10 @@ include("family/poisson.jl")
 # export
 #     MahalanobisEPCA
 # include("bregman/mahalanobis.jl")
+
+# TODO: export PoissonCompressor, etc.
+export
+    EPCACompressor
+include("compressor.jl")
 
 end # module ExpFamilyPCA

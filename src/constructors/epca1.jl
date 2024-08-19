@@ -81,7 +81,7 @@ function EPCA(
     @assert tol > 0 "Tolerance (tol) must be a positive number."
     @assert maxiter > 0 "Maximum iterations (maxiter) must be a positive number."
 
-    g = _invert_legrende(
+    g = _invert_legendre(
         f;
         low=low,
         high=high,
