@@ -27,6 +27,15 @@ export
     NormalEPCA
 include("family/gaussian.jl")
 
+export
+    BernoulliEPCA
+include("family/bernoulli.jl")
+
+export
+    GammaEPCA,
+    ItakuraSaitoEPCA
+include("family/gamma.jl")
+
 
 # export
 #     BernoulliEPCA,

@@ -1,1 +1,0 @@
-# exponential is gamma w/ shape param 1

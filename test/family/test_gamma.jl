@@ -1,29 +1,31 @@
-@testset "Gaussian" begin
+@testset "Gamma" begin
     n = 2
     indim = 5
     outdim = 5
-    X = (rand(n, indim) .- 0.5) .* 100
+    X = rand(n, indim) * 100
 
     test_epca(
-        "Gaussian",
-        GaussianEPCA(indim, outdim),
+        "Gamma",
+        GammaEPCA(indim, outdim),
         X,
         atol=0.5
     )
 
+    F(x) = -x * log(x)
+    g(θ) = -1 / θ
+
     ϵ = eps()
-    G(θ) = θ^2 / 2
-    g(θ) = identity(θ)
-    F(x) = x^2 / 2
-    f(x) = identity(x)
-    Bregman1(p, q) = Distances.sqeuclidean(p, q) / 2
-    Bregman2(p, q) = (p - q)^2 / 2
-    μ = g(1)
+    G(θ) = -log(-θ)
+    g(θ) = -1 / (θ + ϵ)
+    F(x) = -1 - log(x + ϵ)
+    f(x) = -1 / (x + ϵ)
+    Bregman(p, q) = G(p) - G(p) - (p - q) * g(p)
+    μ = -1
 
     @testset "EPCA1" begin
         test_equivalence(
             "F, g",
-            GaussianEPCA(indim, outdim),
+            GammaEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
@@ -39,7 +41,7 @@
 
         test_equivalence(
             "F, f",
-            GaussianEPCA(indim, outdim),
+            GammaEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
@@ -47,28 +49,30 @@
                 f,
                 Val((:F, :f));
                 μ=μ,
-                ϵ=ϵ
+                ϵ=ϵ,
+                low=eps()
             ),
             X
         )
 
         test_equivalence(
             "F",
-            GaussianEPCA(indim, outdim),
+            GammaEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
                 F,
                 Val((:F));
                 μ=μ,
-                ϵ=ϵ
+                ϵ=ϵ,
+                low=eps()
             ),
             X
         )
 
         test_equivalence(
             "F, G",
-            GaussianEPCA(indim, outdim),
+            GammaEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
@@ -85,7 +89,7 @@
     @testset "EPCA2" begin
         test_equivalence(
             "G, g",
-            GaussianEPCA(indim, outdim),
+            GammaEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
@@ -100,7 +104,7 @@
 
         test_equivalence(
             "G",
-            GaussianEPCA(indim, outdim),
+            GammaEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
@@ -115,12 +119,12 @@
 
     @testset "EPCA3" begin
         test_equivalence(
-            "Bregman1, g",
-            GaussianEPCA(indim, outdim),
+            "Bregman, g",
+            GammaEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
-                Bregman1,
+                Bregman,
                 g,
                 Val((:Bregman, :g));
                 μ=μ,
@@ -130,42 +134,12 @@
         )
 
         test_equivalence(
-            "Bregman2, g",
-            GaussianEPCA(indim, outdim),
+            "Bregman, G",
+            GammaEPCA(indim, outdim),
             EPCA(
                 indim,
                 outdim,
-                Bregman2,
-                g,
-                Val((:Bregman, :g));
-                μ=μ,
-                ϵ=ϵ
-            ),
-            X
-        )
-
-        test_equivalence(
-            "Bregman1, G",
-            GaussianEPCA(indim, outdim),
-            EPCA(
-                indim,
-                outdim,
-                Bregman1,
-                G,
-                Val((:Bregman, :G));
-                μ=μ,
-                ϵ=ϵ
-            ),
-            X;
-        )
-
-        test_equivalence(
-            "Bregman2, G",
-            GaussianEPCA(indim, outdim),
-            EPCA(
-                indim,
-                outdim,
-                Bregman2,
+                Bregman,
                 G,
                 Val((:Bregman, :G));
                 μ=μ,

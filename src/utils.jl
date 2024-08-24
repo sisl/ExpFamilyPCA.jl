@@ -1,3 +1,5 @@
+# TODO: add early stopping
+
 function _symbolics_to_julia(
     symbolics_expression::Num,
     symbolics_variable::Num;
@@ -82,11 +84,12 @@ function _single_compress_iter(
         result = optimize(Â->L(Â * V), A)
     end
     A = Optim.minimizer(result)
+    loss = Optim.minimum(result)
     if verbose && (i % steps_per_print == 0 || i == 1)
-        loss = Optim.minimum(result)
+        # loss = Optim.minimum(result)
         println("Iteration: $i/$maxiter | Loss: $loss")
     end
-    return A
+    return A, loss
 end
 
 function _single_fit_iter(
@@ -105,7 +108,7 @@ function _single_fit_iter(
         result = optimize(V̂->L(A * V̂), V)
     end
     V = Optim.minimizer(result)
-    A = _single_compress_iter(
+    A, loss = _single_compress_iter(
         L,
         V,
         A,
@@ -115,7 +118,7 @@ function _single_fit_iter(
         maxiter,
         autodiff
     )
-    return V, A
+    return V, A, loss
 end
 
 function _compress(
@@ -128,7 +131,7 @@ function _compress(
     autodiff::Bool,
 ) where T <: Real
     for i in 1:maxiter
-        A = _single_compress_iter(
+        A, loss = _single_compress_iter(
             L,
             V,
             A,
@@ -138,6 +141,13 @@ function _compress(
             maxiter,
             autodiff
         )
+        if isnan(loss)
+            @warn "Loss is NaN, ending early at iteration $i."
+            break
+        end
+        if !isfinite(loss)
+            @warn "Loss not finite, ending early at iteration $i."
+        end
     end
     return A
 end
@@ -152,7 +162,7 @@ function _fit(
     autodiff::Bool
 ) where T <: Real
     for i in 1:maxiter
-        V, A = _single_fit_iter(
+        V, A, loss = _single_fit_iter(
             L,
             V,
             A,
@@ -162,6 +172,13 @@ function _fit(
             maxiter,
             autodiff
         )
+        if isnan(loss)
+            @warn "Loss is NaN, ending early at iteration $i."
+            break
+        end
+        if !isfinite(loss)
+            @warn "Loss not finite, ending early at iteration $i."
+        end
     end
     return V, A
 end

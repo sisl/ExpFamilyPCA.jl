@@ -1,14 +1,14 @@
 function GammaEPCA(
     indim::Integer,
     outdim::Integer;
-    ϵ=eps()
+    μ=1,
+    ϵ=eps(),
 )
     # χ = ℝ++
     @. begin
-        F(x) = -x * log(x)
-        g(θ) = -1 / θ
+        F(x) = -1 - log(x + ϵ)
+        g(θ) = -1 / (θ + ϵ)
     end
-    μ = g(1)
     epca = EPCA(
         indim,
         outdim,
@@ -25,11 +25,13 @@ end
 function ItakuraSaitoEPCA(
     indim::Integer,
     outdim::Integer;
+    μ=1,
     ϵ=eps()
 )
     epca = GammaEPCA(
         indim,
         outdim;
+        μ=μ,
         ϵ=ϵ
     )
     return epca

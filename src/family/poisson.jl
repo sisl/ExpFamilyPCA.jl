@@ -1,22 +1,21 @@
 function PoissonEPCA(
     indim::Integer,
-    outdim::Integer,
+    outdim::Integer;
+    μ=1,
     ϵ=eps()
 )
-    # assumes χ = ℤ
-    @. begin
-        Bregman(p, q) = Distances.gkl_divergence(p, q)
-        g(θ) = exp(θ)
-    end
-    μ = g(0)
+    # assumes χ = ℕ
+    F(x) = x * log(x + ϵ) - x
+    g(θ) = exp(θ)
     epca = EPCA(
         indim,
         outdim,
-        Bregman,
+        F,
         g,
-        Val((:Bregman, :g)); 
+        Val((:F, :g)); 
         μ=μ,
         ϵ=ϵ
     )
     return epca
 end
+

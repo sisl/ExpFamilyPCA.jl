@@ -1,1 +1,0 @@
-# special case of negative binomial

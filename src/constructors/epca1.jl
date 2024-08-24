@@ -20,10 +20,10 @@ function _make_loss(epca::EPCA1, X)
     FX = F.(X)
     Fμ = F(μ)
     L(θ) = begin
-        X̂ = g.(θ)
-        Fgθ = F.(X̂)
-        BF_X = @. FX - Fgθ - θ * (X - X̂)
-        BF_μ = @. Fμ - Fgθ - θ * (μ - X̂)
+        gθ = g.(θ)
+        Fgθ = F.(gθ)  # think of this as X̂
+        BF_X = @. FX - Fgθ - θ * (X - gθ)
+        BF_μ = @. Fμ - Fgθ - θ * (μ - gθ)
         divergence = @. BF_X + ϵ * BF_μ
         loss = sum(divergence)
         return loss
@@ -44,10 +44,9 @@ function EPCA(
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
     @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
     @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
-    @assert μ > 0 "μ must be a positive number."
-    @assert ϵ >= 0 "ϵ must be nonnegative."
+    @assert ϵ > 0 "ϵ must be positive."
 
-    V = ones(outdim, indim)
+    V = zeros(outdim, indim)
     epca = EPCA1(
         V,
         F,
@@ -58,6 +57,7 @@ function EPCA(
     return epca
 end
 
+# TODO: maybe make EPCA4
 function EPCA(
     indim::Integer,
     outdim::Integer,
@@ -75,8 +75,7 @@ function EPCA(
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
     @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
     @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
-    @assert μ > 0 "μ must be a positive number."
-    @assert ϵ >= 0 "ϵ must be nonnegative."
+    @assert ϵ > 0 "ϵ must be positive."
     @assert low < high "Low bound (low) must be less than high bound (high)."
     @assert tol > 0 "Tolerance (tol) must be a positive number."
     @assert maxiter > 0 "Maximum iterations (maxiter) must be a positive number."
@@ -88,7 +87,7 @@ function EPCA(
         tol=tol,
         maxiter=maxiter
     )
-    V = ones(outdim, indim)
+    V = zeros(outdim, indim)
     epca = EPCA1(
         V,
         F,
@@ -116,8 +115,7 @@ function EPCA(
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
     @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
     @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
-    @assert μ > 0 "μ must be a positive number."
-    @assert ϵ >= 0 "ϵ must be nonnegative."
+    @assert ϵ > 0 "ϵ must be positive."
     @assert low < high "Low bound (low) must be less than high bound (high)."
     @assert tol > 0 "Tolerance (tol) must be a positive number."
     @assert maxiter > 0 "Maximum iterations (maxiter) must be a positive number."    
@@ -164,8 +162,7 @@ function EPCA(
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
     @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
     @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
-    @assert μ > 0 "μ must be a positive number."
-    @assert ϵ >= 0 "ϵ must be nonnegative."
+    @assert ϵ > 0 "ϵ must be positive."
 
     @variables θ
     D = Differential(θ)

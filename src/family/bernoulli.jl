@@ -1,14 +1,21 @@
-struct BernoulliEPCA <: EPCA
-    V::AbstractMatrix{<:Real}
-    g::Function
+function BernoulliEPCA(
+    indim::Integer,
+    outdim::Integer;
+    μ=0.5,
+    ϵ=eps()
+)
+    # assumes χ = ℕ
+    F(x) = x * log(x + ϵ) + (1 - x) * log1p(ϵ - x)
+    g(θ) = exp(θ) / (1 + exp(θ))
+    epca = EPCA(
+        indim,
+        outdim,
+        F,
+        g,
+        Val((:F, :g)); 
+        μ=μ,
+        ϵ=ϵ
+    )
+    return epca
 end
 
-function _make_loss(::BernoulliEPCA, X)
-    L(θ) = begin
-        xp = @. 2X - 1
-        z = @. exp(-xp * θ)
-        divergence = log1p(z)
-        return sum(divergence)
-    end
-    return L
-end

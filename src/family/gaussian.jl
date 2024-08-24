@@ -1,15 +1,13 @@
 function NormalEPCA(
     indim::Integer,
     outdim::Integer;
+    μ=1,
     ϵ=eps()
 )
     # NOTE: equivalent to generic PCA
     # assume χ = ℝ
-    @. begin
-        Bregman(p, q) = Distances.sqeuclidean(p, q) / 2
-    end
+    Bregman(p, q) = Distances.sqeuclidean(p, q) / 2  # TODO: ask Mykel why /2 is necessary for stability
     g = identity
-    μ = g(1)
     epca = EPCA(
         indim,
         outdim,
@@ -26,11 +24,13 @@ end
 function GaussianEPCA(
     indim::Integer,
     outdim::Integer;
+    μ=1,
     ϵ=eps()
 )
     epca = NormalEPCA(
         indim,
         outdim;
+        μ=μ,
         ϵ=ϵ
     )
     return epca

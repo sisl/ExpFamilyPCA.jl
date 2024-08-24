@@ -16,7 +16,7 @@
     g(θ) = exp(θ)
     F(x) = x * log(x + ϵ) - x
     f(x) = log(x + ϵ)
-    Bregman1(p, q) = Distances.gkl_divergence(p, q)  # TODO: turn this into a premetric
+    Bregman1 = Distances.gkl_divergence
     Bregman2(p, q) = p * log(p / (q + ϵ) + ϵ) + q - p
     μ = g(0)
 
