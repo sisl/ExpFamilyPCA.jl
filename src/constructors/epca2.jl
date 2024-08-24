@@ -9,104 +9,6 @@ struct EPCA2 <: EPCA
     ϵ::Real
 end
 
-# function _make_loss(epca::EPCA2, X)
-#     # unpack
-#     G = epca.G
-#     g = epca.g
-#     tol = epca.tol
-#     μ = epca.μ
-#     ϵ = epca.ϵ
-    
-#     # construct EPCA objective
-#     Fg(θ) = g(θ) * θ - G(θ)  # By definition, F(g(θ)) + G(θ) = g(θ)⋅θ
-#     g⁻¹X = map(X) do x
-#         result = _binary_search_monotone(
-#             g,
-#             x; 
-#             tol=tol
-#         )
-#         return result
-#     end
-#     g⁻¹μ = _binary_search_monotone(
-#         g, 
-#         μ; 
-#         tol=0
-#     )  # NOTE: μ is scalar, so we can have very low tol
-#     FX = @. g⁻¹X * X - G(g⁻¹X)
-#     Fμ = g⁻¹μ * μ - G(g⁻¹μ)
-#     L(θ) = begin
-#         gθ = g.(θ)  # think of this as X̂
-#         Fgθ = Fg.(θ)  # Recall this is F(g(θ))
-#         BF_X = @. FX - Fgθ - θ * (X - gθ)
-#         BF_μ = @. Fμ - Fgθ - θ * (μ - gθ)
-#         divergence = @. BF_X + ϵ * BF_μ
-#         loss = sum(divergence)
-#         return loss
-#     end
-# end
-
-# function _make_loss(epca::EPCA2, X)
-#     # unpack
-#     G = epca.G
-#     g = epca.g
-#     tol = epca.tol
-#     μ = epca.μ
-#     ϵ = epca.ϵ
-
-#     B_G(p, q) = G(p) - G(q) - g(q) * (p - q)
-#     fX = _binary_search_monotone.(
-#         g,
-#         X; 
-#         tol=tol
-#     )
-#     fμ = _binary_search_monotone(
-#         g, 
-#         μ; 
-#         tol=0
-#     )  # NOTE: μ is scalar, so we can have very low tol
-
-#     L(θ) = begin
-#         divergence = @. B_G(θ, fX)
-#         regularizer = @. B_G(θ, fμ)
-#         loss = sum(@. divergence + ϵ * regularizer)
-#         return loss
-#     end
-# end
-
-# function _make_loss(epca::EPCA2, X)
-#     # unpack
-#     G = epca.G
-#     g = epca.g
-#     tol = epca.tol
-#     μ = epca.μ
-#     ϵ = epca.ϵ
-
-#     fX = _binary_search_monotone.(
-#         g,
-#         X; 
-#         tol=tol
-#     )
-#     fXX = fX .* X
-#     GfX = G.(fX)
-    
-#     fμ = _binary_search_monotone(
-#         g, 
-#         μ; 
-#         tol=0
-#     )  # NOTE: μ is scalar, so we can have very low tol
-#     fμμ = fμ .* μ
-#     Gfμ = G.(fμ)
-
-#     L(θ) = begin
-#         gθ = g.(θ)
-#         z = @. gθ * θ - G(θ)
-#         divergence = @. fXX - GfX - z - θ * (X - gθ)
-#         regularizer = @. fμμ - Gfμ - z - θ * (μ - gθ)
-#         loss = sum(@. divergence + ϵ * regularizer)
-#         return loss
-#     end
-# end
-
 function _make_loss(epca::EPCA2, X)
     # unpack
     G = epca.G
@@ -127,7 +29,7 @@ function _make_loss(epca::EPCA2, X)
         μ; 
         tol=0
     )  # NOTE: μ is scalar, so we can have very low tol
-    zμ = @. fμ * μ - G(fμ)
+    zμ = fμ * μ - G(fμ)
 
     L(θ) = begin
         Gθ = G.(θ)
@@ -144,9 +46,10 @@ function EPCA(
     G::Function,
     g::Function,
     ::Val{(:G, :g)};
-    tol=eps(),
-    μ=1,
-    ϵ=eps(),
+    tol = eps(),
+    μ = 1,
+    ϵ = eps(),
+    V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing
 )
     # assertions
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
@@ -154,7 +57,14 @@ function EPCA(
     @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
     @assert ϵ > 0 "ϵ must be positive."
 
-    V = zeros(outdim, indim)
+    # Initialize V
+    if isnothing(V_init)
+        V = ones(outdim, indim)
+    else
+        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
+        V = V_init
+    end
+
     epca = EPCA2(
         V,
         G,
@@ -166,6 +76,7 @@ function EPCA(
     return epca
 end
 
+
 """
  # NOTE: μ must be in the range of g, so g⁻¹(μ) is finite. It is up to the user to enforce this.
 """
@@ -174,10 +85,11 @@ function EPCA(
     outdim::Integer,
     G::Function,
     ::Val{(:G)};
-    tol=eps(),
-    μ=1,
-    ϵ=eps(),
-    metaprogramming=true,
+    tol = eps(),
+    μ = 1,
+    ϵ = eps(),
+    metaprogramming = true,
+    V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing
 )
     # assertions
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
@@ -197,15 +109,24 @@ function EPCA(
         g = _symbolics_to_julia(_g, θ)
     end
 
+    # Initialize V
+    if isnothing(V_init)
+        V = ones(outdim, indim)
+    else
+        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
+        V = V_init
+    end
+
     epca = EPCA(
         indim,
         outdim,
         G,
         g,
         Val((:G, :g));
-        tol=tol,
-        μ=μ,
-        ϵ=ϵ,
+        tol = tol,
+        μ = μ,
+        ϵ = ϵ,
+        V_init = V
     )
     return epca
 end

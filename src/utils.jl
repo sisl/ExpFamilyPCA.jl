@@ -79,14 +79,13 @@ function _single_compress_iter(
     autodiff::Bool
 ) where T <: Real
     if autodiff
-        result = optimize(Â->L(Â * V), A; autodiff=:forward)
+        result = optimize(Â->L(Â * V), A; autodiff=:forward)  # TODO: add constraints on A value and make them toggleable since usually want unconstrained
     else
         result = optimize(Â->L(Â * V), A)
     end
     A = Optim.minimizer(result)
     loss = Optim.minimum(result)
     if verbose && (i % steps_per_print == 0 || i == 1)
-        # loss = Optim.minimum(result)
         println("Iteration: $i/$maxiter | Loss: $loss")
     end
     return A, loss
@@ -105,7 +104,7 @@ function _single_fit_iter(
     if autodiff
         result = optimize(V̂->L(A * V̂), V; autodiff=:forward)
     else   
-        result = optimize(V̂->L(A * V̂), V)
+        result = optimize(V̂->L(A * V̂), V)  # TODO: add constraints on valid V
     end
     V = Optim.minimizer(result)
     A, loss = _single_compress_iter(

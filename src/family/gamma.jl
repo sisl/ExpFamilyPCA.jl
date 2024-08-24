@@ -1,3 +1,24 @@
+# function GammaEPCA(
+#     indim::Integer,
+#     outdim::Integer;
+#     μ=1,
+#     ϵ=eps(),
+# )
+#     # χ = ℝ++
+#     F(x) = -1 - log(x + ϵ)
+#     g(θ) = -1 / (θ + ϵ)
+#     epca = EPCA(
+#         indim,
+#         outdim,
+#         F,
+#         g,
+#         Val((:F, :g));
+#         μ=μ,
+#         ϵ=ϵ
+#     )
+#     return epca
+# end
+
 function GammaEPCA(
     indim::Integer,
     outdim::Integer;
@@ -5,16 +26,14 @@ function GammaEPCA(
     ϵ=eps(),
 )
     # χ = ℝ++
-    @. begin
-        F(x) = -1 - log(x + ϵ)
-        g(θ) = -1 / (θ + ϵ)
-    end
+    Bregman(p, q) = p / q - log((p + ϵ) / (q + ϵ)) - 1
+    g(θ) = -1 / (θ + ϵ)
     epca = EPCA(
         indim,
         outdim,
-        F,
+        Bregman,
         g,
-        Val((:F, :g));
+        Val((:Bregman, :g));
         μ=μ,
         ϵ=ϵ
     )

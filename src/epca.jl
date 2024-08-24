@@ -27,7 +27,8 @@ The `EPCA` method (and abstract type) wraps several unexported subtypes `EPCA1`,
 - `EPCA(indim::Integer, outdim::Integer, Bregman::Function, G::Function, ::Val{(:Bregman, :G)}; μ=1, ϵ=eps(), metaprogramming=true)`
 
 ### EPCA 4
-
+- `EPCA(indim::Integer, outdim::Integer, Bregman::Function, f::Function, G::Function, g::Function, ::Val{(:f, :G, :g)}; μ=1, ϵ=eps())`
+- `EPCA(indim::Integer, outdim::Integer, Bregman::Function, f::Function, G::Function, ::Val{(:f, :G)}; μ=1, ϵ=eps(), metaprogramming=true)`
 
 # Notes
 - The `EPCA` type enforces constraints such as `indim >= outdim` to ensure the input dimension is not smaller than the output dimension.

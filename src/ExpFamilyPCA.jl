@@ -17,6 +17,8 @@ include("utils.jl")
 include("constructors/epca1.jl")
 include("constructors/epca2.jl")
 include("constructors/epca3.jl")
+include("constructors/epca4.jl")
+
 
 export
     PoissonEPCA

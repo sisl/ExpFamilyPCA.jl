@@ -11,16 +11,13 @@
         atol=0.5
     )
 
-    F(x) = -x * log(x)
-    g(θ) = -1 / θ
-
     ϵ = eps()
-    G(θ) = -log(-θ)
-    g(θ) = -1 / (θ + ϵ)
-    F(x) = -1 - log(x + ϵ)
-    f(x) = -1 / (x + ϵ)
-    Bregman(p, q) = G(p) - G(p) - (p - q) * g(p)
-    μ = -1
+    G(θ) = -1 - log(θ)
+    g(θ) = -1 / θ
+    F(x) = -log(x)
+    f(x) = -1 / x
+    Bregman(p, q) = p / (q + ϵ) - log(p) + log(q) - 1
+    μ = 1
 
     @testset "EPCA1" begin
         test_equivalence(
@@ -142,6 +139,39 @@
                 Bregman,
                 G,
                 Val((:Bregman, :G));
+                μ=μ,
+                ϵ=ϵ
+            ),
+            X
+        )
+    end
+
+    @testset "EPCA4" begin
+        test_equivalence(
+            "f, G, g",
+            GammaEPCA(indim, outdim),
+            EPCA(
+                indim,
+                outdim,
+                f,
+                G,
+                g,
+                Val((:f, :G, :g));
+                μ=μ,
+                ϵ=ϵ
+            ),
+            X
+        )
+
+        test_equivalence(
+            "F, g",
+            GammaEPCA(indim, outdim),
+            EPCA(
+                indim,
+                outdim,
+                f,
+                G,
+                Val((:f, :G));
                 μ=μ,
                 ϵ=ϵ
             ),

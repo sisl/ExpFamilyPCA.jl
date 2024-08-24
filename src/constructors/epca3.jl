@@ -27,8 +27,9 @@ function EPCA(
     Bregman::Union{Function, PreMetric},
     g::Function,
     ::Val{(:Bregman, :g)};
-    μ=1,
-    ϵ=eps()
+    μ = 1,
+    ϵ = eps(),
+    V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing
 )
     # assertions
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
@@ -36,7 +37,14 @@ function EPCA(
     @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
     @assert ϵ > 0 "ϵ must be positive."
 
-    V = zeros(outdim, indim)
+    # Initialize V
+    if isnothing(V_init)
+        V = ones(outdim, indim)
+    else
+        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
+        V = V_init
+    end
+
     epca = EPCA3(
         V,
         Bregman,
@@ -53,9 +61,10 @@ function EPCA(
     Bregman::Union{Function, PreMetric},
     G::Function,
     ::Val{(:Bregman, :G)};
-    μ=1,
-    ϵ=eps(),
-    metaprogramming=true
+    μ = 1,
+    ϵ = eps(),
+    metaprogramming = true,
+    V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing
 )
     # assertions
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
@@ -64,9 +73,9 @@ function EPCA(
     @assert ϵ > 0 "ϵ must be positive."
 
     @variables θ
-    G = G(θ)
+    G_expr = G(θ)
     D = Differential(θ)
-    _g = expand_derivatives(D(G))
+    _g = expand_derivatives(D(G_expr))
 
     if metaprogramming
         g = _symbolics_to_julia(_g)
@@ -74,14 +83,23 @@ function EPCA(
         g = _symbolics_to_julia(_g, θ)
     end
 
+    # Initialize V
+    if isnothing(V_init)
+        V = ones(outdim, indim)
+    else
+        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
+        V = V_init
+    end
+
     epca = EPCA(
         indim,
         outdim,
         Bregman,
-        g::Function,
+        g,
         Val((:Bregman, :g));
-        μ=μ,
-        ϵ=ϵ
+        μ = μ,
+        ϵ = ϵ,
+        V_init = V
     )
     return epca
 end

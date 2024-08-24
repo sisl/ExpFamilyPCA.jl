@@ -8,7 +8,6 @@ struct EPCA1 <: EPCA
     ϵ::Real
 end
 
-
 function _make_loss(epca::EPCA1, X)
     # unpack
     F = epca.F
@@ -21,15 +20,15 @@ function _make_loss(epca::EPCA1, X)
     Fμ = F(μ)
     L(θ) = begin
         gθ = g.(θ)
-        Fgθ = F.(gθ)  # think of this as X̂
-        BF_X = @. FX - Fgθ - θ * (X - gθ)
-        BF_μ = @. Fμ - Fgθ - θ * (μ - gθ)
-        divergence = @. BF_X + ϵ * BF_μ
-        loss = sum(divergence)
+        z = @. F(gθ) - gθ * θ
+        divergence = @. FX - z - X * θ
+        regularizer = @. Fμ - z - μ * θ
+        loss = sum(@. divergence + ϵ * regularizer)
         return loss
     end
     return L
 end
+
 
 function EPCA(
     indim::Integer,
@@ -37,8 +36,9 @@ function EPCA(
     F::Function,
     g::Function,
     ::Val{(:F, :g)};
-    μ=1,
-    ϵ=eps(),
+    μ = 1,
+    ϵ = eps(),
+    V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing
 )
     # assertions
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
@@ -46,7 +46,13 @@ function EPCA(
     @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
     @assert ϵ > 0 "ϵ must be positive."
 
-    V = zeros(outdim, indim)
+    if isnothing(V_init)
+        V = ones(outdim, indim)
+    else
+        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
+        V = V_init
+    end
+    
     epca = EPCA1(
         V,
         F,
@@ -57,19 +63,19 @@ function EPCA(
     return epca
 end
 
-# TODO: maybe make EPCA4
 function EPCA(
     indim::Integer,
     outdim::Integer,
     F::Function,
     f::Function,
     ::Val{(:F, :f)};
-    μ=1,
-    ϵ=eps(),
-    low=-1e10, 
-    high=1e10, 
-    tol=1e-10, 
-    maxiter=1e6
+    μ = 1,
+    ϵ = eps(),
+    low = -1e10,
+    high = 1e10,
+    tol = 1e-10,
+    maxiter = 1e6,
+    V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing
 )
     # assertions
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
@@ -82,12 +88,20 @@ function EPCA(
 
     g = _invert_legendre(
         f;
-        low=low,
-        high=high,
-        tol=tol,
-        maxiter=maxiter
+        low = low,
+        high = high,
+        tol = tol,
+        maxiter = maxiter
     )
-    V = zeros(outdim, indim)
+
+    # Initialize V
+    if isnothing(V_init)
+        V = ones(outdim, indim)
+    else
+        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
+        V = V_init
+    end
+
     epca = EPCA1(
         V,
         F,
@@ -98,18 +112,20 @@ function EPCA(
     return epca
 end
 
+
 function EPCA(
     indim::Integer,
     outdim::Integer,
     F::Function,
     ::Val{(:F)};
-    μ=1,
-    ϵ=eps(),
-    metaprogramming=true,
-    low=-1e10, 
-    high=1e10, 
-    tol=1e-10, 
-    maxiter=1e6
+    μ = 1,
+    ϵ = eps(),
+    metaprogramming = true,
+    low = -1e10,
+    high = 1e10,
+    tol = 1e-10,
+    maxiter = 1e6,
+    V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing
 )
     # assertions
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
@@ -132,18 +148,27 @@ function EPCA(
         f = _symbolics_to_julia(_f, θ)
     end
 
+    # Initialize V
+    if isnothing(V_init)
+        V = ones(outdim, indim)
+    else
+        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
+        V = V_init
+    end
+
     epca = EPCA(
         indim,
         outdim,
         F,
         f,
         Val((:F, :f));
-        μ=μ,
-        ϵ=ϵ,
-        low=low, 
-        high=high, 
-        tol=tol, 
-        maxiter=maxiter
+        μ = μ,
+        ϵ = ϵ,
+        low = low, 
+        high = high, 
+        tol = tol, 
+        maxiter = maxiter,
+        V_init = V
     )
     return epca
 end
@@ -154,9 +179,10 @@ function EPCA(
     F::Function,
     G::Function,
     ::Val{(:F, :G)};
-    μ=1,
-    ϵ=eps(),
-    metaprogramming=true
+    μ = 1,
+    ϵ = eps(),
+    metaprogramming = true,
+    V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing
 )
     # assertions
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
@@ -174,14 +200,23 @@ function EPCA(
         g = _symbolics_to_julia(_g, θ)
     end
 
+    # Initialize V
+    if isnothing(V_init)
+        V = ones(outdim, indim)
+    else
+        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
+        V = V_init
+    end
+
     epca = EPCA(
         indim,
         outdim,
         F,
         g,
         Val((:F, :g));
-        μ=μ,
-        ϵ=ϵ
+        μ = μ,
+        ϵ = ϵ,
+        V_init = V
     )
     return epca
 end

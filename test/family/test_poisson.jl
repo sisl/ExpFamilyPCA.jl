@@ -174,4 +174,37 @@
             X
         )
     end
+
+    @testset "EPCA4" begin
+        test_equivalence(
+            "f, G, g",
+            PoissonEPCA(indim, outdim),
+            EPCA(
+                indim,
+                outdim,
+                f,
+                G,
+                g,
+                Val((:f, :G, :g));
+                μ=μ,
+                ϵ=ϵ
+            ),
+            X
+        )
+
+        test_equivalence(
+            "F, g",
+            PoissonEPCA(indim, outdim),
+            EPCA(
+                indim,
+                outdim,
+                f,
+                G,
+                Val((:f, :G));
+                μ=μ,
+                ϵ=ϵ
+            ),
+            X
+        )
+    end
 end
