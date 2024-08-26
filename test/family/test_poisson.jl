@@ -1,4 +1,4 @@
-# @testset "Poisson" begin
+@testset "Poisson" begin
     n = 2
     indim = 5
     outdim = 5
