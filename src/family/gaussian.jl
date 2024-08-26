@@ -1,12 +1,18 @@
 function NormalEPCA(
     indim::Integer,
     outdim::Integer;
-    μ=1,
-    ϵ=eps()
+    μ = 1,
+    ϵ = eps(),
+    V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing,
+    A_init_value::Union{Real, Nothing} = nothing,
+    A_lower::Union{Real, Nothing} = nothing,
+    A_upper::Union{Real, Nothing} = nothing,
+    V_lower::Union{Real, Nothing} = nothing,
+    V_upper::Union{Real, Nothing} = nothing
 )
     # NOTE: equivalent to generic PCA
     # assume χ = ℝ
-    Bregman(p, q) = Distances.sqeuclidean(p, q) / 2  # TODO: ask Mykel why /2 is necessary for stability
+    Bregman(p, q) = Distances.sqeuclidean(p, q) / 2
     g = identity
     epca = EPCA(
         indim,
@@ -14,24 +20,42 @@ function NormalEPCA(
         Bregman,
         g,
         Val((:Bregman, :g));
-        μ=μ,
-        ϵ=ϵ
+        μ = μ,
+        ϵ = ϵ,
+        V_init = V_init,
+        A_init_value = A_init_value,
+        A_lower = A_lower,
+        A_upper = A_upper,
+        V_lower = V_lower,
+        V_upper = V_upper
     )
     return epca
 end
 
-# alias
+# Alias
 function GaussianEPCA(
     indim::Integer,
     outdim::Integer;
-    μ=1,
-    ϵ=eps()
+    μ = 1,
+    ϵ = eps(),
+    V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing,
+    A_init_value::Union{Real, Nothing} = nothing,
+    A_lower::Union{Real, Nothing} = nothing,
+    A_upper::Union{Real, Nothing} = nothing,
+    V_lower::Union{Real, Nothing} = nothing,
+    V_upper::Union{Real, Nothing} = nothing
 )
     epca = NormalEPCA(
         indim,
         outdim;
-        μ=μ,
-        ϵ=ϵ
+        μ = μ,
+        ϵ = ϵ,
+        V_init = V_init,
+        A_init_value = A_init_value,
+        A_lower = A_lower,
+        A_upper = A_upper,
+        V_lower = V_lower,
+        V_upper = V_upper
     )
     return epca
 end

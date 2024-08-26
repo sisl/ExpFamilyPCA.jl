@@ -1,5 +1,6 @@
 struct EPCA4 <: EPCA
     V::AbstractMatrix{<:Real}
+
     f::Function
     G::Function
     g::Function  # link function
@@ -7,6 +8,12 @@ struct EPCA4 <: EPCA
     # hyperparameters
     μ::Real
     ϵ::Real
+
+    A_init_value::Union{Real, Nothing}
+    A_lower::Union{Real, Nothing}
+    A_upper::Union{Real, Nothing}
+    V_lower::Union{Real, Nothing}
+    V_upper::Union{Real, Nothing}
 end
 
 function _make_loss(epca::EPCA4, X)
@@ -40,7 +47,12 @@ function EPCA(
     ::Val{(:f, :G, :g)};
     μ = 1,
     ϵ = eps(),
-    V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing
+    V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing,
+    A_init_value::Union{Real, Nothing} = nothing,
+    A_lower::Union{Real, Nothing} = nothing,
+    A_upper::Union{Real, Nothing} = nothing,
+    V_lower::Union{Real, Nothing} = nothing,
+    V_upper::Union{Real, Nothing} = nothing
 )
     # assertions
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
@@ -62,7 +74,12 @@ function EPCA(
         G,
         g,
         μ,
-        ϵ
+        ϵ,
+        A_init_value,
+        A_lower,
+        A_upper,
+        V_lower,
+        V_upper
     )
     return epca
 end
@@ -76,7 +93,12 @@ function EPCA(
     μ = 1,
     ϵ = eps(),
     metaprogramming = true,
-    V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing
+    V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing,
+    A_init_value::Union{Real, Nothing} = nothing,
+    A_lower::Union{Real, Nothing} = nothing,
+    A_upper::Union{Real, Nothing} = nothing,
+    V_lower::Union{Real, Nothing} = nothing,
+    V_upper::Union{Real, Nothing} = nothing
 )
     # assertions
     @assert indim > 0 "Input dimension (indim) must be a positive integer."
@@ -113,7 +135,12 @@ function EPCA(
         Val((:f, :G, :g));
         μ = μ,
         ϵ = ϵ,
-        V_init = V
+        V_init = V,
+        A_init_value = A_init_value,
+        A_lower = A_lower,
+        A_upper = A_upper,
+        V_lower = V_lower,
+        V_upper = V_upper
     )
     return epca
 end

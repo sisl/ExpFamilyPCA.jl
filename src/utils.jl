@@ -1,5 +1,3 @@
-# TODO: add early stopping
-
 function _symbolics_to_julia(
     symbolics_expression::Num,
     symbolics_variable::Num;
@@ -24,8 +22,6 @@ function _symbolics_to_julia(symbolics_expression::Num)
     end
     eval(ex)
 end
-
-
 
 function _binary_search_monotone(
     f, 
@@ -67,7 +63,6 @@ function _invert_legendre(
     return g
 end
 
-
 function _single_compress_iter(
     L::Function,
     V::AbstractMatrix{T},
@@ -75,14 +70,21 @@ function _single_compress_iter(
     verbose::Bool,
     i::Integer,
     steps_per_print::Integer,
-    maxiter::Integer,
-    autodiff::Bool
+    maxiter::Integer;
+    A_lower::Union{Real, Nothing} = nothing,
+    A_upper::Union{Real, Nothing} = nothing,
 ) where T <: Real
-    if autodiff
-        result = optimize(Â->L(Â * V), A; autodiff=:forward)  # TODO: add constraints on A value and make them toggleable since usually want unconstrained
-    else
+    if isnothing(A_lower) && isnothing(A_upper)
         result = optimize(Â->L(Â * V), A)
+    elseif isnothing(A_lower) && !isnothing(A_upper)
+        result = optimize(Â->L(Â * V), -Inf, A_upper, A)
+    elseif !isnothing(A_lower) && isnothing(A_upper)
+        result = optimize(V̂->L(A * V̂), A_lower, Inf, V)
+    else
+        @assert A_lower <= A_upper "A_lower must be <= A_upper"
+        result = optimize(V̂->L(A * V̂), A_lower, A_upper, V)
     end
+
     A = Optim.minimizer(result)
     loss = Optim.minimum(result)
     if verbose && (i % steps_per_print == 0 || i == 1)
@@ -98,14 +100,23 @@ function _single_fit_iter(
     verbose::Bool,
     i::Integer,
     steps_per_print::Integer,
-    maxiter::Integer,
-    autodiff::Bool
+    maxiter::Integer;
+    A_lower::Union{Real, Nothing} = nothing,
+    A_upper::Union{Real, Nothing} = nothing,
+    V_lower::Union{Real, Nothing} = nothing,
+    V_upper::Union{Real, Nothing} = nothing
 ) where T <: Real
-    if autodiff
-        result = optimize(V̂->L(A * V̂), V; autodiff=:forward)
-    else   
-        result = optimize(V̂->L(A * V̂), V)  # TODO: add constraints on valid V
+    if isnothing(V_lower) && isnothing(V_upper)
+        result = optimize(V̂->L(A * V̂), V)
+    elseif isnothing(V_lower) && !isnothing(V_upper)
+        result = optimize(V̂->L(A * V̂), -Inf, V_upper, V)
+    elseif !isnothing(V_lower) && isnothing(V_upper)
+        result = optimize(V̂->L(A * V̂), V_lower, Inf, V)
+    else
+        @assert V_lower <= V_upper "V_lower must be <= V_upper"
+        result = optimize(V̂->L(A * V̂), V_lower, V_upper, V)
     end
+
     V = Optim.minimizer(result)
     A, loss = _single_compress_iter(
         L,
@@ -114,8 +125,9 @@ function _single_fit_iter(
         verbose,
         i,
         steps_per_print,
-        maxiter,
-        autodiff
+        maxiter;
+        A_lower = A_lower,
+        A_upper = A_upper,
     )
     return V, A, loss
 end
@@ -126,8 +138,9 @@ function _compress(
     A::AbstractMatrix{T},
     maxiter::Integer,
     verbose::Bool,
-    steps_per_print::Integer,
-    autodiff::Bool,
+    steps_per_print::Integer;
+    A_lower::Union{Real, Nothing} = nothing,
+    A_upper::Union{Real, Nothing} = nothing
 ) where T <: Real
     for i in 1:maxiter
         A, loss = _single_compress_iter(
@@ -137,8 +150,9 @@ function _compress(
             verbose,
             i,
             steps_per_print,
-            maxiter,
-            autodiff
+            maxiter;
+            A_lower = A_lower,
+            A_upper = A_upper,
         )
         if isnan(loss)
             @warn "Loss is NaN, ending early at iteration $i."
@@ -146,6 +160,7 @@ function _compress(
         end
         if !isfinite(loss)
             @warn "Loss not finite, ending early at iteration $i."
+            break
         end
     end
     return A
@@ -157,8 +172,11 @@ function _fit(
     A::AbstractMatrix{T},
     maxiter::Integer,
     verbose::Bool,
-    steps_per_print::Integer,
-    autodiff::Bool
+    steps_per_print::Integer;
+    A_lower::Union{Real, Nothing} = nothing,
+    A_upper::Union{Real, Nothing} = nothing,
+    V_lower::Union{Real, Nothing} = nothing,
+    V_upper::Union{Real, Nothing} = nothing
 ) where T <: Real
     for i in 1:maxiter
         V, A, loss = _single_fit_iter(
@@ -168,8 +186,11 @@ function _fit(
             verbose,
             i,
             steps_per_print,
-            maxiter,
-            autodiff
+            maxiter;
+            A_lower = A_lower,
+            A_upper = A_upper,
+            V_lower = V_lower,
+            V_upper = V_upper
         )
         if isnan(loss)
             @warn "Loss is NaN, ending early at iteration $i."
@@ -184,16 +205,15 @@ end
 
 function _initialize_A(
     epca::EPCA,
-    X::AbstractMatrix{T};
-    A_init::Union{Nothing, AbstractMatrix{T}}=nothing
+    X::AbstractMatrix{T}
 ) where T <: Real
     n = size(X)[1]
     outdim = size(epca.V)[1]
-    if isnothing(A_init)
+    A_init_value = epca.A_init_value
+    if isnothing(A_init_value)
         A = ones(n, outdim)
     else
-        @assert size(A) == (n, outdim)
-        A = A_init
+        A = fill(A_init_value, n, outdim)
     end
     return A
 end
