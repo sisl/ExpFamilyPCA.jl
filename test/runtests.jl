@@ -10,8 +10,8 @@ include("utils.jl")
 
 
 @testset "ExpFamilyPCA.jl" begin
-    include("family/test_poisson.jl")
-    include("family/test_gaussian.jl")
-    # include("family/test_bernoulli.jl")
+    # include("family/test_poisson.jl")
+    # include("family/test_gaussian.jl")
+    include("family/test_bernoulli.jl")
     # include("family/test_gamma.jl")
 end

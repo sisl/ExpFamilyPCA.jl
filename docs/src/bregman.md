@@ -1,34 +1,110 @@
-Recall, a Bregman divergence $D_b$ is defined with respect to a convex function $b$, by 
+# Bregman Divergences
+
+## Definition
+
+A Bregman divergence $B_F$ [Bregman](@cite) is defined with respect to a strictly convex and differentiable function $F: \Omega \to \mathbb{R}$, by 
 
 $$
-D_b(u, v) = b(u) - b(v) - \langle \nabla b(v), u - v \rangle
+B_F(p, q) = F(p) - F(q) - \langle f(p), p - q \rangle
 $$
 
-where $\langle , \rangle$ denotes an inner product. You can interpret it as the difference between $b(u)$ and its first-order Taylor approximation at $u$, when that Taylor approximation is made around the point $v$. 
+where $\langle , \rangle$ denotes an inner product and $f(x) = \nabla_x F(x)$. Intuitively, the Bregman divergence expresses the difference between $F(p)$ and its first-order Taylor expansion about $q$. We use Bregman divergences to measure the difference between two probability distributions. The Bregman divergence is also sometimes called the Bregman distance, but it is not a metric since it is usually satisfies neither symmetry nor the triangle inequality.
 
-Now suppose you have data $y$ from an exponential family model with natural parameter $\theta$. (Note: in a GLM, we would take $\theta = X \beta$.) Thus we can write the density as 
+## Relationship to the Exponential Family
+
+### The Exponential Family
+
+A distribution is said to be in the natural *exponential family* if its density can be written
+
+$$
+p(x ; \theta) = P_0(x) \exp(\langle x, \theta \rangle - G(\theta) )
+$$
+
+where $x$ and $\theta$ are vectors in $\mathbb{R}^d$, $P_0$ is a known function that does not depend on $\theta$, and $G$ is the log-partition function. (Note: in a GLM, we would take $\theta = X \beta$.) Intuitively, the log-parition function ensure that the $p$ is a valid distribution, meaning it integrates to $1$
+
+$$
+G(\theta) = \log \int P_0(x) \exp(\langle x, \theta \rangle) dx.
+$$
+
+We call $\theta$ the *natural parameter* and $\mu = \mathbb{E}_{\theta \sim p(\cdot; \theta)}[x]$ the *expectation parameter*. For the exponential family (and assuming some standard regularity conditions), we have $\mu = \nabla_\theta G(\theta) \equiv g(\theta)$ [GLM, azoury](@cite). Since $G$ is strictly convex, we can also define the inverse $g^{-1}(\mu) \equiv \theta$.
+
+### The Legendre Transform and Parameter Duality
+
+To understand the relationship between expectation parameters and natural parameters, first recall the Legendre transform from physics. For a convex function $h$, the Legendre transform is 
+
+$$
+h^*(\tilde{x}) \equiv \tilde{x} \cdot x - f(x).
+$$
+
+We say that $h^*$ is the *dual* of $h$. Let $F$ be the dual $G$
+
+$$
+F(\mu) \equiv \langle \mu, \theta \rangle - G(\theta).
+$$
+
+Observe that the gradient of the dual is the inverse of gradient of the log-partition,
+
+$$\begin{aligned}
+
+f(\mu) 
+&\equiv \nabla_\mu F(\mu) \\
+&= \nabla_\mu \Big[ \langle \mu, \theta \rangle - G(\theta)\Big] \\
+&= \theta + \langle \mu, \nabla_\mu \theta \rangle - \langle g(\theta), \nabla_\mu \theta \rangle &\text{($\theta$ is a function of $\mu$)}\\
+&= \theta &\text{($\mu = g(\theta)$)} \\
+&= g^{-1}(\mu).
+\end{aligned}$$
+
+In summary, the paramaterizations are related by the Legendre transformations 
+
+$$
+\nabla_\theta G(\theta) = g(\theta) = \mu
+$$
+
+and
+
+$$
+\nabla_\mu F_(\mu) = f(\mu) = \theta.
+$$
+
+### Bregman Divergences as a Loss Function
+
+The key relationship between members of the exponential family and the Bregman divergence is this: minimizing the negative log-lilihood of $p(x, \theta)$ is equivalent to minimizing the Bregman divergence $B_F$. To see this, first recall that the negative log-liklihood for members of the exponential family is $G(\theta) - \langle x, \theta \rangle$. 
+
+
+
+$$
+\langle x, \theta \rangle - G(\theta).
+$$
+
+
+The key relationship between Bregman divergences and members of the exponential family is that minimizing a Bregman divergence also minimizies the neg-log
+
+
+
+
+Recall that a distribution is in the (natural) exponential family if its density can be wr
+
+
+## Relationship to the (Natural) Exponential Family
+
+Now suppose we have data $y$ from an exponential family model with natural parameter $\theta$. (Note: in a GLM, we would take $\theta = X \beta$.) Thus we can write the density as 
 
 $$
 p(y; \theta, \phi) = \exp\Bigg( \frac{\langle y, \theta \rangle - A(\theta)}{\phi} \Bigg)  f(y, \phi)
 $$
 
-Here $A$ is the log partition function, and $\phi$ is a dispersion parameter, which you can just ignore from now on. Let $\ell(\theta)$ be the log likelihood. Then one can check that the deviance is:
+Here $A$ is the log-partition function, and $\phi$ is a dispersion parameter, which you can just ignore from now on. Let $\ell(\theta)$ be the log likelihood. Then one can check that the deviance is:
 
 $$
 d(\theta, \theta^*) = 2(\ell(\theta) - \ell(\theta^*)) = 2(A(\theta) - A(\theta^*) - \langle y, \theta - \theta^* \rangle)
 $$
 
-where $\theta^*$ is the parameter in the saturated model. We can define it by solving $\nabla A(\theta^*) = y$, because that means that in this parametrization, we'll be able to match the mean exactly: $\mathbb{E}[y] = \mathbb{E}[\nabla A(\theta^*)]$.
-
-So then we can write 
+where $\theta^*$ is the parameter in the saturated model. We can define it by solving $\nabla A(\theta^*) = y$, because that means that in this parametrization, we'll be able to match the mean exactly: $\mathbb{E}[y] = \mathbb{E}[\nabla A(\theta^*)]$. So then we can write 
 
 $$
 d(\theta, \theta^*) = 2(A(\theta) - A(\theta^*) - \langle\nabla A(\theta^*), \theta - \theta^*\rangle) 
 $$
 
-But this is simply the Bregman divergence $D_b(\theta, \theta^*)$ with $b = 2A$. 
+But this is simply the Bregman divergence $D_F(\theta, \theta^*)$ with $b = 2A$. 
 
-In conclusion, maximum likelihood in this model is equivalent to minimizing the deviance which is equivalent to minimizing the Bregman divergence defined by twice the log partition function.
-
-# TODO
-- [ ] show properties of Bregman like g is the inverse of f when F is defined as it is
+In conclusion, maximum likelihood in this model is equivalent to minimizing the deviance which is equivalent to minimizing the Bregman divergence defined by twice the log-partition function.

@@ -13,6 +13,8 @@ function BernoulliEPCA(
     # assumes χ = ℕ
     F(x) = x * log(x + ϵ) + (1 - x) * log1p(ϵ - x)
     g(θ) = exp(θ) / (1 + exp(θ))
+
+
     epca = EPCA(
         indim,
         outdim,

@@ -15,8 +15,8 @@ function GammaEPCA(
     V_upper::Union{Real, Nothing} = Inf
 )
     # χ = ℝ++
-    F(x) = -1 - log(x)
-    g(θ) = -1 / θ
+    F(x) = -1 - log(x + ϵ)
+    g(θ) = -1 / (θ + ϵ)
     epca = EPCA(
         indim,
         outdim,
