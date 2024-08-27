@@ -29,3 +29,6 @@ $$
 But this is simply the Bregman divergence $D_b(\theta, \theta^*)$ with $b = 2A$. 
 
 In conclusion, maximum likelihood in this model is equivalent to minimizing the deviance which is equivalent to minimizing the Bregman divergence defined by twice the log partition function.
+
+# TODO
+- [ ] show properties of Bregman like g is the inverse of f when F is defined as it is

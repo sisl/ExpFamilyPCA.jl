@@ -1,9 +1,9 @@
 struct EPCA4 <: EPCA
     V::AbstractMatrix{<:Real}
 
-    f::Function
-    G::Function
-    g::Function  # link function
+    f::Union{Function, FunctionWrapper}
+    G::Union{Function, FunctionWrapper}
+    g::Union{Function, FunctionWrapper}  # link function
 
     # hyperparameters
     μ::Real
@@ -41,9 +41,9 @@ end
 function EPCA(
     indim::Integer,
     outdim::Integer,
-    f::Function,
-    G::Function,
-    g::Function,
+    f::Union{Function, FunctionWrapper},
+    G::Union{Function, FunctionWrapper},
+    g::Union{Function, FunctionWrapper},
     ::Val{(:f, :G, :g)};
     μ = 1,
     ϵ = eps(),
@@ -87,8 +87,8 @@ end
 function EPCA(
     indim::Integer,
     outdim::Integer,
-    f::Function,
-    G::Function,
+    f::Union{Function, FunctionWrapper},
+    G::Union{Function, FunctionWrapper},
     ::Val{(:f, :G)};
     μ = 1,
     ϵ = eps(),

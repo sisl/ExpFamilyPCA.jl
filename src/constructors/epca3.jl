@@ -1,8 +1,8 @@
 struct EPCA3 <: EPCA
     V::AbstractMatrix{<:Real}
 
-    Bregman::Union{Function, PreMetric}  # Bregman divergence can be specified using a Julia Function or a Distances.jl PreMetric
-    g::Function  # g function
+    Bregman::Union{Function, FunctionWrapper, PreMetric}  # Bregman divergence can be specified using a Julia Union{Function, FunctionWrapper} or a Distances.jl PreMetric
+    g::Union{Function, FunctionWrapper}  # g function
 
     # hyperparameters
     μ::Real
@@ -31,8 +31,8 @@ end
 function EPCA(
     indim::Integer,
     outdim::Integer,
-    Bregman::Union{Function, PreMetric},
-    g::Function,
+    Bregman::Union{Function, FunctionWrapper, PreMetric},
+    g::Union{Function, FunctionWrapper},
     ::Val{(:Bregman, :g)};
     μ = 1,
     ϵ = eps(),
@@ -75,8 +75,8 @@ end
 function EPCA(
     indim::Integer,
     outdim::Integer,
-    Bregman::Union{Function, PreMetric},
-    G::Function,
+    Bregman::Union{Function, FunctionWrapper, PreMetric},
+    G::Union{Function, FunctionWrapper},
     ::Val{(:Bregman, :G)};
     μ = 1,
     ϵ = eps(),

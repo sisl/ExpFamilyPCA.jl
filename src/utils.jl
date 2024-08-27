@@ -14,13 +14,12 @@ function _symbolics_to_julia(
     return fn
 end
 
-# TODO: convert this to a macro somehow + make the variable changable
 function _symbolics_to_julia(symbolics_expression::Num)
     # NOTE: here symbolics_expression refers to the mathematical definition of expression, NOT a Julia Expr
     ex = quote
         θ -> $(Symbolics.toexpr(symbolics_expression))
     end
-    eval(ex)
+    eval(ex) |> FunctionWrapper{Float64, Tuple{Float64}}
 end
 
 function _binary_search_monotone(
@@ -79,10 +78,10 @@ function _single_compress_iter(
     elseif isnothing(A_lower) && !isnothing(A_upper)
         result = optimize(Â->L(Â * V), -Inf, A_upper, A)
     elseif !isnothing(A_lower) && isnothing(A_upper)
-        result = optimize(V̂->L(A * V̂), A_lower, Inf, V)
+        result = optimize(Â->L(Â * V), A_lower, Inf, A)
     else
         @assert A_lower <= A_upper "A_lower must be <= A_upper"
-        result = optimize(V̂->L(A * V̂), A_lower, A_upper, V)
+        result = optimize(Â->L(Â * V), A_lower, A_upper, A)
     end
 
     A = Optim.minimizer(result)
@@ -205,15 +204,16 @@ end
 
 function _initialize_A(
     epca::EPCA,
-    X::AbstractMatrix{T}
-) where T <: Real
+    X::AbstractMatrix{<:Real}
+)
+    T = eltype(epca.V)
     n = size(X)[1]
     outdim = size(epca.V)[1]
     A_init_value = epca.A_init_value
     if isnothing(A_init_value)
-        A = ones(n, outdim)
+        A = ones(T, n, outdim)
     else
-        A = fill(A_init_value, n, outdim)
+        A = fill(T(A_init_value), n, outdim)
     end
     return A
 end

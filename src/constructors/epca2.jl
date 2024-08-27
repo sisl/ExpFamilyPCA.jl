@@ -1,8 +1,8 @@
 struct EPCA2 <: EPCA
     V::AbstractMatrix{<:Real}
 
-    G::Function
-    g::Function  # link function
+    G::Union{Function, FunctionWrapper}
+    g::Union{Function, FunctionWrapper}  # link function
 
     # hyperparameters
     tol::Real
@@ -24,11 +24,14 @@ function _make_loss(epca::EPCA2, X)
     μ = epca.μ
     ϵ = epca.ϵ
 
-    fX = _binary_search_monotone.(
-        g,
-        X; 
-        tol=tol
-    )
+    fX = map(X) do x
+        fx = _binary_search_monotone(
+            g,
+            x; 
+            tol=tol
+        )
+        return fx
+    end
     zX = @. fX * X - G(fX)
     
     fμ = _binary_search_monotone(
@@ -50,8 +53,8 @@ end
 function EPCA(
     indim::Integer,
     outdim::Integer,
-    G::Function,
-    g::Function,
+    G::Union{Function, FunctionWrapper},
+    g::Union{Function, FunctionWrapper},
     ::Val{(:G, :g)};
     tol = eps(),
     μ = 1,
@@ -100,7 +103,7 @@ end
 function EPCA(
     indim::Integer,
     outdim::Integer,
-    G::Function,
+    G::Union{Function, FunctionWrapper},
     ::Val{(:G)};
     tol = eps(),
     μ = 1,

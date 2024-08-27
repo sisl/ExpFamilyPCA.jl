@@ -2,6 +2,7 @@ module ExpFamilyPCA
 
 using Infiltrator
 
+using FunctionWrappers: FunctionWrapper
 using Distances
 using Symbolics
 using Optim
@@ -18,7 +19,6 @@ include("constructors/epca1.jl")
 include("constructors/epca2.jl")
 include("constructors/epca3.jl")
 include("constructors/epca4.jl")
-
 
 export
     PoissonEPCA

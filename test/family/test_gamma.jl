@@ -12,170 +12,37 @@
     )
 
     ϵ = eps()
-    G(θ) = -1 - log(θ)
+    G(θ) = -log(-θ)
     g(θ) = -1 / θ
-    F(x) = -log(x)
+    F(x) = -1 - log(x)
     f(x) = -1 / x
-    Bregman(p, q) = p / (q + ϵ) - log(p) + log(q) - 1
+    Bregman(p, q) =  p / q - log((p + ϵ) / (q + ϵ)) - 1
     μ = 1
+    V_init = nothing
+    A_init_value = -1
+    A_lower = -Inf
+    A_upper = -ϵ
+    V_lower = ϵ
+    V_upper = Inf
 
-    @testset "EPCA1" begin
-        test_equivalence(
-            "F, g",
-            GammaEPCA(indim, outdim),
-            EPCA(
-                indim,
-                outdim,
-                F,
-                g,
-                Val((:F, :g));
-                μ=μ,
-                ϵ=ϵ
-            ),
-            X
-        )
-
-
-        test_equivalence(
-            "F, f",
-            GammaEPCA(indim, outdim),
-            EPCA(
-                indim,
-                outdim,
-                F,
-                f,
-                Val((:F, :f));
-                μ=μ,
-                ϵ=ϵ,
-                low=eps()
-            ),
-            X
-        )
-
-        test_equivalence(
-            "F",
-            GammaEPCA(indim, outdim),
-            EPCA(
-                indim,
-                outdim,
-                F,
-                Val((:F));
-                μ=μ,
-                ϵ=ϵ,
-                low=eps()
-            ),
-            X
-        )
-
-        test_equivalence(
-            "F, G",
-            GammaEPCA(indim, outdim),
-            EPCA(
-                indim,
-                outdim,
-                F,
-                G,
-                Val((:F, :G));
-                μ=μ,
-                ϵ=ϵ
-            ),
-            X
-        )
-    end
-
-    @testset "EPCA2" begin
-        test_equivalence(
-            "G, g",
-            GammaEPCA(indim, outdim),
-            EPCA(
-                indim,
-                outdim,
-                G,
-                g,
-                Val((:G, :g));
-                μ=μ,
-                ϵ=ϵ
-            ),
-            X
-        )
-
-        test_equivalence(
-            "G",
-            GammaEPCA(indim, outdim),
-            EPCA(
-                indim,
-                outdim,
-                G,
-                Val((:G));
-                μ=μ,
-                ϵ=ϵ
-            ),
-            X
-        )
-    end
-
-    @testset "EPCA3" begin
-        test_equivalence(
-            "Bregman, g",
-            GammaEPCA(indim, outdim),
-            EPCA(
-                indim,
-                outdim,
-                Bregman,
-                g,
-                Val((:Bregman, :g));
-                μ=μ,
-                ϵ=ϵ
-            ),
-            X
-        )
-
-        test_equivalence(
-            "Bregman, G",
-            GammaEPCA(indim, outdim),
-            EPCA(
-                indim,
-                outdim,
-                Bregman,
-                G,
-                Val((:Bregman, :G));
-                μ=μ,
-                ϵ=ϵ
-            ),
-            X
-        )
-    end
-
-    @testset "EPCA4" begin
-        test_equivalence(
-            "f, G, g",
-            GammaEPCA(indim, outdim),
-            EPCA(
-                indim,
-                outdim,
-                f,
-                G,
-                g,
-                Val((:f, :G, :g));
-                μ=μ,
-                ϵ=ϵ
-            ),
-            X
-        )
-
-        test_equivalence(
-            "F, g",
-            GammaEPCA(indim, outdim),
-            EPCA(
-                indim,
-                outdim,
-                f,
-                G,
-                Val((:f, :G));
-                μ=μ,
-                ϵ=ϵ
-            ),
-            X
-        )
-    end
+    run_EPCA_tests(
+        GammaEPCA,
+        indim,
+        outdim,
+        F,
+        G,
+        f,
+        g,
+        Bregman,
+        μ,
+        ϵ,
+        X;
+        V_init = V_init,
+        A_init_value = A_init_value,
+        A_lower = A_lower,
+        A_upper = A_upper,
+        V_init = V_init,
+        V_lower = V_lower,
+        V_upper = V_upper
+    )
 end

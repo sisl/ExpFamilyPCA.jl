@@ -66,5 +66,6 @@ function decompress(
 ) where T <: Real
     natural_params = A * epca.V
     X̂ = epca.g.(natural_params)
+    # X̂ = Base.invokelatest.(epca.g, natural_params)  # TODO: see if can get around this
     return X̂
 end

@@ -15,14 +15,14 @@ function GammaEPCA(
     V_upper::Union{Real, Nothing} = Inf
 )
     # χ = ℝ++
-    Bregman(p, q) = p / q - log((p + ϵ) / (q + ϵ)) - 1
-    g(θ) = -1 / (θ + ϵ)
+    F(x) = -1 - log(x)
+    g(θ) = -1 / θ
     epca = EPCA(
         indim,
         outdim,
-        Bregman,
+        F,
         g,
-        Val((:Bregman, :g));
+        Val((:F, :g));
         μ = μ,
         ϵ = ϵ,
         V_init = V_init,
