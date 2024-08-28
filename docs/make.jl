@@ -11,7 +11,7 @@ makedocs(
     sitename = "ExpFamilyPCA",
     checkdocs = :exports,
     format = Documenter.HTML(),
-    # modules = [ExpFamilyPCA],
+    modules = [ExpFamilyPCA],
     pages = [
         "ExpFamilyPCA.jl" => "index.md",
         "Math" => "math.md",

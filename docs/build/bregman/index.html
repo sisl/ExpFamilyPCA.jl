@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Bregman Divergences · ExpFamilyPCA</title><meta name="title" content="Bregman Divergences · ExpFamilyPCA"/><meta property="og:title" content="Bregman Divergences · ExpFamilyPCA"/><meta property="twitter:title" content="Bregman Divergences · ExpFamilyPCA"/><meta name="description" content="Documentation for ExpFamilyPCA."/><meta property="og:description" content="Documentation for ExpFamilyPCA."/><meta property="twitter:description" content="Documentation for ExpFamilyPCA."/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">ExpFamilyPCA</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">ExpFamilyPCA.jl</a></li><li><a class="tocitem" href="../math/">Math</a></li><li><a class="tocitem" href="../api/">API Documentation</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Bregman Divergences</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Bregman Divergences</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/FlyingWorkshop/ExpFamilyPCA.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/FlyingWorkshop/ExpFamilyPCA.jl/blob/main/docs/src/bregman.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Bregman-Divergences"><a class="docs-heading-anchor" href="#Bregman-Divergences">Bregman Divergences</a><a id="Bregman-Divergences-1"></a><a class="docs-heading-anchor-permalink" href="#Bregman-Divergences" title="Permalink"></a></h1><h2 id="Definition"><a class="docs-heading-anchor" href="#Definition">Definition</a><a id="Definition-1"></a><a class="docs-heading-anchor-permalink" href="#Definition" title="Permalink"></a></h2><p>A Bregman divergence <span>$B_F$</span> (<a href="../math/#Bregman">Bregman, 1967</a>) is defined with respect to a strictly convex and differentiable function <span>$F: \Omega \to \mathbb{R}$</span>, by </p><p class="math-container">\[
+B_F(p, q) = F(p) - F(q) - \langle f(p), p - q \rangle
+$$
+
+where $\langle , \rangle$ denotes an inner product and $f(x) = \nabla_x F(x)$. Intuitively, the Bregman divergence expresses the difference between at $p$ between $F$ and its first-order Taylor expansion about $q$. We use Bregman divergences to measure the difference between two probability distributions. The Bregman divergence is also sometimes called the Bregman distance, but it is not a metric since it is usually satisfies neither symmetry nor the triangle inequality.
+
+## Relationship to the Exponential Family
+
+### The Exponential Family
+
+A distribution is said to be in the natural *exponential family* if its density can be written
+
+$$
+p(x ; \theta) = P_0(x) \exp(\langle x, \theta \rangle - G(\theta) )
+$$
+
+where $x$ and $\theta$ are vectors in $\mathbb{R}^d$, $P_0$ is a known function that does not depend on $\theta$, and $G$ is the log-partition function.  Intuitively, the log-parition function ensure that the $p$ is a valid distribution, meaning it integrates to $1$
+
+$$
+G(\theta) = \log \int P_0(x) \exp(\langle x, \theta \rangle) dx.
+$$
+
+We call $\theta$ the *natural parameter* and $\mu = \mathbb{E}_{\theta \sim p(\cdot; \theta)}[x]$ the *expectation parameter*. For the exponential family (and assuming some standard regularity conditions), we have $\mu = \nabla_\theta G(\theta) \equiv g(\theta)$ [GLM, azoury](@cite). Since $G$ is strictly convex, we can also define the inverse $g^{-1}(\mu) \equiv \theta$.
+
+### The Legendre Transform and Parameter Duality
+
+To understand the relationship between expectation parameters and natural parameters, first recall the Legendre transform from physics. For a convex function $h$, the Legendre transform is 
+
+$$
+h^*(\tilde{x}) \equiv \tilde{x} \cdot x - f(x).
+$$
+
+We say that $h^*$ is the *dual* of $h$. Let $F$ be the dual $G$
+
+$$
+F(\mu) \equiv \langle \mu, \theta \rangle - G(\theta).
+$$
+
+Observe that the gradient of the dual is the inverse of gradient of the log-partition,
+
+$$\begin{aligned}
+
+f(\mu) 
+&amp;\equiv \nabla_\mu F(\mu) \\
+&amp;= \nabla_\mu \Big[ \langle \mu, \theta \rangle - G(\theta)\Big] \\
+&amp;= \theta + \langle \mu, \nabla_\mu \theta \rangle - \langle g(\theta), \nabla_\mu \theta \rangle &amp;\text{($\theta$ is a function of $\mu$)}\\
+&amp;= \theta &amp;\text{($\mu = g(\theta)$)} \\
+&amp;= g^{-1}(\mu).
+\end{aligned}\]</p><p>In summary, the paramaterizations are related by the Legendre transformations </p><p>$</p><p>\nabla_\theta G(\theta) = g(\theta) = \mu $</p><p>and</p><p>$</p><p>\nabla<em>\mu F</em>(\mu) = f(\mu) = \theta. $</p><h3 id="Bregman-Divergences-as-Loss-Functions"><a class="docs-heading-anchor" href="#Bregman-Divergences-as-Loss-Functions">Bregman Divergences as Loss Functions</a><a id="Bregman-Divergences-as-Loss-Functions-1"></a><a class="docs-heading-anchor-permalink" href="#Bregman-Divergences-as-Loss-Functions" title="Permalink"></a></h3><p>The key relationship between members of the exponential family and the Bregman divergence is this: minimizing the negative log-lilihood of <span>$p(x, \theta)$</span> is equivalent to minimizing the Bregman divergence <span>$B_F$</span>. To see this, first recall that the negative log-liklihood for members of the exponential family is <span>$G(\theta) - \langle x, \theta \rangle$</span>. </p><p>$</p><p>\langle x, \theta \rangle - G(\theta). $</p><p>goal: explain the derivation of epca1-4</p></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.6.0 on <span class="colophon-date" title="Wednesday 28 August 2024 12:45">Wednesday 28 August 2024</span>. Using Julia version 1.10.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

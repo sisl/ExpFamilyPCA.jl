@@ -39,7 +39,12 @@ export
     ItakuraSaitoEPCA
 include("family/gamma.jl")
 
+export
+    EPCACompressor
+include("compressor.jl")
 
+
+# TODO: add more
 # export
 #     BernoulliEPCA,
 #     BinomialEPCA,
@@ -61,10 +66,5 @@ include("family/gamma.jl")
 # export
 #     MahalanobisEPCA
 # include("bregman/mahalanobis.jl")
-
-# TODO: export PoissonCompressor, etc.
-export
-    EPCACompressor
-include("compressor.jl")
 
 end # module ExpFamilyPCA
