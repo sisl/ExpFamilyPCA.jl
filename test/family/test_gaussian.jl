@@ -9,18 +9,20 @@
     g = identity
     F = G
     f = identity
-    Bregman(p, q) = Distances.sqeuclidean(p, q) / 2
+    B(p, q) = Distances.sqeuclidean(p, q) / 2
+    Bg = B
     μ = g(1)
 
     run_EPCA_tests(
         GaussianEPCA,
         indim,
         outdim,
+        Bg,
         F,
         G,
         f,
         g,
-        Bregman,
+        B,
         μ,
         ϵ,
         X

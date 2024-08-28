@@ -1,35 +1,22 @@
+
 function BernoulliEPCA(
     indim::Integer,
     outdim::Integer;
     μ = 0.5,
-    ϵ = eps(),
-    V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing,
-    A_init_value::Union{Real, Nothing} = nothing,
-    A_lower::Union{Real, Nothing} = nothing,
-    A_upper::Union{Real, Nothing} = nothing,
-    V_lower::Union{Real, Nothing} = nothing,
-    V_upper::Union{Real, Nothing} = nothing
+    ϵ = eps()
 )
-    # assumes χ = ℕ
-    F(x) = x * log(x + ϵ) + (1 - x) * log1p(ϵ - x)
+    xs(x) = 2x - 1
+    Bg(x, θ) = log1p(exp(-xs(x) * θ))
     g(θ) = exp(θ) / (1 + exp(θ))
-
-
+    
     epca = EPCA(
         indim,
         outdim,
-        F,
+        Bg,
         g,
-        Val((:F, :g)); 
+        Val((:Bg, :g));
         μ = μ,
-        ϵ = ϵ,
-        V_init = V_init,
-        A_init_value = A_init_value,
-        A_lower = A_lower,
-        A_upper = A_upper,
-        V_lower = V_lower,
-        V_upper = V_upper
+        ϵ = ϵ
     )
     return epca
 end
-

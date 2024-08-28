@@ -1,7 +1,7 @@
 struct EPCA3 <: EPCA
     V::AbstractMatrix{<:Real}
 
-    Bregman::Union{Function, FunctionWrapper, PreMetric}  # Bregman divergence can be specified using a Julia Union{Function, FunctionWrapper} or a Distances.jl PreMetric
+    B::Union{Function, FunctionWrapper, PreMetric}  # Bregman divergence can be specified using a Julia Union{Function, FunctionWrapper} or a Distances.jl PreMetric
     g::Union{Function, FunctionWrapper}  # g function
 
     # hyperparameters
@@ -16,13 +16,16 @@ struct EPCA3 <: EPCA
 end
 
 function _make_loss(epca::EPCA3, X)
-    B = epca.Bregman
+    B = epca.B
     g = epca.g
     μ = epca.μ
     ϵ = epca.ϵ
     L(θ) = begin
         gθ = g.(θ)  # think of this as X̂
         divergence = @. B(X, gθ) + ϵ * B(μ, gθ)
+        if isnan(sum(divergence))
+            @infiltrate
+        end
         return sum(divergence)
     end
     return L
@@ -31,9 +34,9 @@ end
 function EPCA(
     indim::Integer,
     outdim::Integer,
-    Bregman::Union{Function, FunctionWrapper, PreMetric},
+    B::Union{Function, FunctionWrapper, PreMetric},
     g::Union{Function, FunctionWrapper},
-    ::Val{(:Bregman, :g)};
+    ::Val{(:B, :g)};
     μ = 1,
     ϵ = eps(),
     V_init::Union{AbstractMatrix{<:Real}, Nothing} = nothing,
@@ -59,7 +62,7 @@ function EPCA(
 
     epca = EPCA3(
         V,
-        Bregman,
+        B,
         g,
         μ,
         ϵ,
@@ -75,9 +78,9 @@ end
 function EPCA(
     indim::Integer,
     outdim::Integer,
-    Bregman::Union{Function, FunctionWrapper, PreMetric},
+    B::Union{Function, FunctionWrapper, PreMetric},
     G::Union{Function, FunctionWrapper},
-    ::Val{(:Bregman, :G)};
+    ::Val{(:B, :G)};
     μ = 1,
     ϵ = eps(),
     metaprogramming = true,
@@ -116,9 +119,9 @@ function EPCA(
     epca = EPCA(
         indim,
         outdim,
-        Bregman,
+        B,
         g,
-        Val((:Bregman, :g));
+        Val((:B, :g));
         μ = μ,
         ϵ = ϵ,
         V_init = V,

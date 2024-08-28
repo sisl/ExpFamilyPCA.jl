@@ -8,7 +8,7 @@ $$
 B_F(p, q) = F(p) - F(q) - \langle f(p), p - q \rangle
 $$
 
-where $\langle , \rangle$ denotes an inner product and $f(x) = \nabla_x F(x)$. Intuitively, the Bregman divergence expresses the difference between $F(p)$ and its first-order Taylor expansion about $q$. We use Bregman divergences to measure the difference between two probability distributions. The Bregman divergence is also sometimes called the Bregman distance, but it is not a metric since it is usually satisfies neither symmetry nor the triangle inequality.
+where $\langle , \rangle$ denotes an inner product and $f(x) = \nabla_x F(x)$. Intuitively, the Bregman divergence expresses the difference between at $p$ between $F$ and its first-order Taylor expansion about $q$. We use Bregman divergences to measure the difference between two probability distributions. The Bregman divergence is also sometimes called the Bregman distance, but it is not a metric since it is usually satisfies neither symmetry nor the triangle inequality.
 
 ## Relationship to the Exponential Family
 
@@ -20,7 +20,7 @@ $$
 p(x ; \theta) = P_0(x) \exp(\langle x, \theta \rangle - G(\theta) )
 $$
 
-where $x$ and $\theta$ are vectors in $\mathbb{R}^d$, $P_0$ is a known function that does not depend on $\theta$, and $G$ is the log-partition function. (Note: in a GLM, we would take $\theta = X \beta$.) Intuitively, the log-parition function ensure that the $p$ is a valid distribution, meaning it integrates to $1$
+where $x$ and $\theta$ are vectors in $\mathbb{R}^d$, $P_0$ is a known function that does not depend on $\theta$, and $G$ is the log-partition function.  Intuitively, the log-parition function ensure that the $p$ is a valid distribution, meaning it integrates to $1$
 
 $$
 G(\theta) = \log \int P_0(x) \exp(\langle x, \theta \rangle) dx.
@@ -66,45 +66,13 @@ $$
 \nabla_\mu F_(\mu) = f(\mu) = \theta.
 $$
 
-### Bregman Divergences as a Loss Function
+### Bregman Divergences as Loss Functions
 
 The key relationship between members of the exponential family and the Bregman divergence is this: minimizing the negative log-lilihood of $p(x, \theta)$ is equivalent to minimizing the Bregman divergence $B_F$. To see this, first recall that the negative log-liklihood for members of the exponential family is $G(\theta) - \langle x, \theta \rangle$. 
-
-
 
 $$
 \langle x, \theta \rangle - G(\theta).
 $$
 
 
-The key relationship between Bregman divergences and members of the exponential family is that minimizing a Bregman divergence also minimizies the neg-log
-
-
-
-
-Recall that a distribution is in the (natural) exponential family if its density can be wr
-
-
-## Relationship to the (Natural) Exponential Family
-
-Now suppose we have data $y$ from an exponential family model with natural parameter $\theta$. (Note: in a GLM, we would take $\theta = X \beta$.) Thus we can write the density as 
-
-$$
-p(y; \theta, \phi) = \exp\Bigg( \frac{\langle y, \theta \rangle - A(\theta)}{\phi} \Bigg)  f(y, \phi)
-$$
-
-Here $A$ is the log-partition function, and $\phi$ is a dispersion parameter, which you can just ignore from now on. Let $\ell(\theta)$ be the log likelihood. Then one can check that the deviance is:
-
-$$
-d(\theta, \theta^*) = 2(\ell(\theta) - \ell(\theta^*)) = 2(A(\theta) - A(\theta^*) - \langle y, \theta - \theta^* \rangle)
-$$
-
-where $\theta^*$ is the parameter in the saturated model. We can define it by solving $\nabla A(\theta^*) = y$, because that means that in this parametrization, we'll be able to match the mean exactly: $\mathbb{E}[y] = \mathbb{E}[\nabla A(\theta^*)]$. So then we can write 
-
-$$
-d(\theta, \theta^*) = 2(A(\theta) - A(\theta^*) - \langle\nabla A(\theta^*), \theta - \theta^*\rangle) 
-$$
-
-But this is simply the Bregman divergence $D_F(\theta, \theta^*)$ with $b = 2A$. 
-
-In conclusion, maximum likelihood in this model is equivalent to minimizing the deviance which is equivalent to minimizing the Bregman divergence defined by twice the log-partition function.
+goal: explain the derivation of epca1-4

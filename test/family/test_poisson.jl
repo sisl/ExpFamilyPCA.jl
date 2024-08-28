@@ -9,18 +9,20 @@
     g(θ) = exp(θ)
     F(x) = x * log(x + ϵ) - x
     f(x) = log(x + ϵ)
-    Bregman = Distances.gkl_divergence
+    B = Distances.gkl_divergence
+    Bg(x, θ) = exp(θ) - x * θ + x * log(x) * x - x
     μ = g(0)
 
     run_EPCA_tests(
         PoissonEPCA,
         indim,
         outdim,
+        Bg,
         F,
         G,
         f,
         g,
-        Bregman,
+        B,
         μ,
         ϵ,
         X
