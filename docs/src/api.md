@@ -1,4 +1,4 @@
-# API Documentation
+<!-- # API Documentation
 
 ```@meta
 CurrentModule = ExpFamilyPCA
@@ -24,4 +24,4 @@ fit!
 compress
 decompress
 ```
-
+ -->
