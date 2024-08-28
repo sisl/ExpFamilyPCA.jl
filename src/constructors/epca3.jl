@@ -1,8 +1,8 @@
 struct EPCA3 <: EPCA
     V::AbstractMatrix{<:Real}
 
-    B::Union{Function, FunctionWrapper, PreMetric}  # Bregman divergence can be specified using a Julia Union{Function, FunctionWrapper} or a Distances.jl PreMetric
-    g::Union{Function, FunctionWrapper}  # g function
+    B::Union{Function, FunctionWrapper, PreMetric}  # Bregman divergence
+    g::Union{Function, FunctionWrapper}  # link function
 
     # hyperparameters
     μ::Real
@@ -47,18 +47,9 @@ function EPCA(
     V_upper::Union{Real, Nothing} = nothing
 )
     # assertions
-    @assert indim > 0 "Input dimension (indim) must be a positive integer."
-    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
-    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
-    @assert ϵ > 0 "ϵ must be positive."
+    _check_common_arguments(indim, outdim, ϵ)
 
-    # Initialize V
-    if isnothing(V_init)
-        V = ones(outdim, indim)
-    else
-        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
-        V = V_init
-    end
+    V = _initialize_V(indim, outdim, V_init)
 
     epca = EPCA3(
         V,
@@ -92,30 +83,10 @@ function EPCA(
     V_upper::Union{Real, Nothing} = nothing
 )
     # assertions
-    @assert indim > 0 "Input dimension (indim) must be a positive integer."
-    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
-    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
-    @assert ϵ > 0 "ϵ must be positive."
+    _check_common_arguments(indim, outdim, ϵ)
 
-    @variables θ
-    G_expr = G(θ)
-    D = Differential(θ)
-    _g = expand_derivatives(D(G_expr))
-
-    if metaprogramming
-        g = _symbolics_to_julia(_g)
-    else
-        g = _symbolics_to_julia(_g, θ)
-    end
-
-    # Initialize V
-    if isnothing(V_init)
-        V = ones(outdim, indim)
-    else
-        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
-        V = V_init
-    end
-
+    g = _differentiate(G, metaprogramming)
+    V = _initialize_V(indim, outdim, V_init)
     epca = EPCA(
         indim,
         outdim,

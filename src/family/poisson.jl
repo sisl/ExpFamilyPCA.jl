@@ -9,6 +9,7 @@ function PoissonEPCA(
     # assumes χ = ℕ
     F(x) = x * log(x + ϵ) - x
     g(θ) = exp(θ)
+    @assert μ > 0 "For PoissonEPCA, μ must be positive to be in the range of g(θ) = exp(θ)."
     epca = EPCA(
         indim,
         outdim,

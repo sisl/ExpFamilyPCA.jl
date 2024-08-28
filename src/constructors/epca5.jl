@@ -1,8 +1,8 @@
 struct EPCA5 <: EPCA
     V::AbstractMatrix{<:Real}
 
-    Bg::Function
-    g::Function
+    Bg::Function  # Bregman divergence composed with the link function in the 2nd slot, that is Bg(⋅, ⋅) = B_F(⋅, g(⋅)).
+    g::Function  # link function
 
     # hyperparameters
     μ::Real
@@ -47,18 +47,8 @@ function EPCA(
     V_upper::Union{Real, Nothing} = nothing
 )
     # assertions
-    @assert indim > 0 "Input dimension (indim) must be a positive integer."
-    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
-    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
-    @assert ϵ > 0 "ϵ must be positive."
-
-    if isnothing(V_init)
-        V = ones(outdim, indim)
-    else
-        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
-        V = V_init
-    end
-
+    _check_common_arguments(indim, outdim, ϵ)
+    V = _initialize_V(indim, outdim, V_init)
     epca = EPCA5(
         V,
         Bg,

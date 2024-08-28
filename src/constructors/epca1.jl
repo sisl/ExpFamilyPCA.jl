@@ -1,8 +1,8 @@
 struct EPCA1 <: EPCA
     V::AbstractMatrix{<:Real}
 
-    F::Union{Function, FunctionWrapper}
-    g::Union{Function, FunctionWrapper}
+    F::Union{Function, FunctionWrapper}  # Legendre dual of the log-partition
+    g::Union{Function, FunctionWrapper}  # link function
 
     # hyperparameters
     μ::Real
@@ -53,18 +53,9 @@ function EPCA(
     V_upper::Union{Real, Nothing} = nothing
 )
     # assertions
-    @assert indim > 0 "Input dimension (indim) must be a positive integer."
-    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
-    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
-    @assert ϵ > 0 "ϵ must be positive."
+    _check_common_arguments(indim, outdim, ϵ)
 
-    if isnothing(V_init)
-        V = ones(outdim, indim)
-    else
-        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
-        V = V_init
-    end
-    
+    V = _initialize_V(indim, outdim, V_init)
     epca = EPCA1(
         V,
         F,
@@ -100,13 +91,9 @@ function EPCA(
     V_upper::Union{Real, Nothing} = nothing
 )
     # assertions
-    @assert indim > 0 "Input dimension (indim) must be a positive integer."
-    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
-    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
-    @assert ϵ > 0 "ϵ must be positive."
-    @assert low < high "Low bound (low) must be less than high bound (high)."
-    @assert tol > 0 "Tolerance (tol) must be a positive number."
-    @assert maxiter > 0 "Maximum iterations (maxiter) must be a positive number."
+    _check_common_arguments(indim, outdim, ϵ)
+    _check_binary_search_arguments(low, high, tol, maxiter)
+    @assert isfinite(f(μ)) "μ must be in the range of g meaning f(μ) should be finite."
 
     g = _invert_legendre(
         f;
@@ -115,15 +102,7 @@ function EPCA(
         tol = tol,
         maxiter = maxiter
     )
-
-    # Initialize V
-    if isnothing(V_init)
-        V = ones(outdim, indim)
-    else
-        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
-        V = V_init
-    end
-
+    V = _initialize_V(indim, outdim, V_init)
     epca = EPCA1(
         V,
         F,
@@ -160,34 +139,13 @@ function EPCA(
     V_upper::Union{Real, Nothing} = nothing
 )
     # assertions
-    @assert indim > 0 "Input dimension (indim) must be a positive integer."
-    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
-    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
-    @assert ϵ > 0 "ϵ must be positive."
-    @assert low < high "Low bound (low) must be less than high bound (high)."
-    @assert tol > 0 "Tolerance (tol) must be a positive number."
-    @assert maxiter > 0 "Maximum iterations (maxiter) must be a positive number."    
+    _check_common_arguments(indim, outdim, ϵ)
+    _check_binary_search_arguments(low, high, tol, maxiter)  
 
-    # math
-    @variables θ
-    _F = F(θ)
-    D = Differential(θ)
-    _f = expand_derivatives(D(_F))
+    f = _differentiate(F, metaprogramming)
+    @assert isfinite(f(μ)) "μ must be in the range of g meaning f(μ) should be finite."
 
-    if metaprogramming
-        f = _symbolics_to_julia(_f)
-    else
-        f = _symbolics_to_julia(_f, θ)
-    end
-
-    # Initialize V
-    if isnothing(V_init)
-        V = ones(outdim, indim)
-    else
-        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
-        V = V_init
-    end
-
+    V = _initialize_V(indim, outdim, V_init)
     epca = EPCA(
         indim,
         outdim,
@@ -227,29 +185,10 @@ function EPCA(
     V_upper::Union{Real, Nothing} = nothing
 )
     # assertions
-    @assert indim > 0 "Input dimension (indim) must be a positive integer."
-    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
-    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
-    @assert ϵ > 0 "ϵ must be positive."
+    _check_common_arguments(indim, outdim, ϵ)
 
-    @variables θ
-    D = Differential(θ)
-    _g = expand_derivatives(D(G(θ)))
-
-    if metaprogramming
-        g = _symbolics_to_julia(_g)
-    else
-        g = _symbolics_to_julia(_g, θ)
-    end
-
-    # Initialize V
-    if isnothing(V_init)
-        V = ones(outdim, indim)
-    else
-        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
-        V = V_init
-    end
-
+    g = _differentiate(G, metaprogramming)
+    V = _initialize_V(indim, outdim, V_init)
     epca = EPCA(
         indim,
         outdim,

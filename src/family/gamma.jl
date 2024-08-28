@@ -10,6 +10,7 @@ function GammaEPCA(
     # χ = ℝ++
     Bg(x, θ) = -x * θ - log(-x * θ) - 1
     g(θ) = -1 / θ
+    @assert μ ≠ 0 "For GammaEPCA, μ must be nonzero to be in the range of g(θ) = -1/θ."
     epca = EPCA(
         indim,
         outdim,

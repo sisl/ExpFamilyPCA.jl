@@ -1,7 +1,7 @@
 struct EPCA2 <: EPCA
     V::AbstractMatrix{<:Real}
 
-    G::Union{Function, FunctionWrapper}
+    G::Union{Function, FunctionWrapper}  # log-parition function
     g::Union{Function, FunctionWrapper}  # link function
 
     # hyperparameters
@@ -67,19 +67,9 @@ function EPCA(
     V_upper::Union{Real, Nothing} = nothing
 )
     # assertions
-    @assert indim > 0 "Input dimension (indim) must be a positive integer."
-    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
-    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
-    @assert ϵ > 0 "ϵ must be positive."
+    _check_common_arguments(indim, outdim, ϵ)
 
-    # Initialize V
-    if isnothing(V_init)
-        V = ones(outdim, indim)
-    else
-        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
-        V = V_init
-    end
-
+    V = _initialize_V(indim, outdim, V_init)
     epca = EPCA2(
         V,
         G,
@@ -117,31 +107,11 @@ function EPCA(
     V_upper::Union{Real, Nothing} = nothing
 )
     # assertions
-    @assert indim > 0 "Input dimension (indim) must be a positive integer."
-    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
-    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
-    @assert ϵ > 0 "ϵ must be positive."
+    _check_common_arguments(indim, outdim, ϵ)
 
     # NOTE: μ must be in the range of g, so g⁻¹(μ) is finite. It is up to the user to enforce this.
-    # G induces g, Fg = F(g(θ)), and fg = f(g(θ))
-    @variables θ
-    D = Differential(θ)
-    _g = expand_derivatives(D(G(θ)))
-
-    if metaprogramming
-        g = _symbolics_to_julia(_g)
-    else
-        g = _symbolics_to_julia(_g, θ)
-    end
-
-    # Initialize V
-    if isnothing(V_init)
-        V = ones(outdim, indim)
-    else
-        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
-        V = V_init
-    end
-
+    g = _differentiate(G, metaprogramming)
+    V = _initialize_V(indim, outdim, V_init)
     epca = EPCA(
         indim,
         outdim,

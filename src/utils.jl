@@ -202,10 +202,7 @@ function _fit(
     return V, A
 end
 
-function _initialize_A(
-    epca::EPCA,
-    X::AbstractMatrix{<:Real}
-)
+function _initialize_A(epca::EPCA, X::AbstractMatrix{<:Real})
     T = eltype(epca.V)
     n = size(X)[1]
     outdim = size(epca.V)[1]
@@ -216,4 +213,52 @@ function _initialize_A(
         A = fill(T(A_init_value), n, outdim)
     end
     return A
+end
+
+function _initialize_V(
+    indim::Integer, 
+    outdim::Integer, 
+    V_init::Union{AbstractMatrix{<:Real}, Nothing}
+)
+    if isnothing(V_init)
+        V = ones(outdim, indim)
+    else
+        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
+        V = V_init
+    end
+    return V
+end
+
+function _check_common_arguments(
+    indim::Integer, 
+    outdim::Integer, 
+    ϵ::Real
+)
+    @assert indim > 0 "Input dimension (indim) must be a positive integer."
+    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
+    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
+    @assert ϵ > 0 "ϵ must be positive."
+end
+
+function _check_binary_search_arguments(
+    low,
+    high,
+    tol,
+    maxiter
+)
+    @assert low < high "Low bound (low) must be less than high bound (high)."
+    @assert tol > 0 "Tolerance (tol) must be a positive number."
+    @assert maxiter > 0 "Maximum iterations (maxiter) must be a positive number."   
+end
+
+function _differentiate(H, metaprogramming::Bool)
+    @variables θ
+    D = Differential(θ)
+    _h = expand_derivatives(D(H(θ)))
+    if metaprogramming
+        h = _symbolics_to_julia(_h)
+    else
+        h = _symbolics_to_julia(_h, θ)
+    end
+    return h
 end
