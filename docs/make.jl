@@ -23,6 +23,10 @@ makedocs(
     ]
 )
 
+deploydocs(
+    repo = "github.com/JuliaPOMDP/CompressedBeliefMDPs.jl.git",
+)
+
 """ 
 NEW
 
