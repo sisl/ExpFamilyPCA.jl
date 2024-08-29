@@ -2,7 +2,7 @@
 
 julia_version = "1.10.4"
 manifest_format = "2.0"
-project_hash = "5be1f822cefa4922adc3f9e817d32bdbb5e01112"
+project_hash = "49a711efa630ea4b04c801b9b0b7ba5e31ee0aa1"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "99a6f5d0ce1c7c6afdb759daa30226f71c54f6b0"
@@ -936,6 +936,12 @@ version = "7.3.0"
 deps = ["Libdl", "OpenBLAS_jll", "libblastrampoline_jll"]
 uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
+[[deps.LiveServer]]
+deps = ["HTTP", "LoggingExtras", "MIMEs", "Pkg", "Sockets", "Test"]
+git-tree-sha1 = "1e46b873b8ef176e23ee43f96e72cd45c20bafb4"
+uuid = "16fef848-5104-11e9-1b77-fb7a48bbb589"
+version = "1.3.1"
+
 [[deps.LocalApproximationValueIteration]]
 deps = ["LocalFunctionApproximation", "POMDPLinter", "POMDPTools", "POMDPs", "Printf", "Random"]
 git-tree-sha1 = "35fbe44d687f8c741ff0172ef1387365e87f0131"
@@ -978,6 +984,11 @@ deps = ["Colors", "D3Trees", "POMDPLinter", "POMDPTools", "POMDPs", "Printf", "P
 git-tree-sha1 = "ea9d0fffd47111ac149e3c983ce5e21863268809"
 uuid = "e12ccd36-dcad-5f33-8774-9175229e7b33"
 version = "0.5.6"
+
+[[deps.MIMEs]]
+git-tree-sha1 = "65f28ad4b594aebe22157d6fac869786a255b7eb"
+uuid = "6c6e2e6c-3030-632d-7369-2d6c69616d65"
+version = "0.1.4"
 
 [[deps.MLStyle]]
 git-tree-sha1 = "bc38dff0548128765760c79eb7388a4b37fae2c8"

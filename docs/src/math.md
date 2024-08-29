@@ -21,7 +21,7 @@ $$\begin{aligned}
 & & \mathrm{rank}\left(\Theta\right) \leq \ell
 \end{aligned}$$
 
-where $\| \cdot \|_F$ is the Frobenius norm. Observe that the objective is equivalent to maximizing the log likelihood of a Gaussian model. Consequently, PCA can be viewed as a denoising procedure that recovers the true low-dimensional signal $\Theta$ from a normally noised high-dimensional measurement $X$. 
+where $\| \cdot \|_F$ is the Frobenius norm. Observe that the objective is equivalent to maximizing the log-likelihood of a Gaussian model. Consequently, PCA can be viewed as a denoising procedure that recovers the true low-dimensional signal $\Theta$ from a normally noised high-dimensional measurement $X$. 
 
  ### Gaussian Denoising
 
@@ -29,7 +29,7 @@ where $\| \cdot \|_F$ is the Frobenius norm. Observe that the objective is equiv
 
  ## Exponential Family PCA (EPCA)
 
-EPCA is an extension of PCA analogous to how generalized linear models [GLM](@cite) extend linear regression. In particular, EPCA can denoise from any exponential family. [EPCA](@citet) showed that maximizing the log likelihood of any exponential family is directly related to minimizing the Bregman divergence
+EPCA is an extension of PCA analogous to how generalized linear models [GLM](@cite) extend linear regression. In particular, EPCA can denoise from any exponential family. [EPCA](@citet) showed that maximizing the log-likelihood of any exponential family is directly related to minimizing the Bregman divergence
 
 $$\begin{aligned} 
 B_F(p \| q) \equiv F(p) - F(q) - f(q)(p - q) 
