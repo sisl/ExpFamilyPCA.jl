@@ -24,7 +24,7 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/JuliaPOMDP/CompressedBeliefMDPs.jl.git",
+    repo = "github.com/JuliaPOMDP/ExpFamilyPCA.jl.git",
 )
 
 """ 
