@@ -1,3 +1,23 @@
+function _check_dimensions(
+    indim::Integer, 
+    outdim::Integer
+)
+    @assert indim > 0 "Input dimension (indim) must be a positive integer."
+    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
+    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
+end
+
+function _check_binary_search_arguments(
+    low::Real,
+    high::Real,
+    tol::Real,
+    maxiter::Real
+)
+    @assert low < high "Low bound (low) must be less than high bound (high)."
+    @assert tol > 0 "Tolerance (tol) must be a positive number."
+    @assert maxiter > 0 "Maximum iterations (maxiter) must be a positive number."   
+end
+
 function _symbolics_to_julia(
     symbolics_expression::Num,
     symbolics_variable::Num;
@@ -44,13 +64,9 @@ function _binary_search_monotone(
 end
 
 """Invert Legendre transformation"""
-function _invert_legendre(
-    f;
-    low=-1e10, 
-    high=1e10, 
-    tol=1e-10, 
-    maxiter=1e6
-)
+function _invert_legendre(f, options::Options)
+    @unpack low, high, tol, maxiter = options
+    _check_binary_search_arguments(low, high, tol, maxiter)
     g(x) = _binary_search_monotone(
         f, 
         x; 
@@ -62,6 +78,26 @@ function _invert_legendre(
     return g
 end
 
+
+function _optimize(
+    f::Function, 
+    lower::Union{Real, Nothing}, 
+    upper::Union{Real, Nothing}, 
+    init::AbstractMatrix{T}
+) where T <: Real
+    if isnothing(lower) && isnothing(upper)
+        result = optimize(f, init)
+    elseif isnothing(lower) && !isnothing(upper)
+        result = optimize(f, -Inf, upper, init)
+    elseif !isnothing(lower) && isnothing(upper)
+        result = optimize(f, lower, Inf, init)
+    else
+        result = optimize(f, lower, upper, init)
+    end
+
+    return result
+end
+
 function _single_compress_iter(
     L::Function,
     V::AbstractMatrix{T},
@@ -69,21 +105,16 @@ function _single_compress_iter(
     verbose::Bool,
     i::Integer,
     steps_per_print::Integer,
-    maxiter::Integer;
-    A_lower::Union{Real, Nothing} = nothing,
-    A_upper::Union{Real, Nothing} = nothing,
+    maxiter::Integer,
+    options::Options
 ) where T <: Real
-    if isnothing(A_lower) && isnothing(A_upper)
-        result = optimize(Â->L(Â * V), A)
-    elseif isnothing(A_lower) && !isnothing(A_upper)
-        result = optimize(Â->L(Â * V), -Inf, A_upper, A)
-    elseif !isnothing(A_lower) && isnothing(A_upper)
-        result = optimize(Â->L(Â * V), A_lower, Inf, A)
-    else
-        @assert A_lower <= A_upper "A_lower must be <= A_upper"
-        result = optimize(Â->L(Â * V), A_lower, A_upper, A)
-    end
-
+    @unpack A_lower, A_upper = options
+    result = _optimize(
+        Â->L(Â * V), 
+        A_lower,
+        A_upper,
+        A
+    )
     A = Optim.minimizer(result)
     loss = Optim.minimum(result)
     if verbose && (i % steps_per_print == 0 || i == 1)
@@ -99,22 +130,16 @@ function _single_fit_iter(
     verbose::Bool,
     i::Integer,
     steps_per_print::Integer,
-    maxiter::Integer;
-    A_lower::Union{Real, Nothing} = nothing,
-    A_upper::Union{Real, Nothing} = nothing,
-    V_lower::Union{Real, Nothing} = nothing,
-    V_upper::Union{Real, Nothing} = nothing
+    maxiter::Integer,
+    options::Options
 ) where T <: Real
-    if isnothing(V_lower) && isnothing(V_upper)
-        result = optimize(V̂->L(A * V̂), V)
-    elseif isnothing(V_lower) && !isnothing(V_upper)
-        result = optimize(V̂->L(A * V̂), -Inf, V_upper, V)
-    elseif !isnothing(V_lower) && isnothing(V_upper)
-        result = optimize(V̂->L(A * V̂), V_lower, Inf, V)
-    else
-        @assert V_lower <= V_upper "V_lower must be <= V_upper"
-        result = optimize(V̂->L(A * V̂), V_lower, V_upper, V)
-    end
+    @unpack V_lower, V_upper = options
+    result = _optimize(
+        V̂->L(A * V̂), 
+        V_lower,
+        V_upper,
+        V
+    )
 
     V = Optim.minimizer(result)
     A, loss = _single_compress_iter(
@@ -124,9 +149,8 @@ function _single_fit_iter(
         verbose,
         i,
         steps_per_print,
-        maxiter;
-        A_lower = A_lower,
-        A_upper = A_upper,
+        maxiter,
+        options
     )
     return V, A, loss
 end
@@ -137,9 +161,8 @@ function _compress(
     A::AbstractMatrix{T},
     maxiter::Integer,
     verbose::Bool,
-    steps_per_print::Integer;
-    A_lower::Union{Real, Nothing} = nothing,
-    A_upper::Union{Real, Nothing} = nothing
+    steps_per_print::Integer,
+    options::Options
 ) where T <: Real
     for i in 1:maxiter
         A, loss = _single_compress_iter(
@@ -149,16 +172,10 @@ function _compress(
             verbose,
             i,
             steps_per_print,
-            maxiter;
-            A_lower = A_lower,
-            A_upper = A_upper,
+            maxiter,
+            options
         )
-        if isnan(loss)
-            @warn "Loss is NaN, ending early at iteration $i."
-            break
-        end
-        if !isfinite(loss)
-            @warn "Loss not finite, ending early at iteration $i."
+        if isnan(loss) || !isfinite(loss)
             break
         end
     end
@@ -171,11 +188,8 @@ function _fit(
     A::AbstractMatrix{T},
     maxiter::Integer,
     verbose::Bool,
-    steps_per_print::Integer;
-    A_lower::Union{Real, Nothing} = nothing,
-    A_upper::Union{Real, Nothing} = nothing,
-    V_lower::Union{Real, Nothing} = nothing,
-    V_upper::Union{Real, Nothing} = nothing
+    steps_per_print::Integer,
+    options::Options
 ) where T <: Real
     for i in 1:maxiter
         V, A, loss = _single_fit_iter(
@@ -185,70 +199,29 @@ function _fit(
             verbose,
             i,
             steps_per_print,
-            maxiter;
-            A_lower = A_lower,
-            A_upper = A_upper,
-            V_lower = V_lower,
-            V_upper = V_upper
+            maxiter,
+            options
         )
-        if isnan(loss)
-            @warn "Loss is NaN, ending early at iteration $i."
+        if isnan(loss) || !isfinite(loss)
             break
-        end
-        if !isfinite(loss)
-            @warn "Loss not finite, ending early at iteration $i."
         end
     end
     return V, A
 end
 
 function _initialize_A(epca::EPCA, X::AbstractMatrix{<:Real})
-    T = eltype(epca.V)
+    V = epca.V
+    A_init_value = epca.options.A_init_value
+    T = eltype(V)
     n = size(X)[1]
-    outdim = size(epca.V)[1]
-    A_init_value = epca.A_init_value
-    if isnothing(A_init_value)
-        A = ones(T, n, outdim)
-    else
-        A = fill(T(A_init_value), n, outdim)
-    end
+    outdim = size(V)[1]
+    A = fill(T(A_init_value), n, outdim)
     return A
 end
 
-function _initialize_V(
-    indim::Integer, 
-    outdim::Integer, 
-    V_init::Union{AbstractMatrix{<:Real}, Nothing}
-)
-    if isnothing(V_init)
-        V = ones(outdim, indim)
-    else
-        @assert size(V_init) == (outdim, indim) "V_init must have dimensions (outdim, indim)."
-        V = V_init
-    end
+function _initialize_V(indim::Integer, outdim::Integer, options::Options)
+    V = fill(Float64(options.V_init_value), outdim, indim)
     return V
-end
-
-function _check_common_arguments(
-    indim::Integer, 
-    outdim::Integer, 
-    ϵ::Real
-)
-    @assert indim > 0 "Input dimension (indim) must be a positive integer."
-    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
-    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
-    @assert ϵ > 0 "ϵ must be positive."
-end
-
-function _check_binary_search_arguments(
-    low,
-    high,
-    tol,
-    maxiter
-)
-    @assert low < high "Low bound (low) must be less than high bound (high)."
-    @assert tol > 0 "Tolerance (tol) must be a positive number."
-    @assert maxiter > 0 "Maximum iterations (maxiter) must be a positive number."   
 end
 
 function _differentiate(H, metaprogramming::Bool)

@@ -151,23 +151,15 @@ function fit!(
     steps_per_print::Integer = 10,
 )
     L = _make_loss(epca, X)
-    V = epca.V
     A = _initialize_A(epca, X)
-    A_lower = epca.A_lower
-    A_upper = epca.A_upper
-    V_lower = epca.V_lower
-    V_upper = epca.V_upper
     V, A = _fit(
         L,
-        V,
+        epca.V,
         A,
         maxiter,
         verbose,
-        steps_per_print;
-        A_lower = A_lower,
-        A_upper = A_upper,
-        V_lower = V_lower,
-        V_upper = V_upper
+        steps_per_print,
+        epca.options
     )
     epca.V[:] = V
     return A
@@ -181,19 +173,15 @@ function compress(
     steps_per_print::Integer = 10
 )
     L = _make_loss(epca, X)
-    V = epca.V
     A = _initialize_A(epca, X)
-    A_lower = epca.A_lower
-    A_upper = epca.A_upper
     A = _compress(
         L,
-        V,
+        epca.V,
         A,
         maxiter,
         verbose,
-        steps_per_print;
-        A_lower = A_lower,
-        A_upper = A_upper,
+        steps_per_print,
+        epca.options
     )
     return A
 end

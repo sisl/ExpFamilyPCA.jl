@@ -44,27 +44,21 @@ A = fit!(gamma_epca_model, X; maxiter=200, verbose=true)
 - The link function ``g(θ) = -1/θ`` is appropriate for modeling Gamma-distributed data.
 - The parameters for initialization are set to ensure that the product of matrices ``AV`` results in only negative entries, adhering to the domain requirements of the Gamma distribution.
 """
-function GammaEPCA(
-    indim::Integer,
-    outdim::Integer;
-    μ=1,
-    ϵ=eps()
-)
+function GammaEPCA(indim::Integer, outdim::Integer)
     # χ = ℝ++
-    Bg(x, θ) = -x * θ - log(-x * θ) - 1
+    Bg(x, θ) = -log(-x * θ) - x * θ
     g(θ) = -1 / θ
-    @assert μ ≠ 0 "For GammaEPCA, μ must be nonzero to be in the range of g(θ) = -1/θ."
     epca = EPCA(
         indim,
         outdim,
         Bg,
         g,
         Val((:Bg, :g));
-        μ = μ,
-        ϵ = ϵ,
-        A_init_value = -1,
-        A_upper = -eps(),
-        V_lower = eps(),
+        options = Options(
+            A_init_value = -1,
+            A_upper = -eps(),
+            V_lower = eps()
+        )
     )
     return epca
 end
@@ -72,17 +66,7 @@ end
 """
 Alias for [`GammaEPCA`](@ref).
 """
-function ItakuraSaitoEPCA(
-    indim::Integer,
-    outdim::Integer;
-    μ = 1,
-    ϵ = eps()
-)
-    epca = GammaEPCA(
-        indim,
-        outdim;
-        μ = μ,
-        ϵ = ϵ
-    )
+function ItakuraSaitoEPCA(indim::Integer, outdim::Integer)
+    epca = GammaEPCA(indim, outdim)
     return epca
 end

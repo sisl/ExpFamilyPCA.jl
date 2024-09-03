@@ -11,7 +11,7 @@
     f = identity
     B(p, q) = Distances.sqeuclidean(p, q) / 2
     Bg = B
-    μ = g(1)
+    μ = 1
 
     run_EPCA_tests(
         GaussianEPCA,
@@ -23,8 +23,6 @@
         f,
         g,
         B,
-        μ,
-        ϵ,
         X
     )
 end

@@ -5,13 +5,14 @@
     X = rand(0:100, n, indim)
 
     ϵ = eps()
-    G(θ) = exp(θ)
-    g(θ) = exp(θ)
-    F(x) = x * log(x + ϵ) - x
+    G = exp
+    g = exp
+    F(x) = xlogx(x) - x
     f(x) = log(x + ϵ)
     B = Distances.gkl_divergence
-    Bg(x, θ) = exp(θ) - x * θ + x * log(x) * x - x
-    μ = g(0)
+    Bg(x, θ) = exp(θ) - x * θ + xlogx(x) - x
+
+    μ = 1
 
     run_EPCA_tests(
         PoissonEPCA,
@@ -23,8 +24,6 @@
         f,
         g,
         B,
-        μ,
-        ϵ,
         X
     )
 end

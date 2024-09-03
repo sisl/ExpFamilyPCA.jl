@@ -2,10 +2,18 @@ module ExpFamilyPCA
 
 using Infiltrator
 
-using FunctionWrappers: FunctionWrapper
 using Distances
-using Symbolics
+using FunctionWrappers: FunctionWrapper
+using LogExpFunctions
 using Optim
+using Parameters
+using Symbolics
+
+using Statistics
+
+export
+    Options
+include("options.jl")
 
 export
     EPCA,
@@ -15,11 +23,11 @@ export
 include("epca.jl")
 
 include("utils.jl")
+
 include("constructors/epca1.jl")
 include("constructors/epca2.jl")
 include("constructors/epca3.jl")
 include("constructors/epca4.jl")
-include("constructors/epca5.jl")
 
 export
     PoissonEPCA
@@ -40,31 +48,30 @@ export
 include("family/gamma.jl")
 
 export
+    BinomialEPCA
+include("family/binomial.jl")
+
+export
+    ContinuousBernoulliEPCA
+include("family/continuous_bernoulli.jl")
+
+export
+    NegativeBinomialEPCA
+include("family/negative_binomial.jl")
+
+export
+    ParetoEPCA
+include("family/pareto.jl")
+
+export
+    WeibullEPCA
+include("family/weibull.jl")
+
+export
     EPCACompressor
 include("compressor.jl")
 
-
-# TODO: add more
-# export
-#     BernoulliEPCA,
-#     BinomialEPCA,
-#     ExponentialEPCA,
-#     GammaEPCA,
-#     ItakuraSaitoEPCA,
-#     GeometricEPCA,
 #     HyperbolicSecantEPCA,
 #     InverseGaussianEPCA,
-#     NegativeBinomialEPCA,
-#     NormalEPCA,
-#     GaussianEPCA,
-#     PoissonEPCA
-# include("family/normal.jl")
-# include("family/bernoulli.jl")
-# include("family/poisson.jl")
-# include("family/gamma.jl")
-
-# export
-#     MahalanobisEPCA
-# include("bregman/mahalanobis.jl")
 
 end # module ExpFamilyPCA

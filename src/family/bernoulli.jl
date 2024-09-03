@@ -45,24 +45,17 @@ A = fit!(bernoulli_epca_model, X; maxiter=200, verbose=true)
 - The function ``Bg(x, θ) = B_F(x, g(θ))`` computes the Bregman divergence for the Bernoulli distribution.
 - The choice of `μ`` must be within (0, 1) to ensure it is in the valid range for a probability under the Bernoulli distribution.
 """
-function BernoulliEPCA(
-    indim::Integer,
-    outdim::Integer;
-    μ = 0.5,
-    ϵ = eps()
-)
+function BernoulliEPCA(indim::Integer, outdim::Integer)
     xs(x) = 2x - 1
-    Bg(x, θ) = log1p(exp(-xs(x) * θ))
-    g(θ) = exp(θ) / (1 + exp(θ))
-    @assert 0 < μ < 1 "For BernoulliEPCA, μ must between (0, 1) to be in the range of g(θ) = sigmoid(θ)."
+    Bg(x, θ) = log1pexp(-(2x - 1) * θ)
+    g = logistic
     epca = EPCA(
         indim,
         outdim,
         Bg,
         g,
         Val((:Bg, :g));
-        μ = μ,
-        ϵ = ϵ
+        options = Options(μ = 0.5)
     )
     return epca
 end

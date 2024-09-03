@@ -8,9 +8,9 @@ function smoke_test(
         A2 = @test_nowarn compress(epca, X)
         Z1 = @test_nowarn decompress(epca, A1)
         Z2 = @test_nowarn decompress(epca, A2)
-        @test isapprox(Z1, Z2, atol=atol)
-        @test isapprox(Z1, X, atol=atol)
-        @test isapprox(Z2, X, atol=atol)
+        @test all(isapprox.(Z1, Z2, atol=atol))
+        @test all(isapprox.(Z1, X, atol=atol))
+        @test all(isapprox.(Z2, X, atol=atol))
     end
 end
 
@@ -44,25 +44,7 @@ function run_EPCA_tests(
     f::Function, 
     g::Function, 
     B::Union{Function, PreMetric}, 
-    μ::Real,
-    ϵ::Real, 
-    X::AbstractMatrix;
-    A_init_value = nothing,
-    A_lower = nothing,
-    A_upper = nothing,
-    V_init = nothing,
-    V_lower = nothing,
-    V_upper = nothing,
-    # binary search parameters
-    low = -1e10,
-    high = 1e10,
-    tol = 1e-10,
-    maxiter = 1e6,
-    epca1 = true,
-    epca2 = true,
-    epca3 = true,
-    epca4 = true,
-    epca5 = true
+    X::AbstractMatrix
 )
     M1 = epca_constructor(indim, outdim)
     A1 = fit!(M1, X)
@@ -74,274 +56,148 @@ function run_EPCA_tests(
         atol=0.5
     )
 
-    if epca1
-        @testset "EPCA1" begin
-            test_equivalence(
-                "F, g",
-                M1,
-                A1,
-                EPCA(
-                    indim,
-                    outdim,
-                    F,
-                    g,
-                    Val((:F, :g));
-                    μ = μ,
-                    ϵ = ϵ,
-                    V_init = V_init,
-                    A_init_value = A_init_value,
-                    A_lower = A_lower,
-                    A_upper = A_upper,
-                    V_lower = V_lower,
-                    V_upper = V_upper
-                ),
-                X
-            )
+    options = M1.options
+
+    @testset "EPCA1" begin
+        test_equivalence(
+            "F, g",
+            M1,
+            A1,
+            EPCA(
+                indim,
+                outdim,
+                F,
+                g,
+                Val((:F, :g));
+                options = options
+            ),
+            X
+        )
 
 
-            test_equivalence(
-                "F, f",
-                M1,
-                A1,
-                EPCA(
-                    indim,
-                    outdim,
-                    F,
-                    f,
-                    Val((:F, :f));
-                    μ=μ,
-                    ϵ=ϵ,
-                    V_init = V_init,
-                    A_init_value = A_init_value,
-                    A_lower = A_lower,
-                    A_upper = A_upper,
-                    V_lower = V_lower,
-                    V_upper = V_upper,
-                    low = low, 
-                    high = high, 
-                    tol = tol, 
-                    maxiter = maxiter
-                ),
-                X
-            )
+        test_equivalence(
+            "F, f",
+            M1,
+            A1,
+            EPCA(
+                indim,
+                outdim,
+                F,
+                f,
+                Val((:F, :f));
+                options = options
+            ),
+            X
+        )
 
-            test_equivalence(
-                "F",
-                M1,
-                A1,
-                EPCA(
-                    indim,
-                    outdim,
-                    F,
-                    Val((:F));
-                    μ=μ,
-                    ϵ=ϵ,
-                    V_init = V_init,
-                    A_init_value = A_init_value,
-                    A_lower = A_lower,
-                    A_upper = A_upper,
-                    V_lower = V_lower,
-                    V_upper = V_upper,
-                    low = low, 
-                    high = high, 
-                    tol = tol, 
-                    maxiter = maxiter
-                ),
-                X
-            )
+        test_equivalence(
+            "F",
+            M1,
+            A1,
+            EPCA(
+                indim,
+                outdim,
+                F,
+                Val((:F));
+                options = options
+            ),
+            X
+        )
 
-            test_equivalence(
-                "F, G",
-                M1,
-                A1,
-                EPCA(
-                    indim,
-                    outdim,
-                    F,
-                    G,
-                    Val((:F, :G));
-                    μ=μ,
-                    ϵ=ϵ,
-                    V_init = V_init,
-                    A_init_value = A_init_value,
-                    A_lower = A_lower,
-                    A_upper = A_upper,
-                    V_lower = V_lower,
-                    V_upper = V_upper
-                ),
-                X
-            )
-        end
+        test_equivalence(
+            "F, G",
+            M1,
+            A1,
+            EPCA(
+                indim,
+                outdim,
+                F,
+                G,
+                Val((:F, :G));
+                options = options
+            ),
+            X
+        )
     end
 
-    if epca2
-        @testset "EPCA2" begin
-            test_equivalence(
-                "G, g",
-                M1,
-                A1,
-                EPCA(
-                    indim,
-                    outdim,
-                    G,
-                    g,
-                    Val((:G, :g));
-                    μ=μ,
-                    ϵ=ϵ,
-                    V_init = V_init,
-                    A_init_value = A_init_value,
-                    A_lower = A_lower,
-                    A_upper = A_upper,
-                    V_lower = V_lower,
-                    V_upper = V_upper
-                ),
-                X
-            )
+    @testset "EPCA2" begin
+        test_equivalence(
+            "G, g",
+            M1,
+            A1,
+            EPCA(
+                indim,
+                outdim,
+                G,
+                g,
+                Val((:G, :g));
+                options = options
+            ),
+            X
+        )
 
-            test_equivalence(
-                "G",
-                M1,
-                A1,
-                EPCA(
-                    indim,
-                    outdim,
-                    G,
-                    Val((:G));
-                    μ=μ,
-                    ϵ=ϵ,
-                    V_init = V_init,
-                    A_init_value = A_init_value,
-                    A_lower = A_lower,
-                    A_upper = A_upper,
-                    V_lower = V_lower,
-                    V_upper = V_upper
-                ),
-                X
-            )
-        end
+        test_equivalence(
+            "G",
+            M1,
+            A1,
+            EPCA(
+                indim,
+                outdim,
+                G,
+                Val((:G));
+                options = options
+            ),
+            X
+        )
     end
 
-    if epca3
-        @testset "EPCA3" begin
-            test_equivalence(
-                "B, g",
-                M1,
-                A1,
-                EPCA(
-                    indim,
-                    outdim,
-                    B,
-                    g,
-                    Val((:B, :g));
-                    μ=μ,
-                    ϵ=ϵ,
-                    V_init = V_init,
-                    A_init_value = A_init_value,
-                    A_lower = A_lower,
-                    A_upper = A_upper,
-                    V_lower = V_lower,
-                    V_upper = V_upper
-                ),
-                X
-            )
+    @testset "EPCA3" begin
+        test_equivalence(
+            "B, g",
+            M1,
+            A1,
+            EPCA(
+                indim,
+                outdim,
+                B,
+                g,
+                Val((:B, :g));
+                options = options
+            ),
+            X
+        )
 
-            test_equivalence(
-                "B, G",
-                M1,
-                A1,
-                EPCA(
-                    indim,
-                    outdim,
-                    B,
-                    G,
-                    Val((:B, :G));
-                    μ=μ,
-                    ϵ=ϵ,
-                    V_init = V_init,
-                    A_init_value = A_init_value,
-                    A_lower = A_lower,
-                    A_upper = A_upper,
-                    V_lower = V_lower,
-                    V_upper = V_upper
-                ),
-                X
-            )
-        end
+        test_equivalence(
+            "B, G",
+            M1,
+            A1,
+            EPCA(
+                indim,
+                outdim,
+                B,
+                G,
+                Val((:B, :G));
+                options = options
+            ),
+            X
+        )
     end
 
-    if epca4
-        @testset "EPCA4" begin
-            test_equivalence(
-                "f, G, g",
-                M1,
-                A1,
-                EPCA(
-                    indim,
-                    outdim,
-                    f,
-                    G,
-                    g,
-                    Val((:f, :G, :g));
-                    μ=μ,
-                    ϵ=ϵ,
-                    V_init = V_init,
-                    A_init_value = A_init_value,
-                    A_lower = A_lower,
-                    A_upper = A_upper,
-                    V_lower = V_lower,
-                    V_upper = V_upper
-                ),
-                X
-            )
-
-            test_equivalence(
-                "F, g",
-                M1,
-                A1,
-                EPCA(
-                    indim,
-                    outdim,
-                    f,
-                    G,
-                    Val((:f, :G));
-                    μ=μ,
-                    ϵ=ϵ,
-                    V_init = V_init,
-                    A_init_value = A_init_value,
-                    A_lower = A_lower,
-                    A_upper = A_upper,
-                    V_lower = V_lower,
-                    V_upper = V_upper
-                ),
-                X
-            )
-        end
-    end
-
-    if epca5
-        @testset "EPCA5" begin
-            test_equivalence(
-                "Bg, g",
-                M1,
-                A1,
-                EPCA(
-                    indim,
-                    outdim,
-                    Bg,
-                    g,
-                    Val((:Bg, :g));
-                    μ=μ,
-                    ϵ=ϵ,
-                    V_init = V_init,
-                    A_init_value = A_init_value,
-                    A_lower = A_lower,
-                    A_upper = A_upper,
-                    V_lower = V_lower,
-                    V_upper = V_upper
-                ),
-                X;
-                rtol=1e-7
-            )
-        end
+    @testset "EPCA4" begin
+        test_equivalence(
+            "Bg, g",
+            M1,
+            A1,
+            EPCA(
+                indim,
+                outdim,
+                Bg,
+                g,
+                Val((:Bg, :g));
+                options = options
+            ),
+            X;
+            rtol=1e-7
+        )
     end
 end

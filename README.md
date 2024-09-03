@@ -1,7 +1,7 @@
 # ExpFamilyPCA.jl
 
 [![Build Status](https://github.com/FlyingWorkshop/ExpFamilyPCA.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/FlyingWorkshop/ExpFamilyPCA.jl/actions/workflows/CI.yml?query=branch%3Amain)
-[![Dev-Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://github.com/FlyingWorkshop/ExpFamilyPCA.jl/dev)
+[![Dev-Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/)
 
 **ExpFamilyPCA.jl** is a Julia package for performing [Exponential Family Principal Component Analysis (EPCA)](https://papers.nips.cc/paper_files/paper/2001/hash/f410588e48dc83f2822a880a68f78923-Abstract.html), a dimensionality reduction technique tailored for data that follows an exponential family distribution. The package provides a flexible framework for applying EPCA to various data types, including Gaussian (normal), Bernoulli (binary), Poisson (count, probabilistic), Gamma (positive, continuous), and other distributions. 
 

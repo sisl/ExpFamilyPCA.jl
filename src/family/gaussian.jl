@@ -44,12 +44,7 @@ A = fit!(normal_epca_model, X; maxiter=200, verbose=true)
 - The link function ``g`` is the identity function, making this model equivalent to classical PCA for Gaussian data.
 - The NormalEPCA function is synonymous with generic PCA but formulated within the EPCA framework.
 """
-function NormalEPCA(
-    indim::Integer,
-    outdim::Integer;
-    μ = 1,
-    ϵ = eps()
-)
+function NormalEPCA(indim::Integer, outdim::Integer)
     # NOTE: equivalent to generic PCA
     # assume χ = ℝ
     B(p, q) = Distances.sqeuclidean(p, q) / 2
@@ -59,9 +54,7 @@ function NormalEPCA(
         outdim,
         B,
         g,
-        Val((:B, :g));
-        μ = μ,
-        ϵ = ϵ
+        Val((:B, :g))
     )
     return epca
 end
@@ -69,17 +62,7 @@ end
 """
 Alias for [`NormalEPCA`](@ref).
 """
-function GaussianEPCA(
-    indim::Integer,
-    outdim::Integer;
-    μ = 1,
-    ϵ = eps()
-)
-    epca = NormalEPCA(
-        indim,
-        outdim;
-        μ = μ,
-        ϵ = ϵ
-    )
+function GaussianEPCA(indim::Integer, outdim::Integer)
+    epca = NormalEPCA(indim, outdim)
     return epca
 end

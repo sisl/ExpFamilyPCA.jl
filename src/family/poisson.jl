@@ -44,24 +44,16 @@ A = fit!(poisson_epca_model, X; maxiter=200, verbose=true)
 The function ``F(x)`` computes the Bregman divergence for the Poisson distribution, which is based on the Poisson log-likelihood.
 The parameter `μ`` must be positive to ensure it is in the valid range for the mean of a Poisson distribution.
 """
-function PoissonEPCA(
-    indim::Integer,
-    outdim::Integer;
-    μ = 1,
-    ϵ = eps()
-)
+function PoissonEPCA(indim::Integer, outdim::Integer)
     # assumes χ = ℕ
-    F(x) = x * log(x + ϵ) - x
-    g(θ) = exp(θ)
-    @assert μ > 0 "For PoissonEPCA, μ must be positive to be in the range of g(θ) = exp(θ)."
+    Bg(x, θ) = exp(θ) - x * θ
+    g = exp
     epca = EPCA(
         indim,
         outdim,
-        F,
+        Bg,
         g,
-        Val((:F, :g)); 
-        μ = μ,
-        ϵ = ϵ
+        Val((:Bg, :g))
     )
     return epca
 end

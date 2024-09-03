@@ -16,6 +16,7 @@ makedocs(
         "ExpFamilyPCA.jl" => "index.md",
         "Math" => "math.md",
         "Bregman Divergences" => "bregman.md",
+        "Family" => "family.md",
         "API Documentation" => "api.md"
     ];
     plugins = [
