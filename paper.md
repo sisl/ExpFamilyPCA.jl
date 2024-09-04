@@ -47,7 +47,7 @@ TODO; discuss other related packages, also cite other JOSS submission
 
 ### PCA
 
-PCA can be formulated as an low-rank matrix approximation problem. For a data matrix $X$, we want to find low-dimensional approximation $\Theta$ that minimizes the the sum of the squared Euclidean distances. Formally, we write
+PCA can be formuxlated as an low-rank matrix approximation problem. For a data matrix $X$, we want to find low-dimensional approximation $\Theta$ that minimizes the the sum of the squared Euclidean distances. Formally, we write
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
