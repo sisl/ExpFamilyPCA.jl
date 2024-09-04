@@ -54,7 +54,10 @@ function NormalEPCA(indim::Integer, outdim::Integer)
         outdim,
         B,
         g,
-        Val((:B, :g))
+        Val((:B, :g));
+        options = Options(
+            V_init_value = 0
+        )
     )
     return epca
 end

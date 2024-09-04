@@ -83,16 +83,16 @@ function _optimize(
     f::Function, 
     lower::Union{Real, Nothing}, 
     upper::Union{Real, Nothing}, 
-    init::AbstractMatrix{T}
+    X0::AbstractMatrix{T}
 ) where T <: Real
     if isnothing(lower) && isnothing(upper)
-        result = optimize(f, init)
+        result = optimize(f, X0)
     elseif isnothing(lower) && !isnothing(upper)
-        result = optimize(f, -Inf, upper, init)
+        result = optimize(f, -Inf, upper, X0)
     elseif !isnothing(lower) && isnothing(upper)
-        result = optimize(f, lower, Inf, init)
+        result = optimize(f, lower, Inf, X0)
     else
-        result = optimize(f, lower, upper, init)
+        result = optimize(f, lower, upper, X0)
     end
 
     return result
@@ -155,6 +155,30 @@ function _single_fit_iter(
     return V, A, loss
 end
 
+function _check_convergence(loss, last_loss; verbose=false)    
+    # Check if loss has converged
+    if !ismissing(last_loss) && last_loss == loss
+        if verbose
+            println("Loss converged early. Stopping iteration.")
+        end
+        return true  # Indicates that the iteration should stop
+    end
+        
+    # Check for NaN loss
+    if isnan(loss)
+        @warn "Loss is NaN. Stopping iteration."
+        return true
+    end
+    
+    # Check for non-finite loss
+    if !isfinite(loss)
+        @warn "Loss diverged. Stopping iteration."
+        return true
+    end
+    
+    return false
+end
+
 function _compress(
     L::Function,
     V::AbstractMatrix{T},
@@ -164,6 +188,7 @@ function _compress(
     steps_per_print::Integer,
     options::Options
 ) where T <: Real
+    last_loss = missing
     for i in 1:maxiter
         A, loss = _single_compress_iter(
             L,
@@ -175,9 +200,10 @@ function _compress(
             maxiter,
             options
         )
-        if isnan(loss) || !isfinite(loss)
+        if _check_convergence(loss, last_loss)
             break
         end
+        last_loss = loss
     end
     return A
 end
@@ -191,6 +217,7 @@ function _fit(
     steps_per_print::Integer,
     options::Options
 ) where T <: Real
+    last_loss = missing
     for i in 1:maxiter
         V, A, loss = _single_fit_iter(
             L,
@@ -202,9 +229,10 @@ function _fit(
             maxiter,
             options
         )
-        if isnan(loss) || !isfinite(loss)
+        if _check_convergence(loss, last_loss)
             break
         end
+        last_loss = loss
     end
     return V, A
 end
