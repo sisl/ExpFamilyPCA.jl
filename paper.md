@@ -31,7 +31,7 @@ bibliography: paper.bib
 
 # Summary
 
-Exponential family principal component analysis (EPCA) [@EPCA] is an extension of the traditional principal component analysis (PCA) [@PCA] technique designed for dimensionality reduction. Unlike PCA, which minimizes a squared loss function suited for real-valued data, EPCA uses a loss function based on the exponential family of distributions. This approach is more appropriate for data that is not real-valued, such as binary and integer data. EPCA with Poisson loss can also effeciently represent probability distributions, making it useful for solving real-world sequential decision making problems through belief compression [@Roy]. Overall, this makes EPCA more effective for data representation and dimensionality reduction, particularly in machine learning and statistical modeling applications involving non-Gaussian data.
+Principal component analysis (PCA) [@PCA] is a popular and well-studied technique for compression. One interpretation of PCA views it as a denoising procedure to recover the original low-dimensional projection from a high-dimensionally sample with Gaussian noise. Exponential family PCA (EPCA) [@EPCA] is an extension of PCA that accomodates noise drawn from any exponential family distribution. This approach is more appropriate for data that is not real-valued, such as binary and integer data. EPCA with Poisson loss can also effeciently represent probability distributions, making it useful for solving real-world sequential decision making problems through belief compression [@Roy]. Overall, this makes EPCA more effective for data representation and dimensionality reduction, particularly in machine learning and statistical modeling applications involving non-Gaussian data.
 
 # Statement of Need
 
@@ -63,17 +63,17 @@ where $\| \cdot \|_F$ is the Frobenius norm. Observe that the objective is equiv
 EPCA is an extension of PCA analogous to how generalized linear models [@GLM] extend linear regression. In particular, EPCA can denoise from any exponential family. @Forester and @azoury showed that maximizing the log-likelihood of any exponential family is equivalent to minimizing the Bregman divergence
 
 $$\begin{aligned} 
-B_F(p \| q) \equiv F(p) - F(q) - f(q)(p - q) 
+B_F(p \| q) \equiv F(p) - F(q) - \langle f(q), p - q \rangle
 \end{aligned}$$
 
 where 
 
 $$\begin{aligned}
     f(\mu) &\equiv \nabla_\mu F(\mu) \\
-    F(\mu) &\equiv \theta \cdot g(\theta) - G(\theta)
+    F(\mu) &\equiv \langle \theta , g(\theta) \rangle - G(\theta)
 \end{aligned}$$
 
-and $g$ is the link function, $g(\theta) = \nabla_\theta G(\theta)$, and $\mu = g(\theta)$. In words, $F$ is the convex conjugate of the log-parition. We can now express the general formulation of the EPCA problem. For any differentiable convex function $G$, the EPCA problem is
+and $\langle \cdot, \cdot\rangle$ denotes an inner product, $g$ is the link function, $g(\theta) = \nabla_\theta G(\theta)$, and $\mu = g(\theta)$. In words, $F$ is the convex conjugate of the log-parition. We can now express the general formulation of the EPCA problem. For any differentiable convex function $G$, the EPCA problem is
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
@@ -91,7 +91,42 @@ where $\mu_0$ in any value in $\mathrm{range}(g)$ and $\epsilon$ is some small p
 
 ### Implementation
 
+The primary object of ExpFamilyPCA.jl is the `EPCA` abstract type. There are many ways to construct an `EPCA` instance. Consider the Poisson EPCA. The cumulant of the Poisson is $G(\theta) = \exp \theta$, so the link function is $\nabla_\theta G(\theta) = \exp \theta$. The convex conjugate is $F(x) = x \log x - x$ and its gradient is $f(x) = \log x$ is the inverse link function as expected under the Legendre transform. 
+
+```julia
+using ExpFamilyPCA
+using LogExpFunctions
+using Distances
+
+G = exp
+g = exp
+F(x) = x *logx(x) - x
+f(x) = log(x + ϵ)
+B = Distances.gkl_divergence
+Bg(x, θ) = exp(θ) - x * θ + xlogx(x) - x
+```
+
+There are many ways to construct a Poisson EPCA.
+
+```julia
+epca(indim, outdim, F, g, Val((:F, :g)))
+epca(indim, outdim, F, f, Val((:F, :f)))
+epca(indim, outdim, F, Val((:F)))
+epca(indim, outdim, F, G, Val((:F, :G)))
+# TODO: add more
+```
+
+The derivation behind these equivalent constructions can be found in the documentation.
+
+`EPCA` has several subclasses `EPCA1`, `EPCA2`, `EPCA3`, and `EPCA4`, none of which are exported
+
+### Variants
+
+ExpFamilyPCA.jl includes nine off-the-shelf `EPCA` subclasses: `BernoulliEPCA`, `BinomialEPCA`, `ContinuousBernoulliECPA`, `GammaEPCA` (`ItakuraSaitoEPCA`), `GaussianEPCA` (`NormalEPCA`), `NegativeBinomialEPCA`, `ParetoEPCA`, `PoissonEPCA`, and `WeibullEPCA`. Specific constructor details can be found in the [documentation](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/). 
+
 ## Usage
+
+
 
 # Acknowledgments
 
