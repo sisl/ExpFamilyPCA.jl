@@ -11,16 +11,13 @@ function smoke_test(
         @test all(isapprox.(Z1, Z2, atol=atol))
         @test all(isapprox.(Z1, X, atol=atol))
         @test all(isapprox.(Z2, X, atol=atol))
-        test_uniqueness(epca.V)
-        test_uniqueness(A1)
-        test_uniqueness(A2)
-        test_uniqueness(Z1)
-        test_uniqueness(Z2)
+        @test !is_constant(epca.V)
+        @test !is_constant(epca.V)
+        @test !is_constant(A1)
+        @test !is_constant(A2)
+        @test !is_constant(Z1)
+        @test !is_constant(Z2)
     end
-end
-
-function test_uniqueness(A::AbstractMatrix)
-    @test length(unique(A)) != 1
 end
 
 function test_equivalence(

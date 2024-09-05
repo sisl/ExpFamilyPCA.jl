@@ -78,6 +78,10 @@ function _invert_legendre(f, options::Options)
     return g
 end
 
+function is_constant_matrix(A::AbstractMatrix)
+    flag = length(unique(A)) == 1
+    return flag
+end
 
 function _optimize(
     f::Function, 
@@ -95,7 +99,10 @@ function _optimize(
         result = optimize(f, lower, upper, X0)
     end
 
-    return result
+    minimizer = Optim.minimizer(result)
+    loss = Optim.minimum(result)
+
+    return minimizer, loss
 end
 
 function _single_compress_iter(
@@ -109,14 +116,12 @@ function _single_compress_iter(
     options::Options
 ) where T <: Real
     @unpack A_lower, A_upper = options
-    result = _optimize(
+    A, loss = _optimize(
         Â->L(Â * V), 
         A_lower,
         A_upper,
         A
     )
-    A = Optim.minimizer(result)
-    loss = Optim.minimum(result)
     if verbose && (i % steps_per_print == 0 || i == 1)
         println("Iteration: $i/$maxiter | Loss: $loss")
     end
@@ -134,14 +139,12 @@ function _single_fit_iter(
     options::Options
 ) where T <: Real
     @unpack V_lower, V_upper = options
-    result = _optimize(
+    V, _ = _optimize(
         V̂->L(A * V̂), 
         V_lower,
         V_upper,
         V
     )
-
-    V = Optim.minimizer(result)
     A, loss = _single_compress_iter(
         L,
         V,
@@ -200,7 +203,7 @@ function _compress(
             maxiter,
             options
         )
-        if _check_convergence(loss, last_loss)
+        if _check_convergence(loss, last_loss; verbose=verbose)
             break
         end
         last_loss = loss
@@ -229,7 +232,7 @@ function _fit(
             maxiter,
             options
         )
-        if _check_convergence(loss, last_loss)
+        if _check_convergence(loss, last_loss; verbose=verbose)
             break
         end
         last_loss = loss
@@ -237,18 +240,33 @@ function _fit(
     return V, A
 end
 
+function _make_sobol_matrix(m, n)
+    # TODO: add support for arbitrary hypercube rescaling
+    s = SobolSeq(n)
+    result = reduce(vcat, [next!(s) for _ = 1:m]')
+    return result
+end
+
 function _initialize_A(epca::EPCA, X::AbstractMatrix{<:Real})
     V = epca.V
-    A_init_value = epca.options.A_init_value
-    T = eltype(V)
     n = size(X)[1]
     outdim = size(V)[1]
-    A = fill(T(A_init_value), n, outdim)
+    if epca.options.A_use_sobol
+        A = _make_sobol_matrix(n, outdim)
+    else
+        A_init_value = epca.options.A_init_value
+        T = eltype(V)
+        A = fill(T(A_init_value), n, outdim)
+    end
     return A
 end
 
 function _initialize_V(indim::Integer, outdim::Integer, options::Options)
-    V = fill(Float64(options.V_init_value), outdim, indim)
+    if options.V_use_sobol
+        V = _make_sobol_matrix(outdim, indim)
+    else
+        V = fill(Float64(options.V_init_value), outdim, indim)
+    end
     return V
 end
 

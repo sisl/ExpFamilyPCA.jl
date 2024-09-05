@@ -3,44 +3,27 @@
 [![Build Status](https://github.com/FlyingWorkshop/ExpFamilyPCA.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/FlyingWorkshop/ExpFamilyPCA.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![Dev-Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/)
 
-**ExpFamilyPCA.jl** is a Julia package for performing [exponential principal component analysis (EPCA)](https://papers.nips.cc/paper_files/paper/2001/hash/f410588e48dc83f2822a880a68f78923-Abstract.html). ExpFamilyPCA.jl supports custom
+**ExpFamilyPCA.jl** is a Julia package for performing [exponential principal component analysis (EPCA)](https://papers.nips.cc/paper_files/paper/2001/hash/f410588e48dc83f2822a880a68f78923-Abstract.html). ExpFamilyPCA.jl supports custom objectives and includes fast implementations for several common distributions.
 
-## Features
 
-- **Flexible EPCA Framework**: Supports multiple exponential family distributions, making it suitable for diverse data types.
-- **Customizable Models**: Easily extendable to include new distributions and custom link functions.
-- **Efficient Optimization**: Implements gradient-based optimization routines for efficient fitting and compression of high-dimensional data.
-- **Data Compression and Reconstruction**: Offers utilities to compress data into a lower-dimensional space and reconstruct it back to its original form.
 
 ## Installation
 
 To install the package, use the Julia package manager. In the Julia REPL, type:
 
 ```julia
-using Pkg
-Pkg.add("ExpFamilyPCA")
+using Pkg; Pkg.add("ExpFamilyPCA")
 ```
 
-## Usage
+## Quickstart
 
-### Importing the Package
 
-To start using ExpFamilyPCA, first import the package:
 
 ```julia
-using ExpFamilyPCA
-```
 
-### Basic Example
 
-Below is a basic example of how to perform EPCA on normally-distributed data:
-
-```julia
-# Define the EPCA model parameters
-indim = 100  # Input dimension (number of features)
-outdim = 10  # Reduced output dimension (number of principal components)
-
-# Create a Normal EPCA model instance
+indim = 200
+outdim = 3
 poisson_epca = PoissonEPCA(indim, outdim)
 
 # Generate some random normally-distributed data
