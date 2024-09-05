@@ -5,7 +5,39 @@
 
 **ExpFamilyPCA.jl** is a Julia package for performing [exponential principal component analysis (EPCA)](https://papers.nips.cc/paper_files/paper/2001/hash/f410588e48dc83f2822a880a68f78923-Abstract.html). ExpFamilyPCA.jl supports custom objectives and includes fast implementations for several common distributions.
 
-## Supported Objectives
+## Documentation
+
+For detailed documentation on each function and additional examples, please refer to the [documentation](https://github.com/FlyingWorkshop/ExpFamilyPCA.jl).
+
+## Installation
+
+To install the package, use the Julia package manager. In the Julia REPL, type:
+
+```julia
+using Pkg; Pkg.add("ExpFamilyPCA")
+```
+
+## Quickstart
+
+```julia
+using ExpFamilyPCA
+
+indim = 5
+X = rand(1:100, (10, indim))  # data matrix to compress
+outdim = 3  # target compression dimension
+
+poisson_epca = PoissonEPCA(indim, outdim)
+
+X_compressed = fit!(poisson_epca, X; maxiter=200, verbose=true)
+
+Y = rand(1:100, (3, indim))  # test data
+Y_compressed = compress(poisson_epca, Y; maxiter=200, verbose=true)
+
+X_reconstructed = decompress(poisson_epca, X_compressed)
+Y_reconstructed = decompress(poisson_epca, Y_compressed)
+```
+
+## Supported Models
 
 | Distribution         | Objective                                              | Link Function $g(\theta)$                            |
 |----------------------|--------------------------------------------------------|------------------------------------------------------|
@@ -22,6 +54,7 @@
 [^1]: Equivalent to minimizing the [Itakura-Saito distance](https://en.wikipedia.org/wiki/Itakura%E2%80%93Saito_distance)
 [^2]: Equivalent to vanilla PCA.
 [^3]: Equivalent to minimizing the generalized KL divergence.
+
 
 ## Custom Distributions
 
@@ -42,7 +75,7 @@ ExpFamilyPCA.jl includes [X] constructors for custom distributions. All constrcu
 1. $G$ is the **log-partition function**. $G$ is strictly convex and continuously differentiable. 
 2. $g$ is the **link function**. It is the derivative of the log-partition $\nabla_\theta G(\theta) = g(\theta)$ and the inverse of the derivative of the convex conjugate of the log-parition $g = f^{-1}$.
 3. $F$ is the **convex conjugate** (under the [Legendre transform](https://en.wikipedia.org/wiki/Legendre_transformation)) of the log-partition $F = G^*$.
-4. $f$ is the **derivative of the convex conjugate **$\nabla_x F(x) = f(x)$ and the inverse of the link function $f = g^{-1}$. 
+4. $f$ is the **derivative of the convex conjugate** $\nabla_x F(x) = f(x)$ and the inverse of the link function $f = g^{-1}$. 
 5. $B_F(p \| q)$ is the [**Bregman divergence**](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/bregman/) induced from $F$.
 
 For the Poisson distribution, these terms take the following values.
@@ -143,55 +176,6 @@ EPCA(indim, outdim, Bg, G, Val((:Bg, :G)))
 #### Selecting Constructors
 
 #### Sobol Initialization
-
-## Installation
-
-To install the package, use the Julia package manager. In the Julia REPL, type:
-
-```julia
-using Pkg; Pkg.add("ExpFamilyPCA")
-```
-
-## Quickstart
-
-
-
-```julia
-
-
-indim = 200
-outdim = 3
-poisson_epca = PoissonEPCA(indim, outdim)
-
-# Generate some random normally-distributed data
-X = randn(1000, indim)  # 1000 observations, each with 100 features
-
-# Fit the model to the data
-X_compressed = fit!(normal_epca_model, X; maxiter=200, verbose=true)
-
-# Compress out-of-distribution data
-Y = randn(100, indim)  # 500 out-of-distribution observations, each with 100 features
-Y_compressed = compress(poisson_epca, X; maxiter=100, verbose=true)
-
-# Decompress the data to approximate the original data
-X_reconstructed = decompress(poisson_epca, X_compressed)
-```
-
-### Working with Other Distributions
-
-The package also supports other distributions such as Bernoulli, Poisson, and Gamma.
-
-
-### List of Supported Models
-
-- `NormalEPCA`: For Gaussian-distributed data. Equivalent to the usual PCA.
-- `BernoulliEPCA`: For binary data (0 or 1).
-- `PoissonEPCA`: For probability profiles and natural-valued data.
-- `GammaEPCA`: For positive, continuous data. The EPCA objective is the Itakura-Saito distance.
-
-## Documentation
-
-For detailed documentation on each function and additional examples, please refer to the [documentation](https://github.com/username/ExpFamilyPCA.jl).
 
 ## Contributing
 
