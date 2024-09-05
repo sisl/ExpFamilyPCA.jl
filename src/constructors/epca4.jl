@@ -31,3 +31,23 @@ function EPCA(
     epca = EPCA4(Bg, g, V, options)
     return epca
 end
+
+function EPCA(
+    indim::Integer,
+    outdim::Integer,
+    Bg::Function,
+    G::Function,
+    ::Val{(:Bg, :G)};
+    options::Options = Options()
+)
+    g = _differentiate(G, options.metaprogramming)
+    epca = EPCA(
+        indim,
+        outdim,
+        Bg,
+        g,
+        Val((:Bg, :g));
+        options = options
+    )
+    return epca
+end
