@@ -1,3 +1,8 @@
+function is_constant_matrix(A::AbstractMatrix)
+    flag = length(unique(A)) == 1
+    return flag
+end
+
 function smoke_test(
     epca::EPCA,
     A1::AbstractMatrix,
@@ -11,12 +16,12 @@ function smoke_test(
         @test all(isapprox.(Z1, Z2, atol=atol))
         @test all(isapprox.(Z1, X, atol=atol))
         @test all(isapprox.(Z2, X, atol=atol))
-        @test !is_constant(epca.V)
-        @test !is_constant(epca.V)
-        @test !is_constant(A1)
-        @test !is_constant(A2)
-        @test !is_constant(Z1)
-        @test !is_constant(Z2)
+        @test !is_constant_matrix(epca.V)
+        @test !is_constant_matrix(epca.V)
+        @test !is_constant_matrix(A1)
+        @test !is_constant_matrix(A2)
+        @test !is_constant_matrix(Z1)
+        @test !is_constant_matrix(Z2)
     end
 end
 
