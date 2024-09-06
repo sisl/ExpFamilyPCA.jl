@@ -102,71 +102,17 @@ B = Distances.gkl_divergence
 
 ### Constructors
 
-#### `EPCA1`
-
-##### $F, g$
 
 ```julia
 EPCA(indim, outdim, F, g, Val((:F, :g)))
-```
-
-##### $F, f$
-
-```julia
 EPCA(indim, outdim, F, f, Val((:F, :f)))
-```
-
-##### $F$
-
-```julia
 EPCA(indim, outdim, F, Val((:F)))
-```
-
-##### $F, G$
-
-```julia
 EPCA(indim, outdim, F, G, Val((:F, :G)))
-```
-
-#### `EPCA2`
-
-##### $G, g$
-
-```julia
 EPCA(indim, outdim, G, g, Val((:G, :g)))
-```
-
-##### $G$
-
-```julia
 EPCA(indim, outdim, G, Val((:G)))
-```
-
-#### `EPCA3`
-
-##### $B, G$
-
-```julia
 EPCA(indim, outdim, B, g, Val((:B, :g)))
-```
-
-##### $B, G$
-
-```julia
 EPCA(indim, outdim, B, G, Val((:B, :G)))
-```
-
-#### `EPCA4`
-
-##### $Bg, g$ 
-
-```julia
 EPCA(indim, outdim, Bg, g, Val((:Bg, :g)))
-```
-
-##### $Bg, G$ 
-
-```julia
 EPCA(indim, outdim, Bg, G, Val((:Bg, :G)))
 ```
 
