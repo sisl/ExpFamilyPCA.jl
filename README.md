@@ -45,17 +45,14 @@ Y_reconstructed = decompress(poisson_epca, Y_compressed)
 | Bernoulli            | $\log(1 + e^{\theta-2x\theta})$                  | $\frac{e^\theta}{1+e^\theta}$                        |
 | Binomial             | $n \log(1 + e^\theta) - x\theta$                   | $\frac{ne^\theta}{1+e^\theta}$                       |
 | Continuous Bernoulli | $\log\Bigg(\frac{e^\theta -1}{\theta}\Bigg) - x\theta$ | $\frac{\theta - 1}{\theta} + \frac{1}{e^\theta - 1}$ |
-| Gamma^1^               | $-\log(-x\theta) - x\theta$                            | $-1/\theta$                                          | 
-| Gaussian^2^             | $\frac{1}{2}(x - \theta)^2$                            | $\theta$                                             |
+| Gamma               | $-\log(-x\theta) - x\theta$                            | $-1/\theta$                                          | 
+| Gaussian             | $\frac{1}{2}(x - \theta)^2$                            | $\theta$                                             |
 | Negative Binomial    | $-r \log(1 - e^\theta) - x\theta$                  | $\frac{-re^\theta}{e^\theta - 1}$                    |
 | Pareto               | $-\log(-1-\theta) + \theta \log m - x \theta$          | $\log m - \frac{1}{\theta+1}$                        |
-| Poisson^3^              | $e^\theta - x \theta$                                  | $e^\theta$                                           |
+| Poisson              | $e^\theta - x \theta$                                  | $e^\theta$                                           |
 | Weibull              | $-\log(-\theta) - x \theta$                            | $-1/\theta$                                          |
 
-- ^1^: Equivalent to minimizing the [Itakura-Saito distance](https://en.wikipedia.org/wiki/Itakura%E2%80%93Saito_distance)
-- ^2^: Equivalent to vanilla PCA.
-- ^3^: Equivalent to minimizing the generalized KL divergence.
-
+*Note: The gamma EPCA objective is equivalent to minimizing the [Itakura-Saito distance](https://en.wikipedia.org/wiki/Itakura%E2%80%93Saito_distance); the Gaussian EPCA objective is equivalent to usual PCA; and the Poisson EPCA objective is equivalent to minimizing the generalized KL divergence.*
 
 ## Custom Distributions
 
