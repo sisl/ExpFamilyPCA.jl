@@ -25,22 +25,6 @@ compress
 decompress
 ```
 
-# Off-the-Shelf Models
-
-```@docs
-NormalEPCA
-PoissonEPCA
-BernoulliEPCA
-GammaEPCA
-```
-
-## Aliases
-
-```@docs
-GaussianEPCA
-ItakuraSaitoEPCA
-```
-
 # Miscellaneous 
 
 ```@docs

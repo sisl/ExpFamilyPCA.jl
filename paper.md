@@ -31,23 +31,23 @@ bibliography: paper.bib
 
 # Summary
 
-Principal component analysis (PCA) [@PCA] is a popular and well-studied technique for compression. One interpretation of PCA views it as a denoising procedure to recover the original low-dimensional projection from a high-dimensionally sample with Gaussian noise. Exponential family PCA (EPCA) [@EPCA] is an extension of PCA that accomodates noise drawn from any exponential family distribution. This approach is more appropriate for data that is not real-valued, such as binary and integer data. EPCA with Poisson loss can also effeciently represent probability distributions, making it useful for solving real-world sequential decision making problems through belief compression [@Roy]. Overall, this makes EPCA more effective for data representation and dimensionality reduction, particularly in machine learning and statistical modeling applications involving non-Gaussian data.
+Dimensionality reduction techniques like principal component analysis (PCA) [@PCA] are important for effeciently handling high-dimensional data in machine learning and data science. While PCA is appropriate for arbitrary real data, exponential family PCA (EPCA) [@EPCA] can be a better choice for compressing binary, integer, and probability data. EPCA with Poisson loss for example is useful for "belief compression" [@Roy] reinforcement learning and sequential decision making. 
 
 # Statement of Need
 
-[ExpFamilyPCA.jl] is a Julia package for exponential family PCA as introduced in @EPCA. While there are many other extensions and varitaions of EPCA (TODO, cite many), we focus on @EPCA because of its direct relevance to belief compression [@Roy] in the field of sequential decision making.
+[ExpFamilyPCA.jl](https://github.com/FlyingWorkshop/ExpFamilyPCA.jl) is a Julia package for exponential PCA as introduced in @EPCA. 
 
-TODO; discuss other related packages, also cite other JOSS submission
+Mention numerical stability.
 
 # Related Work
 
-@LitReview provides a comprehensive review of exponential PCA and its evolution. We provide a summary here. 
+Exponential family PCA was introduced by @EPCA in 2001. Since then several papers have extended the technique. @LitReview provides a comprehensive review of exponential PCA and its evolution. Although later authors have extended EPCA, exponential family PCA remains the most well-studied variation in the field of reinforement learning and sequential decision making [@Roy]. To our knowledge the only implementation of exponential family PCA is in MATLAB [@epca-MATLAB].
 
 ## Exponential Family PCA
 
 ### PCA
 
-PCA can be formuxlated as an low-rank matrix approximation problem. For a data matrix $X$, we want to find low-dimensional approximation $\Theta$ that minimizes the the sum of the squared Euclidean distances. Formally, we write
+PCA can be formuxlated as an low-rank matrix approximation problem. For an data matrix $X \in \mathbb{R}^{n \times m}$, we want to find low-dimensional approximation $\Theta \in \mathbb{R}^{n \times \ell}$ that minimizes the the sum of the squared Euclidean distances. Formally, we write
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}

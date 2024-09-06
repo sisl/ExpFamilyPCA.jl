@@ -14,12 +14,14 @@ PCA [PCA](@cite) is a powerful dimensionality reduction technique that transform
 
 PCA can be formulated as an low-rank matrix approximation problem. For a data matrix $X$, we want to find low-dimensional approximation $\Theta$ that minimizes the the sum of the squared Euclidean distances. Formally, we write
 
-$$\begin{aligned}
+```math
+\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
 & & \|X - \Theta\|_F \\
 & \text{subject to}
 & & \mathrm{rank}\left(\Theta\right) \leq \ell
-\end{aligned}$$
+\end{aligned}
+```
 
 where $\| \cdot \|_F$ is the Frobenius norm. Observe that the objective is equivalent to maximizing the log-likelihood of a Gaussian model. Consequently, PCA can be viewed as a denoising procedure that recovers the true low-dimensional signal $\Theta$ from a normally noised high-dimensional measurement $X$. 
 

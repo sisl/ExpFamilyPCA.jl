@@ -14,9 +14,23 @@ makedocs(
     modules = [ExpFamilyPCA],
     pages = [
         "ExpFamilyPCA.jl" => "index.md",
-        "Math" => "math.md",
-        "Bregman Divergences" => "bregman.md",
-        "Family" => "family.md",
+        "Math" => [
+            "Exponential Family PCA" => "math/epca.md",
+            "Bregman Divergences" => "math/bregman.md",
+            "EPCA Objective Derivations" => "math/derivations.md",
+            "Gamma EPCA and the Itakura-Saito Distance" => "math/gamma.md",
+        ],
+        "Constructors" => [
+            "Bernoulli" => "constructors/bernoulli.md",
+            "Binomial" => "constructors/binomial.md",
+            "Continuous Bernoulli" => "constructors/continuous_bernoulli.md",
+            "Gamma" => "constructors/gamma.md",
+            "Gaussian" => "constructors/gaussian.md",
+            "Negative Binomial" => "constructors/negative_binomial.md",
+            "Pareto" => "constructors/pareto.md",
+            "Poisson" => "constructors/poisson.md",
+            "Weibull" => "constructors/weibull.md",
+        ],
         "API Documentation" => "api.md"
     ];
     plugins = [

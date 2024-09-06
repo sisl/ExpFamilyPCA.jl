@@ -1,3 +1,5 @@
+# Gamma EPCA
+
 The cumulant of the gamma distribution is $G(\theta) = -\log(-\theta)$, so the the link function (its derivative) is $g(\theta) = \nabla_\theta G(\theta) = -\frac{1}{\theta}$. From the Legendre transform, we know that $f(x) = g^{-1}(x) = -\frac{1}{x}$ and 
 
 $$\begin{aligned}
