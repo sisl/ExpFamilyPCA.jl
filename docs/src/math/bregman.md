@@ -1,7 +1,5 @@
 # Bregman Divergences
 
-
-
 ## Definition
 
 A Bregman divergence [Bregman](@cite) denoted $B_F$ is defined with respect to a strictly convex and differentiable function $F: \Omega \to \mathbb{R}$, by 
@@ -10,7 +8,7 @@ A Bregman divergence [Bregman](@cite) denoted $B_F$ is defined with respect to a
 B_F(p, q) = F(p) - F(q) - \langle f(p), p - q \rangle
 ```
 
-where $\langle , \rangle$ denotes an inner product and $f(x) = \nabla_x F(x)$. Intuitively, the Bregman divergence expresses the difference between at $p$ between $F$ and its first-order Taylor expansion about $q$. We use Bregman divergences to measure the difference between two probability distributions. The Bregman divergence is also sometimes called the Bregman distance, but it is not a metric since it is usually satisfies neither symmetry nor the triangle inequality.
+where $\langle , \rangle$ denotes an inner product and $f(x) = \nabla_x F(x)$. Intuitively, the Bregman divergence expresses the difference at $p$ between $F$ and its first-order Taylor expansion about $q$. We use Bregman divergences to measure the difference between two probability distributions. The Bregman divergence is also sometimes called the Bregman distance, but it is not a metric since it usually satisfies neither symmetry nor the triangle inequality.
 
 ## Relationship to the Exponential Family
 
@@ -22,7 +20,7 @@ A distribution is said to be in the natural *exponential family* if its density 
 p(x ; \theta) = P_0(x) \exp(\langle x, \theta \rangle - G(\theta) )
 ```
 
-where $x$ and $\theta$ are vectors in $\mathbb{R}^d$, $P_0$ is a known function that does not depend on $\theta$, and $G$ is the log-partition function.  Intuitively, the log-parition function ensure that the $p$ is a valid distribution, meaning it integrates to $1$
+where $x$ and $\theta$ are vectors in $\mathbb{R}^d$, $P_0$ is a known function that does not depend on $\theta$, and $G$ is the log-partition function.  Intuitively, the log-partition function ensures that the $p$ is a valid distribution, meaning it integrates to $1$
 
 ```math
 G(\theta) = \log \int P_0(x) \exp(\langle x, \theta \rangle) dx.
@@ -38,13 +36,13 @@ To understand the relationship between expectation parameters and natural parame
 h^*(\tilde{x}) \equiv \tilde{x} \cdot x - f(x).
 ```
 
-We say that $h^*$ is the *dual* of $h$. Let $F$ be the dual $G$
+We say that $h^*$ is the *dual* (or convex conjugate) of $h$. Let $F$ be the dual $G$
 
 ```math
 F(\mu) \equiv \langle \mu, \theta \rangle - G(\theta).
 ```
 
-Observe that the gradient of the dual is the inverse of gradient of the log-partition,
+Observe that the gradient of the dual is the inverse of the gradient of the log-partition,
 
 ```math
 \begin{aligned}
@@ -58,7 +56,7 @@ f(\mu)
 \end{aligned}
 ```
 
-In summary, the paramaterizations are related by the Legendre transformations 
+In summary, the parameterizations are related by the Legendre transformations 
 
 ```math
 \nabla_\theta G(\theta) = g(\theta) = \mu
@@ -72,7 +70,7 @@ and
 
 ### Bregman Divergences as Loss Functions
 
-The key relationship between members of the exponential family and the Bregman divergence is this: minimizing the negative log-lilihood of $p(x, \theta)$ is equivalent to minimizing the Bregman divergence $B_F$. To see this, first recall that the negative log-liklihood for members of the exponential family is $G(\theta) - \langle x, \theta \rangle$. 
+The key relationship between members of the exponential family and the Bregman divergence is this: minimizing the negative log-likelihood of $p(x, \theta)$ is equivalent to minimizing the Bregman divergence $B_F$. To see this, first recall that the negative log-likelihood for members of the exponential family is $G(\theta) - \langle x, \theta \rangle$. 
 
 ```math
 \langle x, \theta \rangle - G(\theta).
