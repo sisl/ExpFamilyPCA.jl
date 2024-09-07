@@ -129,6 +129,31 @@ EPCA(indim, outdim, Bg, g, Val((:Bg, :g)))
 EPCA(indim, outdim, Bg, G, Val((:Bg, :G)))
 ```
 
+## Example Usage
+
+Using ExpFamilyPCA.jl is simple. We provide a short example below.
+
+```julia
+using ExpFamilyPCA
+
+indim = 5
+X = rand(1:100, (10, indim))  # data matrix to compress
+outdim = 3  # target compression dimension
+
+poisson_epca = PoissonEPCA(indim, outdim)
+
+X_compressed = fit!(poisson_epca, X; maxiter=200, verbose=true)
+
+Y = rand(1:100, (3, indim))  # test data
+Y_compressed = compress(poisson_epca, Y; maxiter=200, verbose=true)
+
+X_reconstructed = decompress(poisson_epca, X_compressed)
+Y_reconstructed = decompress(poisson_epca, Y_compressed)
+```
+
+## TODO: pottery demo
+## TODO: connection w/ belief compression package
+
 # Acknowledgments
 
 We thank Arec Jamgochian, Robert Moss, and Dylan Asmar for their help and guidance.
