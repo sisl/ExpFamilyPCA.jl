@@ -37,7 +37,7 @@ Dimensionality reduction techniques like principal component analysis (PCA) [@PC
 
 [ExpFamilyPCA.jl](https://github.com/FlyingWorkshop/ExpFamilyPCA.jl) is a Julia package for exponential PCA as introduced in @EPCA. 
 
-Mention numerical stability.
+Mention numerical stability. Unsure what to write here, since the summary already seems to cover the "need" of the package.
 
 # Related Work
 
@@ -45,34 +45,32 @@ Exponential family PCA was introduced by @EPCA in 2001. Since then several paper
 
 ## Exponential Family PCA
 
-PCA can be viewed as a [Gaussian denoising procedure]. EPCA extends the PCA formulation to accomodate noise drawn from *any* exponential family distribution.[^1] Explicitly, the EPCA objective is
+PCA can be viewed as a Gaussian denoising procedure (see discussion in the [documentation](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/math/epca/#The-Probabilistic-View)). EPCA extends the PCA formulation to accomodate noise drawn from *any* exponential family distribution.[^1] Explicitly, the EPCA objective is
 
-```math
-\begin{aligned}
+$$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
 & & B_F(X \| g(\Theta)) + \epsilon B_F(\mu \| g(\Theta)) \\
 & \text{subject to}
 & & \mathrm{rank}\left(\Theta\right) \leq \ell
-\end{aligned}
-```
+\end{aligned}$$
+
 where $g$ is the link function (the derivative of the log-partition $g(\theta) = \nabla_\theta G(\theta)$), $F$ is the convex conjugate of the log-partition, and both $\epsilon > 0$ and $\mu \in \text{Range(g)}$ are both hyperparameters used to regularize the objective (i.e., ensure real stationary points).
 
 ## Implementation
 
 ### Supported Distributions
 
-| `ExpFamilyPCA.jl`                   | Objective                                              | Link Function $g(\theta)$                            |
-|-------------------------------------|--------------------------------------------------------|------------------------------------------------------|
-| `BernoulliEPCA`                     | $\log(1 + e^{\theta-2x\theta})$                        | $\frac{e^\theta}{1+e^\theta}$                        |
-| `BinomialEPCA`                      | $n \log(1 + e^\theta) - x\theta$                       | $\frac{ne^\theta}{1+e^\theta}$                       |
-| `ContinuousBernoulliEPCA`           | $\log\Bigg(\frac{e^\theta -1}{\theta}\Bigg) - x\theta$ | $\frac{\theta - 1}{\theta} + \frac{1}{e^\theta - 1}$ |
-| `GammaEPCA` or `ItakuraSaitoEPCA`   | $-\log(-x\theta) - x\theta$                            | $-1/\theta$                                          | 
-| `GaussianEPCA` or `NormalEPCA`      | $\frac{1}{2}(x - \theta)^2$                            | $\theta$                                             |
-| `NegativeBinomialEPCA`              | $-r \log(1 - e^\theta) - x\theta$                      | $\frac{-re^\theta}{e^\theta - 1}$                    |
-| `ParetoEPCA`                        | $-\log(-1-\theta) + \theta \log m - x \theta$          | $\log m - \frac{1}{\theta+1}$                        |
-| `PoissonEPCA`                       | $e^\theta - x \theta$                                  | $e^\theta$                                           |
-| `WeibullEPCA`                       | $-\log(-\theta) - x \theta$                            | $-1/\theta$                                          |
-
+| Distribution         | Objective                                              | Link Function $g(\theta)$                            |
+|----------------------|--------------------------------------------------------|------------------------------------------------------|
+| Bernoulli            | $\log(1 + e^{\theta-2x\theta})$                        | $\frac{e^\theta}{1+e^\theta}$                        |
+| Binomial             | $n \log(1 + e^\theta) - x\theta$                       | $\frac{ne^\theta}{1+e^\theta}$                       |
+| Continuous Bernoulli | $\log\Bigg(\frac{e^\theta -1}{\theta}\Bigg) - x\theta$ | $\frac{\theta - 1}{\theta} + \frac{1}{e^\theta - 1}$ |
+| Gamma                | $-\log(-x\theta) - x\theta$                            | $-1/\theta$                                          | 
+| Gaussian             | $\frac{1}{2}(x - \theta)^2$                            | $\theta$                                             |
+| Negative Binomial    | $-r \log(1 - e^\theta) - x\theta$                      | $\frac{-re^\theta}{e^\theta - 1}$                    |
+| Pareto               | $-\log(-1-\theta) + \theta \log m - x \theta$          | $\log m - \frac{1}{\theta+1}$                        |
+| Poisson              | $e^\theta - x \theta$                                  | $e^\theta$                                           |
+| Weibull              | $-\log(-\theta) - x \theta$                            | $-1/\theta$                                          |
 
 The gamma EPCA objective is equivalent to minimizing the [Itakura-Saito distance](https://en.wikipedia.org/wiki/Itakura%E2%80%93Saito_distance). The Gaussian EPCA objective is equivalent to usual PCA. The Poisson EPCA objective is equivalent to minimizing the generalized KL divergence.
 
@@ -84,9 +82,9 @@ $$
 \frac{1}{2\pi} \int_{-\pi}^{\pi} \Bigg[ \frac{P(\omega)}{\hat{P}(\omega)} - \log \frac{P(\omega)}{\hat{P}{\omega}} - 1\Bigg] d\omega
 $$
 
-effeciently in Julia even though the two are [equivalent](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/math/).
+effeciently in Julia even though the two are equivalent (see discussion in the [documentation](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/math/gamma/)).
 
-ExpFamilyPCA.jl includes 10 constructors for custom distributions. All constrcutors are theoretically equivalent though some may be faster in practice. To showcase each constructor, we walk through how to construct a Poisson EPCA instance with each constructor. First, we provide a quick recap on notation.
+ExpFamilyPCA.jl includes 10 constructors for custom distributions. All constrcutors are theoretically equivalent though some may be faster in practice. To showcase each constructor, we walk through how to construct a Poisson EPCA instance with each constructor. First, we provide a quick recap on notation (see discussion in the [documentation](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/math/bregman/)).
 
 1. $G$ is the **log-partition function**. $G$ is strictly convex and continuously differentiable. 
 2. $g$ is the **link function**. It is the derivative of the log-partition $\nabla_\theta G(\theta) = g(\theta)$ and the inverse of the derivative of the convex conjugate of the log-parition $g = f^{-1}$.
