@@ -71,7 +71,7 @@ effeciently in Julia even though the two are [equivalent](https://flyingworkshop
 
 <!-- TODO: update the link to show the gamma math -->
 
-ExpFamilyPCA.jl includes [X] constructors for custom distributions. All constrcutors are theoretically equivalent though some may be faster in practice. To showcase each constructor, we walk through how to construct a Poisson EPCA instance with each constructor. First, we provide a quick recap on notation.
+ExpFamilyPCA.jl includes 10 constructors for custom distributions. All constrcutors are theoretically equivalent though some may be faster in practice. To showcase each constructor, we walk through how to construct a Poisson EPCA instance with each constructor. First, we provide a quick recap on notation.
 
 <!-- TODO: double check if both G and F are strictly convesx -->
 
