@@ -61,23 +61,20 @@ where $g$ is the link function (the derivative of the log-partition $g(\theta) =
 
 ### Supported Distributions
 
-| Distribution         | `ExpFamilyPCA.jl` | Objective                                              | Link Function $g(\theta)$                            |
-|----------------------|--|--------------------------------------------------------|------------------------------------------------------|
-| Bernoulli            | `BernoulliEPCA` | $\log(1 + e^{\theta-2x\theta})$                  | $\frac{e^\theta}{1+e^\theta}$                        |
-| Binomial             | `BinomialEPCA`| $n \log(1 + e^\theta) - x\theta$                   | $\frac{ne^\theta}{1+e^\theta}$                       |
-| Continuous Bernoulli | `ContinuousBernoulliEPCA` | $\log\Bigg(\frac{e^\theta -1}{\theta}\Bigg) - x\theta$ | $\frac{\theta - 1}{\theta} + \frac{1}{e^\theta - 1}$ |
-| Gamma<sup>1</sup>               | `GammaEPCA` or `ItakuraSaitoEPCA` | $-\log(-x\theta) - x\theta$                            | $-1/\theta$                                          | 
-| Gaussian<sup>2</sup>             | `GaussianEPCA` or `NormalEPCA` | $\frac{1}{2}(x - \theta)^2$                            | $\theta$                                             |
-| Negative Binomial    | `NegativeBinomialEPCA` | $-r \log(1 - e^\theta) - x\theta$                  | $\frac{-re^\theta}{e^\theta - 1}$                    |
-| Pareto               | `ParetoEPCA` | $-\log(-1-\theta) + \theta \log m - x \theta$          | $\log m - \frac{1}{\theta+1}$                        |
-| Poisson<sup>3</sup>              | `PoissonEPCA` | $e^\theta - x \theta$                                  | $e^\theta$                                           |
-| Weibull              | `WeibullEPCA` | $-\log(-\theta) - x \theta$                            | $-1/\theta$                                          |
+| `ExpFamilyPCA.jl`                   | Objective                                              | Link Function $g(\theta)$                            |
+|-------------------------------------|--------------------------------------------------------|------------------------------------------------------|
+| `BernoulliEPCA`                     | $\log(1 + e^{\theta-2x\theta})$                        | $\frac{e^\theta}{1+e^\theta}$                        |
+| `BinomialEPCA`                      | $n \log(1 + e^\theta) - x\theta$                       | $\frac{ne^\theta}{1+e^\theta}$                       |
+| `ContinuousBernoulliEPCA`           | $\log\Bigg(\frac{e^\theta -1}{\theta}\Bigg) - x\theta$ | $\frac{\theta - 1}{\theta} + \frac{1}{e^\theta - 1}$ |
+| `GammaEPCA` or `ItakuraSaitoEPCA`   | $-\log(-x\theta) - x\theta$                            | $-1/\theta$                                          | 
+| `GaussianEPCA` or `NormalEPCA`      | $\frac{1}{2}(x - \theta)^2$                            | $\theta$                                             |
+| `NegativeBinomialEPCA`              | $-r \log(1 - e^\theta) - x\theta$                      | $\frac{-re^\theta}{e^\theta - 1}$                    |
+| `ParetoEPCA`                        | $-\log(-1-\theta) + \theta \log m - x \theta$          | $\log m - \frac{1}{\theta+1}$                        |
+| `PoissonEPCA`                       | $e^\theta - x \theta$                                  | $e^\theta$                                           |
+| `WeibullEPCA`                       | $-\log(-\theta) - x \theta$                            | $-1/\theta$                                          |
 
-<sup>1</sup>: The gamma EPCA objective is equivalent to minimizing the [Itakura-Saito distance](https://en.wikipedia.org/wiki/Itakura%E2%80%93Saito_distance).
 
-<sup>2</sup>: The Gaussian EPCA objective is equivalent to usual PCA
-
-<sup>3</sup>: The Poisson EPCA objective is equivalent to minimizing the generalized KL divergence.
+The gamma EPCA objective is equivalent to minimizing the [Itakura-Saito distance](https://en.wikipedia.org/wiki/Itakura%E2%80%93Saito_distance). The Gaussian EPCA objective is equivalent to usual PCA. The Poisson EPCA objective is equivalent to minimizing the generalized KL divergence.
 
 ### Custom Distributions
 
