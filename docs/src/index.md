@@ -30,14 +30,14 @@ X_reconstructed = decompress(poisson_epca, X_compressed)
 Y_reconstructed = decompress(poisson_epca, Y_compressed)
 ```
 
-## Supported Models
+## Supported Distributions
 
 | Distribution         | `ExpFamilyPCA.jl`                 | Objective                                                         | Link Function `` g(\theta) ``                                    |
 |----------------------|-----------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------|
 | Bernoulli            | `BernoulliEPCA`                   | `` \log(1 + e^{\theta - 2x\theta}) ``                             | `` \frac{e^\theta}{1 + e^\theta} ``                              |
 | Binomial             | `BinomialEPCA`                    | `` n \log(1 + e^\theta) - x\theta ``                              | `` \frac{ne^\theta}{1 + e^\theta} ``                             |
 | Continuous Bernoulli | `ContinuousBernoulliEPCA`         | `` \log\left(\frac{e^\theta - 1}{\theta}\right) - x\theta ``      | `` \frac{\theta - 1}{\theta} + \frac{1}{e^\theta - 1} ``         |
-| Gamma¹    | `GammaEPCA` or `ItakuraSaitoEPCA` | `` -\log(-x\theta) - x\theta ``                                   | `` -\frac{1}{\theta} ``                                          | 
+| Gamma¹    | `GammaEPCA` or `ItakuraSaitoEPCA` | `` -\log(-\theta) - x\theta ``                                   | `` -\frac{1}{\theta} ``                                          | 
 | Gaussian² | `GaussianEPCA` or `NormalEPCA`    | `` \frac{1}{2}(x - \theta)^2 ``                                   | `` \theta ``                                                     |
 | Negative Binomial    | `NegativeBinomialEPCA`            | `` -r \log(1 - e^\theta) - x\theta ``                             | `` \frac{-re^\theta}{e^\theta - 1} ``                            |
 | Pareto               | `ParetoEPCA`                      | `` -\log(-1 - \theta) + \theta \log m - x\theta ``                | `` \log m - \frac{1}{\theta + 1} ``                              |

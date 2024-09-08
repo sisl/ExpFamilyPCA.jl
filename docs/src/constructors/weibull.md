@@ -1,20 +1,14 @@
 # Weibull EPCA
 
-## Description
+| Name             | `WeibullEPCA`                     |
+|------------------|-----------------------------------|
+| ``G(\theta)``    | ``G(\theta) = -\log(-\theta) - \log k``     |
+| ``g(\theta)``    | ``-\frac{1}{\theta}``             |
+| ``\mu`` Space    | ``\mathbb{R} / \{ 0 \}``                   |
+| ``\Theta`` Space | ``(-\infty, 0)``                  |
+| Appropriate Data | nonnegative continuous               |
 
-## Math
-
-The cumulant of the Weibull distribution with a known shape $k$ is
-
-```math
-G(\theta) = -\log(-\theta) - \log k
-```
-
-so the link function is
-
-```math
-g(\theta) = - \frac{1}{\theta}.
-```
+`WeibullEPCA` omits it the known shape parameter ``k`` since it does not affect the Weibull EPCA objective.
 
 ## Documentation
 

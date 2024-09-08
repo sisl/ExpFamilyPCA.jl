@@ -1,20 +1,14 @@
 # Negative Binomial EPCA
 
-## Description
+| Name             | `NegativeBinomialEPCA`            |
+|------------------|-----------------------------------|
+| ``G(\theta)``    | ``-r \log(1 - e^\theta)`` |
+| ``g(\theta)``    | ``- \frac{r \exp \theta}{1 - \exp \theta}`` |
+| ``\mu`` Space    | ``(0, \infty)``                   |
+| ``\Theta`` Space | ``(-\infty, 0)``                  |
+| Appropriate Data | count                             |
+| ``r``            | ``r > 0`` (number of failures)    |
 
-## Math
-
-The cumulant of the negative binomial distribution with a known number of failures $r$ is
-
-```math
-G(\theta) = -r \log(1 - \exp \theta)
-```
-
-so the link function is
-
-```math
-g(\theta) = - \frac{r \exp \theta}{1 - \exp \theta}.
-```
 
 ## Documentation
 

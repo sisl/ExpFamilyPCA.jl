@@ -49,7 +49,7 @@ https://m3g.github.io/JuliaNotes.jl/stable/publish_docs/
 
 julia> ] activate docs
 
-julia> using LiveServer 
+julia> using ExpFamilyPCA; using LiveServer 
 
 julia> servedocs()
 

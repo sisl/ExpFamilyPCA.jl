@@ -16,6 +16,15 @@ so the link function is
 g(\theta) = \log m - \frac{1}{\theta + 1}.
 ```
 
+| Name             | `ParetoEPCA`                      |
+|------------------|-----------------------------------|
+| ``G(\theta)``    | ``-\log(-1 - \theta) + \theta \log m`` |
+| ``g(\theta)``    | ``\log m - \frac{1}{\theta + 1}`` |
+| ``\mu`` Space    | ``(0, \infty)``                   |
+| ``\Theta`` Space | ``(-1, \infty)``                  |
+| Appropriate Data | continuous                        |
+| ``m``            | ``m > 0`` (minimum value)                         |
+
 ## Documentation
 
 ```@docs

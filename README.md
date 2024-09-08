@@ -45,7 +45,7 @@ Y_reconstructed = decompress(poisson_epca, Y_compressed)
 | Bernoulli            | `BernoulliEPCA` | $\log(1 + e^{\theta-2x\theta})$                  | $\frac{e^\theta}{1+e^\theta}$                        |
 | Binomial             | `BinomialEPCA`| $n \log(1 + e^\theta) - x\theta$                   | $\frac{ne^\theta}{1+e^\theta}$                       |
 | Continuous Bernoulli | `ContinuousBernoulliEPCA` | $\log\Bigg(\frac{e^\theta -1}{\theta}\Bigg) - x\theta$ | $\frac{\theta - 1}{\theta} + \frac{1}{e^\theta - 1}$ |
-| Gamma<sup>1</sup>               | `GammaEPCA` or `ItakuraSaitoEPCA` | $-\log(-x\theta) - x\theta$                            | $-1/\theta$                                          | 
+| Gamma<sup>1</sup>               | `GammaEPCA` or `ItakuraSaitoEPCA` | $-\log(-\theta) - x\theta$                            | $-1/\theta$                                          | 
 | Gaussian<sup>2</sup>             | `GaussianEPCA` or `NormalEPCA` | $\frac{1}{2}(x - \theta)^2$                            | $\theta$                                             |
 | Negative Binomial    | `NegativeBinomialEPCA` | $-r \log(1 - e^\theta) - x\theta$                  | $\frac{-re^\theta}{e^\theta - 1}$                    |
 | Pareto               | `ParetoEPCA` | $-\log(-1-\theta) + \theta \log m - x \theta$          | $\log m - \frac{1}{\theta+1}$                        |
