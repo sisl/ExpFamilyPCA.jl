@@ -1,13 +1,13 @@
 # ExpFamilyPCA.jl
 
-[![Build Status](https://github.com/FlyingWorkshop/ExpFamilyPCA.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/FlyingWorkshop/ExpFamilyPCA.jl/actions/workflows/CI.yml?query=branch%3Amain)
-[![Dev-Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/)
+[![Build Status](https://github.com/sisl/ExpFamilyPCA.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/sisl/ExpFamilyPCA.jl/actions/workflows/CI.yml?query=branch%3Amain)
+[![Dev-Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://sisl.github.io/ExpFamilyPCA.jl/dev/)
 
 **ExpFamilyPCA.jl** is a Julia package for performing [exponential principal component analysis (EPCA)](https://papers.nips.cc/paper_files/paper/2001/hash/f410588e48dc83f2822a880a68f78923-Abstract.html). ExpFamilyPCA.jl supports custom objectives and includes fast implementations for several common distributions.
 
 ## Documentation
 
-For detailed documentation on each function and additional examples, please refer to the [documentation](https://github.com/FlyingWorkshop/ExpFamilyPCA.jl).
+For detailed documentation on each function and additional examples, please refer to the [documentation](https://github.com/sisl/ExpFamilyPCA.jl).
 
 ## Installation
 
@@ -67,7 +67,7 @@ $$
 \frac{1}{2\pi} \int_{-\pi}^{\pi} \Bigg[ \frac{P(\omega)}{\hat{P}(\omega)} - \log \frac{P(\omega)}{\hat{P}{\omega}} - 1\Bigg] d\omega
 $$
 
-effeciently in Julia even though the two are [equivalent](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/math/).
+effeciently in Julia even though the two are [equivalent](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/).
 
 <!-- TODO: update the link to show the gamma math -->
 
@@ -79,7 +79,7 @@ ExpFamilyPCA.jl includes 10 constructors for custom distributions. All constrcut
 2. $g$ is the **link function**. It is the derivative of the log-partition $\nabla_\theta G(\theta) = g(\theta)$ and the inverse of the derivative of the convex conjugate of the log-parition $g = f^{-1}$.
 3. $F$ is the **convex conjugate** (under the [Legendre transform](https://en.wikipedia.org/wiki/Legendre_transformation)) of the log-partition $F = G^*$.
 4. $f$ is the **derivative of the convex conjugate** $\nabla_x F(x) = f(x)$ and the inverse of the link function $f = g^{-1}$. 
-5. $B_F(p \| q)$ is the [**Bregman divergence**](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/bregman/) induced from $F$.
+5. $B_F(p \| q)$ is the [**Bregman divergence**](https://sisl.github.io/ExpFamilyPCA.jl/dev/bregman/) induced from $F$.
 
 For the Poisson distribution, these terms take the following values.
 

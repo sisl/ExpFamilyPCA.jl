@@ -45,16 +45,16 @@ Exponential family PCA was introduced by @EPCA and several papers have extended 
 
 ## Exponential Family PCA
 
-PCA can be interpreted as a Gaussian denoising procedure (see discussion in the [documentation](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/math/epca/#The-Probabilistic-View)). EPCA extends this concept by generalizing PCA to handle noise drawn from *any* exponential family distribution.[^1] 
+PCA can be interpreted as a Gaussian denoising procedure (see discussion in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/epca/#The-Probabilistic-View)). EPCA extends this concept by generalizing PCA to handle noise drawn from *any* exponential family distribution.[^1] 
 
 Before describing the EPCA objective, we introduce the necessary notation:
 
 
 1. $G$ is the **log-partition function** of some exponential family distribution.
 2. $g$ is the **link function** and the derivative of $G$. Since $G$ is strictly convex and continuously differentiable, $g$ is invertible.
-3. $F$ is the **convex conjugate** or dual of $G$. A deeper discussion of duality and the Legendre transform is provided in the [documentation](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/math/bregman/#The-Legendre-Transform-and-Parameter-Duality).
+3. $F$ is the **convex conjugate** or dual of $G$. A deeper discussion of duality and the Legendre transform is provided in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/#The-Legendre-Transform-and-Parameter-Duality).
 4. $f$ is the derivative of $F$. Since $F$ is the convex conjugate of $G$, its derivative is the inverse link function $f = g^{-1}$.
-5. $B_F(p \| q)$ is the [**Bregman divergence**](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/bregman/) induced from $F$.
+5. $B_F(p \| q)$ is the [**Bregman divergence**](https://sisl.github.io/ExpFamilyPCA.jl/dev/bregman/) induced from $F$.
 
 
 The EPCA objective is then written
@@ -66,7 +66,7 @@ $$\begin{aligned}
 & & \mathrm{Rank}\left(\Theta\right) \leq \ell
 \end{aligned}$$
 
-where $\Theta$ is the natural parameter matrix and both $\epsilon > 0$ and $\mu \in \mathrm{Range}(g)$ are regularization hyperparameters that ensure the optimum is finite. See the [documentation](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/math/epca/) for a deeper discussion of the EPCA objective.
+where $\Theta$ is the natural parameter matrix and both $\epsilon > 0$ and $\mu \in \mathrm{Range}(g)$ are regularization hyperparameters that ensure the optimum is finite. See the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/epca/) for a deeper discussion of the EPCA objective.
 
 [^1]: More generally, the EPCA objective can be induced from any contiuously-differentiable, strictly convex function.
 
@@ -92,7 +92,7 @@ X_reconstructed = decompress(poisson_epca, X_compressed)
 Y_reconstructed = decompress(poisson_epca, Y_compressed)
 ```
 
-More details can be found in the [documentation](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/api/).
+More details can be found in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/api/).
 
 ## Features
 
@@ -120,7 +120,7 @@ $$
 \frac{1}{2\pi} \int_{-\pi}^{\pi} \Bigg[ \frac{P(\omega)}{\hat{P}(\omega)} - \log \frac{P(\omega)}{\hat{P}{\omega}} - 1\Bigg] d\omega
 $$
 
-effeciently in Julia even though the two are equivalent (see [documentation](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/math/gamma/)).
+effeciently in Julia even though the two are equivalent (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/gamma/)).
 
 There are many equivalent formulations of the EPCA objective and ExpFamilyPCA.jl supports many of them. Some constructors create objects that fit, decompress, and compress faster than others. To provide an example, we show how users can create `PoissonEPCA` using custom constructors. Each custom constructor requires some information about the desired distribution. The table below shows an example of that information for the Poisson distribution.
 
