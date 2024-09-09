@@ -46,12 +46,11 @@ Observe that the gradient of the dual is the inverse of the gradient of the log-
 
 ```math
 \begin{aligned}
-
 f(\mu) 
 &\equiv \nabla_\mu F(\mu) \\
 &= \nabla_\mu \Big[ \langle \mu, \theta \rangle - G(\theta)\Big] \\
-&= \theta + \langle \mu, \nabla_\mu \theta \rangle - \langle g(\theta), \nabla_\mu \theta \rangle &\text{(``\theta`` is a function of ``\mu``)}\\
-&= \theta &\text{(``\mu = g(\theta)``)} \\
+&= \theta + \langle \mu, \nabla_\mu \theta \rangle - \langle g(\theta), \nabla_\mu \theta \rangle \\
+&= \theta \\
 &= g^{-1}(\mu).
 \end{aligned}
 ```
