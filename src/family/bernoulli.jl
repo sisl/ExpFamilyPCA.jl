@@ -1,15 +1,15 @@
 """
     BernoulliEPCA(indim::Integer, outdim::Integer; options = Options(μ = 0.5))
 
-Bernoulli EPCA.
+An EPCA model with Bernoulli loss.
 
 # Arguments
-- `indim::Integer`: The dimension of the input space.
-- `outdim::Integer`: The dimension of the latent (output) space.
-- `options`: Optional parameters.
+- `indim::Integer`: Dimension of the input space.
+- `outdim::Integer`: Dimension of the latent (output) space.
+- `options::Options`: Optional parameters (default: `μ = 0.5`).
 
 # Returns
-- `epca`: A model instance of type `EPCA`.
+- `epca`: An `EPCA` subtype for the Bernoulli distribution.
 """
 function BernoulliEPCA(
     indim::Integer, 

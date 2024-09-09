@@ -1,20 +1,17 @@
 # Continuous Bernoulli EPCA
 
-## Description
-
 ## Math
 
-The cumulant of the continuous Bernoulli distribution is
+| Name             | `ContinuousBernoulliEPCA`                 |
+|------------------|---------------------------------|
+| ``G(\theta)``    | ``\log \frac{e^\theta - 1}{\theta}``         |
+| ``g(\theta)``    | ``\frac{\theta-1}{\theta} + \frac{1}{e^\theta - 1}`` |
+| ``\mu`` Space[^1]    | ``(0, 1) \setminus \{\frac{1}{2}\}``                      |
+| ``\Theta`` Space | real              |
+| Appropriate Data | unit interval                          |
 
-```math
-G(\theta) = \log \frac{\exp \theta - 1}{\theta}
-```
+[^1]: ``\mu`` space refers to the space of valid *regularization parameters*, not to the *expectation parameter space*.
 
-so the link function is
-
-```math
-g(\theta) = \frac{\theta-1}{\theta} + \frac{1}{\exp\theta - 1}.
-```
 
 ## Documentation
 

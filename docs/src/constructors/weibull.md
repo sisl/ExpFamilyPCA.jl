@@ -2,13 +2,15 @@
 
 | Name             | `WeibullEPCA`                     |
 |------------------|-----------------------------------|
-| ``G(\theta)``    | ``G(\theta) = -\log(-\theta) - \log k``     |
+| ``G(\theta)``    | ``-\log(-\theta) - \log k``     |
 | ``g(\theta)``    | ``-\frac{1}{\theta}``             |
-| ``\mu`` Space    | ``\mathbb{R} / \{ 0 \}``                   |
-| ``\Theta`` Space | ``(-\infty, 0)``                  |
+| ``\mu`` Space[^1]    | ``\mathbb{R} / \{ 0 \}``                   |
+| ``\Theta`` Space | `negative                  |
 | Appropriate Data | nonnegative continuous               |
 
 `WeibullEPCA` omits it the known shape parameter ``k`` since it does not affect the Weibull EPCA objective.
+
+[^1]: ``\mu`` space refers to the space of valid *regularization parameters*, not to the *expectation parameter space*.
 
 ## Documentation
 
