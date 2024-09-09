@@ -69,7 +69,7 @@ and
 
 ### Bregman Divergences as Loss Functions
 
-The key relationship between members of the exponential family and the Bregman divergence is this: minimizing the negative log-likelihood of ``p(x, \theta)`` is equivalent to minimizing the Bregman divergence ``B_F``. To see this, first recall that the negative log-likelihood for members of the exponential family is ``G(\theta) - \langle x, \theta \rangle``. 
+The key relationship between members of the exponential family and the Bregman divergence is this: minimizing the negative log-likelihood of ``p(x, \theta)`` is equivalent to minimizing the Bregman divergence ``B_F``. To see this, first recall that the negative log-likelihood for members of the exponential family is
 
 ```math
 \langle x, \theta \rangle - G(\theta).
