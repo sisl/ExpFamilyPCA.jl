@@ -1,7 +1,5 @@
 module ExpFamilyPCA
 
-using Infiltrator
-
 using Distances
 using FunctionWrappers: FunctionWrapper
 using LogExpFunctions
