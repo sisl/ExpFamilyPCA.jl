@@ -46,9 +46,7 @@ beliefs = make_numerical(raw_beliefs, maze)
 
 n, indim = size(beliefs)
 
-# outdims = 1:5  # Range of number of bases
 outdims = 1:10
-# outdims = 9:10
 
 kl_divs_poisson_epca = []
 kl_divs_gaussian_epca = []

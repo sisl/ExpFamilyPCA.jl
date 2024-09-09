@@ -1,17 +1,17 @@
 ---
 title: 'ExpFamilyPCA.jl: A Julia Package for Exponential Family Principal Component Analysis'
 tags:
-  - POMDP
-  - MDP
   - Julia
-  - sequential decision making
-  - RL
   - compression
   - dimensionality reduction
   - PCA
   - exponential family
-  - E-PCA
+  - EPCA
   - open-source
+  - POMDP
+  - MDP
+  - sequential decision making
+  - RL
 authors:
   - name: Logan Mondal Bhamidipaty
     orcid: 0009-0001-3978-9462
@@ -25,25 +25,23 @@ authors:
 affiliations:
  - name: Stanford University
    index: 1
-date: 24 July 2024
+date: 9 September 2024
 bibliography: paper.bib
 ---
 
 # Summary
 
-Dimensionality reduction techniques like principal component analysis (PCA) [@PCA] are important for effeciently handling high-dimensional data in machine learning and data science. While PCA is appropriate for continuous real data, exponential family PCA (EPCA) [@EPCA] can be a better choice for compressing binary, integer, and discrete distribution data. EPCA with Poisson loss for example is useful for "belief compression" [@Roy] reinforcement learning and sequential decision making. 
+Dimensionality reduction techniques like principal component analysis (PCA) [@PCA] are fundamental tools in machine learning and data science for managing high-dimensional data. While PCA is effective for continuous, real-valued data, it may not perform well for binary, count, or discrete distribution data. Exponential family PCA (EPCA) [@EPCA] generalizes PCA to accodate these data types, making it more a suitable choice for tasks like belief compression in reinforcement learning [@Roy]. `ExpFamilyPCA.jl` is the first Julia[@Julia] package for EPCA, offering fast implementations for common distributions and a flexible interface for custom objectives.
 
 # Statement of Need
 
-Dimensionality reduction methods have long been a crucial tool in machine learning, allowing practitioners to manage high-dimensional datasets efficiently. One of the most established techniques is principal component analysis (PCA) [@PCA], which works well for continuous real-valued data. However, many modern applications require working with binary, integer, and other discrete data types that PCA is not suited for. In such cases, exponential family PCA (EPCA) [@EPCA] provides a more appropriate approach by generalizing PCA to accommodate data drawn from any exponential family distribution.
+While PCA is widely available in various machine learning libraries, implementations of EPCA are more limited. Current EPCA solutions are mostly restricted to MATLAB [@epca-MATLAB], which is not always accessible or flexible for users working in open-source environments. Moreover, existing implementations often lack support for the diverse range of distributions found in modern data science applications, such as those seen in reinforcement learning [@Roy] and mass spectrometry [@spectrum].
 
-While PCA is widely available in various machine learning libraries, implementations of EPCA are more limited. Current EPCA solutions are mostly restricted to MATLAB [@epca-MATLAB], which is not always accessible or flexible for users working in open-source environments. Moreover, existing implementations often lack support for the diverse range of distributions found in modern data science applications, such as those seen in reinforcement learning and sequential decision-making [@Roy].
-
-By comparison, there has been no comprehensive open-source implementation of EPCA in Julia, a language increasingly used for numerical computing and data science. ExpFamilyPCA.jl fills this gap by providing a native Julia package for performing EPCA, supporting a wide range of exponential family distributions. This package offers improved numerical stability and efficiency, making it easier to handle large datasets. Furthermore, it introduces an accessible and high-performance tool for belief compression and other applications where EPCA can be particularly useful.
+By comparison, there has been no comprehensive open-source implementation of EPCA in Julia, a language increasingly used for numerical computing and data science. `ExpFamilyPCA.jl` fills this gap by providing a native Julia package for performing EPCA, supporting a wide range of exponential family distributions and a flexible interface for custom distributions.  This package offers improved numerical stability and efficiency, making it easier to handle large datasets. Furthermore, it introduces an accessible and high-performance tool for belief compression and other applications where EPCA can be particularly useful.
 
 # Related Work
 
-Exponential family PCA was introduced by @EPCA and several papers have extended the technique. @LitReview provide a comprehensive review of exponential PCA and its evolution. Although later authors have extended EPCA, exponential family PCA remains the most well-studied variation of PCA in the field of reinforement learning and sequential decision making [@Roy]. To our knowledge the only implementation of exponential family PCA is in MATLAB [@epca-MATLAB].
+Exponential family PCA was introduced by @EPCA and several papers have extended the technique. @LitReview provide a comprehensive review of exponential PCA and its evolution. Although later authors have extended EPCA, exponential family PCA remains the most well-studied variation of PCA in the field of reinforcement learning and sequential decision making [@Roy]. To our knowledge the only implementation of exponential family PCA is in MATLAB [@epca-MATLAB].
 
 ## Exponential Family PCA
 
@@ -152,8 +150,7 @@ poisson_epca = EPCA(indim, outdim, Bg, g, Val((:Bg, :g)))
 poisson_epca = EPCA(indim, outdim, Bg, G, Val((:Bg, :G)))
 ```
 
-## TODO: pottery demo
-## TODO: connection w/ belief compression package
+# TODO: include citation to CBMDP paper
 
 # Acknowledgments
 
