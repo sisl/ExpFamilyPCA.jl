@@ -72,7 +72,4 @@ export
     EPCACompressor
 include("compressor.jl")
 
-#     HyperbolicSecantEPCA,
-#     InverseGaussianEPCA,
-
 end # module ExpFamilyPCA

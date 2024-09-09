@@ -13,7 +13,13 @@ TODO add optional parameters
 # Returns
 - `epca`: A model instance of type `EPCA`.
 """
-function NormalEPCA(indim::Integer, outdim::Integer)
+function NormalEPCA(
+    indim::Integer, 
+    outdim::Integer;
+    options::Options = Options(
+        V_init_value = 0
+    )
+)
     # NOTE: equivalent to generic PCA
     # assume χ = ℝ
     B(p, q) = Distances.sqeuclidean(p, q) / 2
@@ -24,9 +30,7 @@ function NormalEPCA(indim::Integer, outdim::Integer)
         B,
         g,
         Val((:B, :g));
-        options = Options(
-            V_init_value = 0
-        )
+        options = options
     )
     return epca
 end
@@ -34,7 +38,13 @@ end
 """
 Alias for [`NormalEPCA`](@ref).
 """
-function GaussianEPCA(indim::Integer, outdim::Integer)
-    epca = NormalEPCA(indim, outdim)
+function GaussianEPCA(
+    indim::Integer, 
+    outdim::Integer;
+    options::Options = Options(
+        V_init_value = 0
+    )
+)
+    epca = NormalEPCA(indim, outdim; options = options)
     return epca
 end

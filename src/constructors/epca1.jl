@@ -11,10 +11,19 @@ function _make_loss(epca::EPCA1, X)
     @assert ϵ > 0 "ϵ must be positive."
 
     # construct EPCA objective
-    L(θ) = begin
+    # L(θ) = begin
+    #     gθ = g.(θ)
+    #     z = @. F(gθ) - gθ * θ
+    #     divergence = @. -z - X * θ
+    #     regularizer = @. -z - μ * θ
+    #     loss = mean(@. divergence + ϵ * regularizer)
+    #     return loss
+    # end
+
+    L(x, θ) = begin
         gθ = g.(θ)
         z = @. F(gθ) - gθ * θ
-        divergence = @. -z - X * θ
+        divergence = @. -z - x * θ
         regularizer = @. -z - μ * θ
         loss = mean(@. divergence + ϵ * regularizer)
         return loss

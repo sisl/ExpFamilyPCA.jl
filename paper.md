@@ -31,45 +31,50 @@ bibliography: paper.bib
 
 # Summary
 
-Dimensionality reduction techniques like principal component analysis (PCA) [@PCA] are important for effeciently handling high-dimensional data in machine learning and data science. While PCA is appropriate for arbitrary real data, exponential family PCA (EPCA) [@EPCA] can be a better choice for compressing binary, integer, and discrete distribution data. EPCA with Poisson loss for example is useful for "belief compression" [@Roy] reinforcement learning and sequential decision making. 
+Dimensionality reduction techniques like principal component analysis (PCA) [@PCA] are important for effeciently handling high-dimensional data in machine learning and data science. While PCA is appropriate for continuous real data, exponential family PCA (EPCA) [@EPCA] can be a better choice for compressing binary, integer, and discrete distribution data. EPCA with Poisson loss for example is useful for "belief compression" [@Roy] reinforcement learning and sequential decision making. 
 
 # Statement of Need
 
-[ExpFamilyPCA.jl](https://github.com/FlyingWorkshop/ExpFamilyPCA.jl) is a Julia package for exponential PCA as introduced in @EPCA. 
+Dimensionality reduction methods have long been a crucial tool in machine learning, allowing practitioners to manage high-dimensional datasets efficiently. One of the most established techniques is principal component analysis (PCA) [@PCA], which works well for continuous real-valued data. However, many modern applications require working with binary, integer, and other discrete data types that PCA is not suited for. In such cases, exponential family PCA (EPCA) [@EPCA] provides a more appropriate approach by generalizing PCA to accommodate data drawn from any exponential family distribution.
 
-Mention numerical stability. Unsure what to write here, since the summary already seems to cover the "need" of the package.
+While PCA is widely available in various machine learning libraries, implementations of EPCA are more limited. Current EPCA solutions are mostly restricted to MATLAB [@epca-MATLAB], which is not always accessible or flexible for users working in open-source environments. Moreover, existing implementations often lack support for the diverse range of distributions found in modern data science applications, such as those seen in reinforcement learning and sequential decision-making [@Roy].
+
+By comparison, there has been no comprehensive open-source implementation of EPCA in Julia, a language increasingly used for numerical computing and data science. ExpFamilyPCA.jl fills this gap by providing a native Julia package for performing EPCA, supporting a wide range of exponential family distributions. This package offers improved numerical stability and efficiency, making it easier to handle large datasets. Furthermore, it introduces an accessible and high-performance tool for belief compression and other applications where EPCA can be particularly useful.
 
 # Related Work
 
-Exponential family PCA was introduced by @EPCA and several papers have extended the technique. @LitReview provides a comprehensive review of exponential PCA and its evolution. Although later authors have extended EPCA, exponential family PCA remains the most well-studied variation of PCA in the field of reinforement learning and sequential decision making [@Roy]. To our knowledge the only implementation of exponential family PCA is in MATLAB [@epca-MATLAB].
+Exponential family PCA was introduced by @EPCA and several papers have extended the technique. @LitReview provide a comprehensive review of exponential PCA and its evolution. Although later authors have extended EPCA, exponential family PCA remains the most well-studied variation of PCA in the field of reinforement learning and sequential decision making [@Roy]. To our knowledge the only implementation of exponential family PCA is in MATLAB [@epca-MATLAB].
 
 ## Exponential Family PCA
 
-PCA can be viewed as a Gaussian denoising procedure (see discussion in the [documentation](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/math/epca/#The-Probabilistic-View)). EPCA extends the PCA formulation to accomodate noise drawn from *any* exponential family distribution.[^1] 
+PCA can be interpreted as a Gaussian denoising procedure (see discussion in the [documentation](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/math/epca/#The-Probabilistic-View)). EPCA extends this concept by generalizing PCA to handle noise drawn from *any* exponential family distribution.[^1] 
 
 Before describing the EPCA objective, we introduce the necessary notation:
+
+
 1. $G$ is the **log-partition function** of some exponential family distribution.
 2. $g$ is the **link function** and the derivative of $G$. Since $G$ is strictly convex and continuously differentiable, $g$ is invertible.
 3. $F$ is the **convex conjugate** or dual of $G$. A deeper discussion of duality and the Legendre transform is provided in the [documentation](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/math/bregman/#The-Legendre-Transform-and-Parameter-Duality).
 4. $f$ is the derivative of $F$. Since $F$ is the convex conjugate of $G$, its derivative is the inverse link function $f = g^{-1}$.
 5. $B_F(p \| q)$ is the [**Bregman divergence**](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/bregman/) induced from $F$.
-6. 
+
+
 The EPCA objective is then written
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
 & & B_F(X \| g(\Theta)) + \epsilon B_F(\mu \| g(\Theta)) \\
 & \text{subject to}
-& & \mathrm{rank}\left(\Theta\right) \leq \ell
+& & \mathrm{Rank}\left(\Theta\right) \leq \ell
 \end{aligned}$$
 
-where $\Theta$ is the natural parameter matrix and both $\epsilon > 0$ and $\mu \in \mathrm{Range}(g)$ are regularization hyperparameters that ensure the optimum is finite. See the [documentation](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/math/epca/) deeper discussion of the EPCA objective.
+where $\Theta$ is the natural parameter matrix and both $\epsilon > 0$ and $\mu \in \mathrm{Range}(g)$ are regularization hyperparameters that ensure the optimum is finite. See the [documentation](https://flyingworkshop.github.io/ExpFamilyPCA.jl/dev/math/epca/) for a deeper discussion of the EPCA objective.
 
-[^1:] More generally, the EPCA objective can be induced from any contiuously-differentiable, strictly convex function.
+[^1]: More generally, the EPCA objective can be induced from any contiuously-differentiable, strictly convex function.
 
 ## The `EPCA` Interface
 
-The `EPCA` abstract type is the cornerstone of the `ExpFamilyPCA.jl` API. All supported and custom distributions are `EPCA` subtypes. The `EPCA` interface has three methods: `fit!`, `compress` and `decompress`. 
+The core of the `ExpFamilyPCA.jl` API is the `EPCA` abstract type. All supported and custom distributions are subtypes of `EPCA` and support the three methods in the `EPCA` interface: `fit!`, `compress` and `decompress`.
 
 ```julia
 using ExpFamilyPCA

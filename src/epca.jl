@@ -152,10 +152,12 @@ function fit!(
 )
     L = _make_loss(epca, X)
     A = _initialize_A(epca, X)
+
     V, A = _fit(
         L,
         epca.V,
         A,
+        X,
         maxiter,
         verbose,
         steps_per_print,
@@ -178,6 +180,7 @@ function compress(
         L,
         epca.V,
         A,
+        X,
         maxiter,
         verbose,
         steps_per_print,
@@ -190,7 +193,7 @@ function decompress(
     epca::EPCA,
     A::AbstractMatrix{<:Real}
 )
-    natural_params = A * epca.V
-    X̂ = epca.g.(natural_params)
+    Θ = A * epca.V
+    X̂ = epca.g.(Θ)
     return X̂
 end

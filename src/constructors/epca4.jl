@@ -10,12 +10,19 @@ function _make_loss(epca::EPCA4, X)
     @unpack μ, ϵ = epca.options
     @assert ϵ > 0 "ϵ must be positive."
     
-    L(θ) = begin
-        divergence = @. Bg(X, θ)
+    # L(θ) = begin
+    #     divergence = @. Bg(X, θ)
+    #     regularizer = @. Bg(μ, θ)
+    #     loss = mean(@. divergence + ϵ * regularizer)
+    #     return loss
+    # end
+    L(x, θ) = begin
+        divergence = @. Bg(x, θ)
         regularizer = @. Bg(μ, θ)
         loss = mean(@. divergence + ϵ * regularizer)
         return loss
     end
+    
     return L
 end
 

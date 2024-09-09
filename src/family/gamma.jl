@@ -13,7 +13,15 @@ TODO: finish optional parameters
 # Returns
 - `epca`: A model instance of type `EPCA`.
 """
-function GammaEPCA(indim::Integer, outdim::Integer)
+function GammaEPCA(
+    indim::Integer, 
+    outdim::Integer;
+    options::Options = Options(
+        A_init_value = -2,
+        A_upper = -eps(),
+        V_lower = eps()
+    )
+)
     # χ = ℝ++
     Bg(x, θ) = -log(-θ) - x * θ
     g(θ) = -1 / θ
@@ -23,11 +31,7 @@ function GammaEPCA(indim::Integer, outdim::Integer)
         Bg,
         g,
         Val((:Bg, :g));
-        options = Options(
-            A_init_value = -1,
-            A_upper = -eps(),
-            V_lower = eps()
-        )
+        options = options
     )
     return epca
 end
@@ -35,7 +39,15 @@ end
 """
 Alias for [`GammaEPCA`](@ref).
 """
-function ItakuraSaitoEPCA(indim::Integer, outdim::Integer)
-    epca = GammaEPCA(indim, outdim)
+function ItakuraSaitoEPCA(
+    indim::Integer, 
+    outdim::Integer; 
+    options::Options = Options(
+        A_init_value = -1,
+        A_upper = -eps(),
+        V_lower = eps()
+    )
+)
+    epca = GammaEPCA(indim, outdim; options = options)
     return epca
 end

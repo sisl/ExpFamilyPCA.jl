@@ -87,16 +87,17 @@ function _optimize(
     f::Function, 
     lower::Union{Real, Nothing}, 
     upper::Union{Real, Nothing}, 
-    X0::AbstractMatrix{T}
-) where T <: Real
+    x0
+)
+    x0 = Vector(x0)
     if isnothing(lower) && isnothing(upper)
-        result = optimize(f, X0)
-    elseif isnothing(lower) && !isnothing(upper)
-        result = optimize(f, -Inf, upper, X0)
-    elseif !isnothing(lower) && isnothing(upper)
-        result = optimize(f, lower, Inf, X0)
+        result = optimize(f, x0)
+    elseif isnothing(lower)
+        result = optimize(f, -Inf, upper, x0)
+    elseif isnothing(upper)
+        result = optimize(f, lower, Inf, x0)
     else
-        result = optimize(f, lower, upper, X0)
+        result = optimize(f, lower, upper, x0)
     end
 
     minimizer = Optim.minimizer(result)
@@ -109,6 +110,7 @@ function _single_compress_iter(
     L::Function,
     V::AbstractMatrix{T},
     A::AbstractMatrix{T},
+    X::AbstractMatrix,
     verbose::Bool,
     i::Integer,
     steps_per_print::Integer,
@@ -116,22 +118,32 @@ function _single_compress_iter(
     options::Options
 ) where T <: Real
     @unpack A_lower, A_upper = options
-    A, loss = _optimize(
-        Â->L(Â * V), 
-        A_lower,
-        A_upper,
-        A
-    )
-    if verbose && (i % steps_per_print == 0 || i == 1)
-        println("Iteration: $i/$maxiter | Loss: $loss")
+    total_loss = 0.0
+    A_new = similar(A)
+    for (i, a) in enumerate(eachrow(A))
+        x = X[i, :]
+        a_new, loss = _optimize(
+            â->L(x, (â' * V)'), 
+            A_lower,
+            A_upper,
+            a
+        )
+        A_new[i, :] = a_new
+        total_loss += loss
     end
-    return A, loss
+
+    if verbose && (i % steps_per_print == 0 || i == 1)
+        println("Iteration: $i/$maxiter | Loss: $total_loss")
+    end
+    return A_new, total_loss
 end
+
 
 function _single_fit_iter(
     L::Function,
     V::AbstractMatrix{T},
     A::AbstractMatrix{T},
+    X::AbstractMatrix,
     verbose::Bool,
     i::Integer,
     steps_per_print::Integer,
@@ -139,23 +151,30 @@ function _single_fit_iter(
     options::Options
 ) where T <: Real
     @unpack V_lower, V_upper = options
-    V, _ = _optimize(
-        V̂->L(A * V̂), 
-        V_lower,
-        V_upper,
-        V
-    )
-    A, loss = _single_compress_iter(
+    V_new = similar(V)
+    for (i, v) in enumerate(eachcol(V))
+        x = X[:, i]
+        v_new, _ = _optimize(
+            v̂->L(x, A * v̂), 
+            V_lower,
+            V_upper,
+            v
+        )
+        V_new[:, i] = v_new
+    end
+
+    A_new, loss = _single_compress_iter(
         L,
-        V,
+        V_new,
         A,
+        X,
         verbose,
         i,
         steps_per_print,
         maxiter,
         options
     )
-    return V, A, loss
+    return V_new, A_new, loss
 end
 
 function _check_convergence(loss, last_loss; verbose=false)    
@@ -186,6 +205,7 @@ function _compress(
     L::Function,
     V::AbstractMatrix{T},
     A::AbstractMatrix{T},
+    X::AbstractMatrix,
     maxiter::Integer,
     verbose::Bool,
     steps_per_print::Integer,
@@ -197,6 +217,7 @@ function _compress(
             L,
             V,
             A,
+            X,
             verbose,
             i,
             steps_per_print,
@@ -215,6 +236,7 @@ function _fit(
     L::Function,
     V::AbstractMatrix{T},
     A::AbstractMatrix{T},
+    X::AbstractMatrix,
     maxiter::Integer,
     verbose::Bool,
     steps_per_print::Integer,
@@ -226,6 +248,7 @@ function _fit(
             L,
             V,
             A,
+            X,
             verbose,
             i,
             steps_per_print,
