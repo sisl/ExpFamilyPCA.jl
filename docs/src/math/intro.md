@@ -10,7 +10,8 @@ This guide is organized into several pages, each building on the last:
 2. [Bregman Divergences](./bregman.md)
 3. [EPCA Objectives and Derivations](./objectives.md)
 4. Appendix
-   - [Gamma EPCA and the Itakura-Saito Distance](./appendix/gamma.md)
+   - [The Gamma EPCA Objective is the Itakura-Saito Distance](./appendix/gamma.md)
+   - [The Poisson EPCA Objective is the Generalized KL-Divergence](./appendix/poisson.md)
    - [The Inverse of the Link Function is the Gradient of the Convex Conjugate](./appendix/inverses.md)
 
 5. [References](./references.md)
