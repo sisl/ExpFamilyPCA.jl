@@ -66,7 +66,7 @@ $$\begin{aligned}
 & & \mathrm{Rank}\left(\Theta\right) \leq \ell
 \end{aligned}$$
 
-where $\Theta$ is the natural parameter matrix and both $\epsilon > 0$ and $\mu \in \mathrm{Range}(g)$ are regularization hyperparameters that ensure the optimum is finite. See the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/epca/) for a deeper discussion of the EPCA objective.
+where $\Theta$ is the natural parameter matrix and both $\epsilon > 0$ and $\mu \in \mathrm{range}(g)$ are regularization hyperparameters that ensure the optimum is finite. See the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/epca/) for a deeper discussion of the EPCA objective.
 
 [^1]: More generally, the EPCA objective can be induced from any contiuously-differentiable, strictly convex function.
 
