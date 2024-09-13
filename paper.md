@@ -31,13 +31,13 @@ bibliography: paper.bib
 
 # Summary
 
-Dimensionality reduction techniques like principal component analysis (PCA) [@PCA] are fundamental tools in machine learning and data science for managing high-dimensional data. While PCA is effective for continuous, real-valued data, it may not perform well for binary, count, or discrete distribution data. Exponential family PCA (EPCA) [@EPCA] generalizes PCA to accodate these data types, making it more a suitable choice for tasks like belief compression in reinforcement learning [@Roy]. `ExpFamilyPCA.jl` is the first Julia [@Julia] package for EPCA, offering fast implementations for common distributions and a flexible interface for custom objectives.
+Dimensionality reduction techniques like principal component analysis (PCA) [@PCA] are fundamental tools in machine learning and data science for managing high-dimensional data. While PCA is effective for continuous, real-valued data, it may not perform well for binary, count, or discrete distribution data. Exponential family PCA (EPCA) [@EPCA] generalizes PCA to accodate these data types, making it more a suitable choice for tasks like belief compression in reinforcement learning [@Roy]. `ExpFamilyPCA.jl` is the first Julia[@Julia] package for EPCA, offering fast implementations for common distributions and a flexible interface for custom objectives.
 
 # Statement of Need
 
-While PCA is widely available in various machine learning libraries, implementations of EPCA are more limited. The only EPCA implementation we are aware of is in MATLAB [@epca-MATLAB] which is not always accessible or flexible for users working in open-source environments. To support the diverse range of distributions found areas like reinforcement learning [@Roy] and mass spectrometry [@spectrum], a more powerful and general-purpose tool is needed.
+While PCA is widely available in various machine learning libraries, implementations of EPCA are more limited. Current EPCA solutions are mostly restricted to MATLAB [@epca-MATLAB], which is not always accessible or flexible for users working in open-source environments. Moreover, existing implementations often lack support for the diverse range of distributions found in modern data science applications, such as those seen in reinforcement learning [@Roy] and mass spectrometry [@spectrum].
 
-To date, there has been no comprehensive, open-source implementation of EPCA in Julia, a language increasingly used for numerical computing and data science. `ExpFamilyPCA.jl` fills this gap by providing a native Julia package for performing EPCA, supporting a wide range of exponential family distributions and a flexible interface for custom distributions.  Our API is numerically stable and efficient, making it well-suited for handling large datasets.
+By comparison, there has been no comprehensive open-source implementation of EPCA in Julia, a language increasingly used for numerical computing and data science. `ExpFamilyPCA.jl` fills this gap by providing a native Julia package for performing EPCA, supporting a wide range of exponential family distributions and a flexible interface for custom distributions.  This package offers improved numerical stability and efficiency, making it easier to handle large datasets. Furthermore, it introduces an accessible and high-performance tool for belief compression and other applications where EPCA can be particularly useful.
 
 # Related Work
 
@@ -45,7 +45,7 @@ Exponential family PCA was introduced by @EPCA and several papers have extended 
 
 ## Exponential Family PCA
 
-PCA can be interpreted as a Gaussian denoising procedure (see discussion in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/intro/#Probabilistic-Interpretation)). EPCA extends this concept by generalizing PCA to handle noise drawn from *any* exponential family distribution.[^1] 
+PCA can be interpreted as a Gaussian denoising procedure (see discussion in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/epca/#The-Probabilistic-View)). EPCA extends this concept by generalizing PCA to handle noise drawn from *any* exponential family distribution.[^1] 
 
 Before describing the EPCA objective, we introduce the necessary notation:
 
@@ -53,7 +53,7 @@ Before describing the EPCA objective, we introduce the necessary notation:
 1. $G$ is the **log-partition function** of some exponential family distribution.
 2. $g$ is the **link function** and the derivative of $G$. Since $G$ is strictly convex and continuously differentiable, $g$ is invertible.
 3. $F$ is the **convex conjugate** or dual of $G$. A deeper discussion of duality and the Legendre transform is provided in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/#The-Legendre-Transform-and-Parameter-Duality).
-4. $f$ is the derivative of $F$. Since $F$ is the convex conjugate of $G$, its derivative is the inverse link function $f = g^{-1}$ (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/inverses/)).
+4. $f$ is the derivative of $F$. Since $F$ is the convex conjugate of $G$, its derivative is the inverse link function $f = g^{-1}$.
 5. $B_F(p \| q)$ is the [**Bregman divergence**](https://sisl.github.io/ExpFamilyPCA.jl/dev/bregman/) induced from $F$.
 
 
@@ -66,7 +66,7 @@ $$\begin{aligned}
 & & \mathrm{Rank}\left(\Theta\right) \leq \ell
 \end{aligned}$$
 
-where $\Theta$ is the natural parameter matrix and both $\epsilon > 0$ and $\mu \in \mathrm{range}(g)$ are regularization hyperparameters that ensure the optimum is finite. See the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/epca/) for a deeper discussion of the EPCA objective.
+where $\Theta$ is the natural parameter matrix and both $\epsilon > 0$ and $\mu \in \mathrm{Range}(g)$ are regularization hyperparameters that ensure the optimum is finite. See the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/epca/) for a deeper discussion of the EPCA objective.
 
 [^1]: More generally, the EPCA objective can be induced from any contiuously-differentiable, strictly convex function.
 
@@ -150,7 +150,7 @@ poisson_epca = EPCA(indim, outdim, Bg, g, Val((:Bg, :g)))
 poisson_epca = EPCA(indim, outdim, Bg, G, Val((:Bg, :G)))
 ```
 
-# TODO: include citation to CBMDP paper [Pending Review]
+# TODO: include citation to CBMDP paper
 
 # Acknowledgments
 
