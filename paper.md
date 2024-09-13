@@ -31,7 +31,7 @@ bibliography: paper.bib
 
 # Summary
 
-Dimensionality reduction techniques like principal component analysis (PCA) [@PCA] are fundamental tools in machine learning and data science for managing high-dimensional data. While PCA is effective for continuous, real-valued data, it may not perform well for binary, count, or discrete distribution data. Exponential family PCA (EPCA) [@EPCA] generalizes PCA to accodate these data types, making it more a suitable choice for tasks like belief compression in reinforcement learning [@Roy]. `ExpFamilyPCA.jl` is the first Julia[@Julia] package for EPCA, offering fast implementations for common distributions and a flexible interface for custom objectives.
+Dimensionality reduction techniques like principal component analysis (PCA) [@PCA] are fundamental tools in machine learning and data science for managing high-dimensional data. While PCA is effective for continuous, real-valued data, it may not perform well for binary, count, or discrete distribution data. Exponential family PCA (EPCA) [@EPCA] generalizes PCA to accodate these data types, making it more a suitable choice for tasks like belief compression in reinforcement learning [@Roy]. `ExpFamilyPCA.jl` is the first Julia [@Julia] package for EPCA, offering fast implementations for common distributions and a flexible interface for custom objectives.
 
 # Statement of Need
 
@@ -45,7 +45,7 @@ Exponential family PCA was introduced by @EPCA and several papers have extended 
 
 ## Exponential Family PCA
 
-PCA can be interpreted as a Gaussian denoising procedure (see discussion in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/epca/#The-Probabilistic-View)). EPCA extends this concept by generalizing PCA to handle noise drawn from *any* exponential family distribution.[^1] 
+PCA can be interpreted as a Gaussian denoising procedure (see discussion in the [documentation](http://localhost:8000/math/intro/#Probabilistic-Interpretation)). EPCA extends this concept by generalizing PCA to handle noise drawn from *any* exponential family distribution.[^1] 
 
 Before describing the EPCA objective, we introduce the necessary notation:
 
@@ -53,7 +53,7 @@ Before describing the EPCA objective, we introduce the necessary notation:
 1. $G$ is the **log-partition function** of some exponential family distribution.
 2. $g$ is the **link function** and the derivative of $G$. Since $G$ is strictly convex and continuously differentiable, $g$ is invertible.
 3. $F$ is the **convex conjugate** or dual of $G$. A deeper discussion of duality and the Legendre transform is provided in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/#The-Legendre-Transform-and-Parameter-Duality).
-4. $f$ is the derivative of $F$. Since $F$ is the convex conjugate of $G$, its derivative is the inverse link function $f = g^{-1}$.
+4. $f$ is the derivative of $F$. Since $F$ is the convex conjugate of $G$, its derivative is the inverse link function $f = g^{-1}$ (see [])
 5. $B_F(p \| q)$ is the [**Bregman divergence**](https://sisl.github.io/ExpFamilyPCA.jl/dev/bregman/) induced from $F$.
 
 
