@@ -11,6 +11,8 @@ This guide is organized into several pages, each building on the last:
 3. [EPCA Objectives and Derivations](./objectives.md)
 4. Appendix
    - [Gamma EPCA and the Itakura-Saito Distance](./appendix/gamma.md)
+   - [The Inverse of the Link Function is the Gradient of the Convex Conjugate](./appendix/inverses.md)
+
 5. [References](./references.md)
 
 ## Principal Component Analysis (PCA)
