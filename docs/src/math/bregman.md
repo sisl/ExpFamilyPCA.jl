@@ -1,18 +1,18 @@
 # Bregman Divergences
 
+Bregman divergences play a central role in understanding the probabilistic framework of EPCA. At a high level, Bregman divergences generalize the concept of distance between two points, though they do not necessarily satisfy the properties of a traditional metric (such as symmetry or the triangle inequality). Instead, Bregman divergences provide a flexible way to measure differences between data points, making them useful for applications in clustering, optimization, and information theory.
+
 ## Definition
 
-A Bregman divergence [Bregman](@cite) denoted ``B_F`` is defined with respect to a strictly convex and differentiable function ``F: \Omega \to \mathbb{R}``, by 
+Formally, the Bregman divergence [Bregman](@cite) $B_F$ associated with a function $F(\theta)$ is defined as
 
 ```math
 B_F(p, q) = F(p) - F(q) - \langle f(p), p - q \rangle
 ```
 
-where ``\langle , \rangle`` denotes an inner product and ``f(x) = \nabla_x F(x)``. Intuitively, the Bregman divergence expresses the difference at ``p`` between ``F`` and its first-order Taylor expansion about ``q``. We use Bregman divergences to measure the difference between two probability distributions. The Bregman divergence is also sometimes called the Bregman distance, but it is not a metric since it usually satisfies neither symmetry nor the triangle inequality.
+where $F$ is a strictly convex and continuously differentiable function, $f = \nabla_x F$ is the convex conjugate (defined later) of $F$, and $\langle , \rangle$ denotes an inner product.Intuitively, the Bregman divergence expresses the difference at $p$ between $F$ and its first-order Taylor expansion about $q$.
 
-## Relationship to the Exponential Family
-
-### The Exponential Family
+## The Exponential Family
 
 A distribution is said to be in the natural *exponential family* if its density can be written
 
@@ -28,7 +28,7 @@ G(\theta) = \log \int P_0(x) \exp(\langle x, \theta \rangle) dx.
 
 We call ``\theta`` the *natural parameter* and ``\mu = \mathbb{E}_{\theta \sim p(\cdot; \theta)}[x]`` the *expectation parameter*. For the exponential family (and assuming some standard regularity conditions), we have ``\mu = \nabla_\theta G(\theta) \equiv g(\theta)`` [GLM, azoury](@cite). Since ``G`` is strictly convex, we can also define the inverse ``g^{-1}(\mu) \equiv \theta``.
 
-### The Legendre Transform and Parameter Duality
+## The Legendre Transform
 
 To understand the relationship between expectation parameters and natural parameters, first recall the Legendre transform from physics. For a convex function ``h``, the Legendre transform is 
 
@@ -67,7 +67,7 @@ and
 \nabla_\mu F_(\mu) = f(\mu) = \theta.
 ```
 
-### Bregman Divergences as Loss Functions
+## Bregman Loss Functions
 
 The key relationship between members of the exponential family and the Bregman divergence is this: minimizing the negative log-likelihood of ``p(x, \theta)`` is equivalent to minimizing the Bregman divergence ``B_F``. To see this, first recall that the negative log-likelihood for members of the exponential family is
 

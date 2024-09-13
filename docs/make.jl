@@ -15,10 +15,13 @@ makedocs(
     pages = [
         "ExpFamilyPCA.jl" => "index.md",
         "Math" => [
-            "Exponential Family PCA" => "math/epca.md",
+            "Introduction" => "math/intro.md",
             "Bregman Divergences" => "math/bregman.md",
-            "EPCA Objective Derivations" => "math/derivations.md",
-            "Gamma EPCA and the Itakura-Saito Distance" => "math/gamma.md",
+            "EPCA Objectives" => "math/objectives.md",
+            "Appendix" => [
+                "Gamma EPCA and the Itakura-Saito Distance" => "math/appendix/gamma.md"
+            ],
+            "References" => "math/references.md",
         ],
         "Constructors" => [
             "Bernoulli" => "constructors/bernoulli.md",
@@ -39,7 +42,7 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/FlyingWorkshop/ExpFamilyPCA.jl.git",
+    repo = "github.com/sisl/ExpFamilyPCA.jl.git",
 )
 
 """ 
