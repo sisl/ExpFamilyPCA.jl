@@ -117,7 +117,7 @@ ExpFamilyPCA.jl includes fast EPCA implementations for 9 exponential family dist
 When working with custom distributions, it is often the case that certain specifications are more convenient than others. For example, writing the log-partition of the gamma distribution $G(\theta) = -\log(-\theta)$ and its derivative $g(\theta) = -1 / \theta$ is much simpler than coding the Itakura-Saito distance [@ItakuraSaito]
 
 $$
-\frac{1}{2\pi} \int_{-\pi}^{\pi} \Bigg[ \frac{P(\omega)}{\hat{P}(\omega)} - \log \frac{P(\omega)}{\hat{P}{\omega}} - 1\Bigg] d\omega
+\frac{1}{2\pi} \int_{-\pi}^{\pi} \Bigg[ \frac{P(\omega)}{\hat{P}(\omega)} - \log \frac{P(\omega)}{\hat{P}{\omega}} - 1\Bigg] \, d\omega
 $$
 
 effeciently in Julia even though the two are equivalent (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/gamma/)).

@@ -19,9 +19,11 @@ makedocs(
             "Bregman Divergences" => "math/bregman.md",
             "EPCA Objectives" => "math/objectives.md",
             "Appendix" => [
-                "Gamma EPCA and the Itakura-Saito Distance" => "math/appendix/gamma.md"
-                "Poisson EPCA and Generalized KL-Divergence" => "math/appendix/poisson.md"
-                "Inverse Link Functions" => "math/appendix/inverses.md"
+                "Gamma EPCA and the Itakura-Saito Distance" => "math/appendix/gamma.md",
+                "Poisson EPCA and Generalized KL-Divergence" => "math/appendix/poisson.md",
+                "Inverse Link Functions" => "math/appendix/inverses.md",
+                "Link Functions and Expectations" => "math/appendix/expectation.md"
+
             ],
             "References" => "math/references.md",
         ],
