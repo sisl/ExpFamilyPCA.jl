@@ -39,13 +39,17 @@ While PCA is widely available in various machine learning libraries, implementat
 
 By comparison, there has been no comprehensive open-source implementation of EPCA in Julia, a language increasingly used for numerical computing and data science. `ExpFamilyPCA.jl` fills this gap by providing a native Julia package for performing EPCA, supporting a wide range of exponential family distributions and a flexible interface for custom distributions.  This package offers improved numerical stability and efficiency, making it easier to handle large datasets. Furthermore, it introduces an accessible and high-performance tool for belief compression and other applications where EPCA can be particularly useful.
 
+## Techical Notes
+
+`ExpFamilyPCA.jl`'s versatility is a direct result of two properties of Julia. The first is multiple dispatch. Julia's multiple dispatch system promotes high levels of generic code reuse [@dispatch] meaning libraries used for symbolic differentiation like [`Symbolics.jl`](https://symbolics.juliasymbolics.org/stable/) [@symbolics] can return base Julia atoms that work well with optimization libraries like [`Optim.jl`](https://julianlsolvers.github.io/Optim.jl/stable/) [@optim].
+
 # Related Work
 
 Exponential family PCA was introduced by @EPCA and several papers have extended the technique. @LitReview provide a comprehensive review of exponential PCA and its evolution. Although later authors have extended EPCA, exponential family PCA remains the most well-studied variation of PCA in the field of reinforcement learning and sequential decision making [@Roy]. To our knowledge the only implementation of exponential family PCA is in MATLAB [@epca-MATLAB].
 
 ## Exponential Family PCA
 
-PCA can be interpreted as a Gaussian denoising procedure (see discussion in the [documentation](http://localhost:8000/math/intro/#Probabilistic-Interpretation)). EPCA extends this concept by generalizing PCA to handle noise drawn from *any* exponential family distribution.[^1] 
+PCA can be interpreted as a Gaussian denoising procedure (see discussion in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/intro/#Probabilistic-Interpretation)). EPCA extends this concept by generalizing PCA to handle noise drawn from *any* exponential family distribution.[^1] 
 
 Before describing the EPCA objective, we introduce the necessary notation:
 
@@ -53,7 +57,7 @@ Before describing the EPCA objective, we introduce the necessary notation:
 1. $G$ is the **log-partition function** of some exponential family distribution.
 2. $g$ is the **link function** and the derivative of $G$. Since $G$ is strictly convex and continuously differentiable, $g$ is invertible.
 3. $F$ is the **convex conjugate** or dual of $G$. A deeper discussion of duality and the Legendre transform is provided in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/#The-Legendre-Transform-and-Parameter-Duality).
-4. $f$ is the derivative of $F$. Since $F$ is the convex conjugate of $G$, its derivative is the inverse link function $f = g^{-1}$ (see [])
+4. $f$ is the derivative of $F$. Since $F$ is the convex conjugate of $G$, its derivative is the inverse link function $f = g^{-1}$ (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/inverses/) in the documentation)
 5. $B_F(p \| q)$ is the [**Bregman divergence**](https://sisl.github.io/ExpFamilyPCA.jl/dev/bregman/) induced from $F$.
 
 
@@ -149,12 +153,6 @@ poisson_epca = EPCA(indim, outdim, B, G, Val((:B, :G)))
 poisson_epca = EPCA(indim, outdim, Bg, g, Val((:Bg, :g)))
 poisson_epca = EPCA(indim, outdim, Bg, G, Val((:Bg, :G)))
 ```
-
-# TODO: include citation to CBMDP paper
-
-## Techical Notes
-
-`ExpFamilyPCA.jl`'s versatility is a direct result of two properties of Julia. The first is multiple dispatch. Julia's multiple dispatch system promotes high levels of generic code reuse [@dispatch] meaning libraries used for symbolic differentiation like [`Symbolics.jl`](https://symbolics.juliasymbolics.org/stable/) [@symbolics] can return base Julia atoms that work well with optimization libraries like [`Optim.jl`](https://julianlsolvers.github.io/Optim.jl/stable/) [@optim].
 
 # Acknowledgments
 

@@ -138,8 +138,8 @@ X_reconstructed = decompress(epca_model, A_compressed)
 ```
 
 # Notes
-- The decompression process uses the link function `g`` defined in the EPCA model to transform the natural parameters back into the mean parameters of the distribution.
-- This function assumes that the input `A`` is a valid compressed representation obtained via the compress function with the same EPCA model.
+- The decompression process uses the link function `g` defined in the EPCA model to transform the natural parameters back into the mean parameters of the distribution.
+- This function assumes that the input `A` is a valid compressed representation obtained via the compress function with the same EPCA model.
 """
 function decompress end
 
