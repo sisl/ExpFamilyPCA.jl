@@ -16,6 +16,36 @@
   publisher={Springer}
 }
 
+@misc{dispatch,
+  author       = {Stefan Karpinski},
+  title        = {The Unreasonable Effectiveness of Multiple Dispatch},
+  year         = {2019},
+  howpublished = {Conference Talk at JuliaCon 2019, available at \url{https://www.youtube.com/watch?v=kc9HwsxE1OY}},
+  note         = {Accessed: 2024-09-13}
+}
+
+@article{symbolics,
+author = {Gowda, Shashi and Ma, Yingbo and Cheli, Alessandro and Gw\'{o}\'{z}zd\'{z}, Maja and Shah, Viral B. and Edelman, Alan and Rackauckas, Christopher},
+title = {High-Performance Symbolic-Numerics via Multiple Dispatch},
+year = {2022},
+issue_date = {September 2021},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {55},
+number = {3},
+issn = {1932-2240},
+url = {https://doi.org/10.1145/3511528.3511535},
+doi = {10.1145/3511528.3511535},
+abstract = {As mathematical computing becomes more democratized in high-level languages, high-performance symbolic-numeric systems are necessary for domain scientists and engineers to get the best performance out of their machine without deep knowledge of code optimization. Naturally, users need different term types either to have different algebraic properties for them, or to use efficient data structures. To this end, we developed Symbolics.jl, an extendable symbolic system which uses dynamic multiple dispatch to change behavior depending on the domain needs. In this work we detail an underlying abstract term interface which allows for speed without sacrificing generality. We show that by formalizing a generic API on actions independent of implementation, we can retroactively add optimized data structures to our system without changing the pre-existing term rewriters. We showcase how this can be used to optimize term construction and give a 113x acceleration on general symbolic transformations. Further, we show that such a generic API allows for complementary term-rewriting implementations. Exploiting this feature, we demonstrate the ability to swap between classical term-rewriting simplifiers and e-graph-based term-rewriting simplifiers. We illustrate how this symbolic system improves numerical computing tasks by showcasing an e-graph ruleset which minimizes the number of CPU cycles during expression evaluation, and demonstrate how it simplifies a real-world reaction-network simulation to halve the runtime. Additionally, we show a reaction-diffusion partial differential equation solver which is able to be automatically converted into symbolic expressions via multiple dispatch tracing, which is subsequently accelerated and parallelized to give a 157x simulation speedup. Together, this presents Symbolics.jl as a next-generation symbolic-numeric computing environment geared towards modeling and simulation.},
+journal = {ACM Commun. Comput. Algebra},
+month = {jan},
+pages = {92–96},
+numpages = {5}
+}
+
+@article{optim, doi = {10.21105/joss.00615}, url = {https://doi.org/10.21105/joss.00615}, year = {2018}, publisher = {The Open Journal}, volume = {3}, number = {24}, pages = {615}, author = {Patrick K. Mogensen and Asbjørn N. Riseth}, title = {Optim: A mathematical optimization package for Julia}, journal = {Journal of Open Source Software} }
+
+
 @BOOK{GLM,
   title     = "Generalized Linear Models",
   author    = "McCullagh, P and Nelder, John A",
@@ -54,6 +84,32 @@ doi = {10.1016/0041-5553(67)90040-7},
 url = {https://www.sciencedirect.com/science/article/pii/0041555367900407},
 author = {L.M. Bregman},
 abstract = {IN this paper we consider an iterative method of finding the common point of convex sets. This method can be regarded as a generalization of the methods discussed in [1–4]. Apart from problems which can be reduced to finding some point of the intersection of convex sets, the method considered can be applied to the approximate solution of problems in linear and convex programming.}
+}
+
+@book{convex, place={Cambridge}, title={Convex Optimization}, publisher={Cambridge University Press}, author={Boyd, Stephen and Vandenberghe, Lieven}, year={2004}} <div></div>
+
+@article{forster,
+title = {Relative Expected Instantaneous Loss Bounds},
+journal = {Journal of Computer and System Sciences},
+volume = {64},
+number = {1},
+pages = {76-102},
+year = {2002},
+issn = {0022-0000},
+doi = {https://doi.org/10.1006/jcss.2001.1798},
+url = {https://www.sciencedirect.com/science/article/pii/S0022000001917982},
+author = {Jürgen Forster and Manfred K. Warmuth},
+abstract = {In the literature a number of relative loss bounds have been shown for on-line learning algorithms. Here the relative loss is the total loss of the on-line algorithm in all trials minus the total loss of the best comparator that is chosen off-line. However, for many applications instantaneous loss bounds are more interesting where the learner first sees a batch of examples and then uses these examples to make a prediction on a new instance. We show relative expected instantaneous loss bounds for the case when the examples are i.i.d. with an unknown distribution. We bound the expected loss of the algorithm on the last example minus the expected loss of the best comparator on a random example. In particular, we study linear regression and density estimation problems and show how the leave-one-out loss can be used to prove instantaneous loss bounds for these cases. For linear regression we use an algorithm that is similar to a new on-line learning algorithm developed by Vovk. Recently a large number of relative total loss bounds have been shown that have the form O(lnT), where T is the number of trials/examples. Standard conversions of on-line algorithms to batch algorithms result in relative expected instantaneous loss bounds of the form O(lnTT). Our methods lead to O(1T) upper bounds. In many cases we give tight lower bounds.}
+}
+
+@inproceedings{ItakuraSaito,
+  author    = {Itakura, Fumitada and Saito, Shuzo},
+  title     = {Analysis Synthesis Telephony Based on the Maximum Likelihood Method},
+  booktitle = {Proceedings of the 6th International Congress on Acoustics},
+  pages     = {C--17--C--20},
+  year      = {1968},
+  address   = {Los Alamitos, CA},
+  publisher = {IEEE}
 }
 
 @ARTICLE{BregmanMotivation,
