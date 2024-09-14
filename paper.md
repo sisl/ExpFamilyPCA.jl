@@ -152,6 +152,10 @@ poisson_epca = EPCA(indim, outdim, Bg, G, Val((:Bg, :G)))
 
 # TODO: include citation to CBMDP paper
 
+## Techical Notes
+
+`ExpFamilyPCA.jl`'s versatility is a direct result of two properties of Julia. The first is multiple dispatch. Julia's multiple dispatch system promotes high levels of generic code reuse [@dispatch] meaning libraries used for symbolic differentiation like [`Symbolics.jl`](https://symbolics.juliasymbolics.org/stable/) [@symbolics] can return base Julia atoms that work well with optimization libraries like [`Optim.jl`](https://julianlsolvers.github.io/Optim.jl/stable/) [@optim].
+
 # Acknowledgments
 
 We thank Arec Jamgochian, Robert Moss, and Dylan Asmar for their help and guidance.

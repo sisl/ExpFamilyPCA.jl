@@ -19,7 +19,9 @@ where
 
 Intuitively, the Bregman divergence expresses the difference at $p$ between $F$ and its first-order Taylor expansion about $q$.
 
-Unlike traditional metrics, Bregman divergences are not generally symmetric (i.e., $B_F(p \| q) \neq B_F(q \| p)$) and do not satsify the triangle inequality. However, they are always non-negative ($B_F(p \| q) \geq 0$) and equal $0$ if and only if $p = q$.
+### Properties
+
+Unlike traditional metrics, Bregman divergences are not generally symmetric (i.e., $B_F(p \| q) \neq B_F(q \| p)$) and do not usually satsify the triangle inequality. However, they are always non-negative ($B_F(p \| q) \geq 0$) and equal $0$ if and only if $p = q$.
 
 ## The Exponential Family
 
@@ -42,7 +44,7 @@ The log-partition function $G(\theta)$ ensures that the probability distribution
 
 ### Key Parameters
 
-1.  **Natural Parameter** ($\theta$): This parameter controls the distribution’s shape in its canonical form. For example, the natural parameter for the Poisson distribution is $\log \theta$.
+1.  **Natural Parameter** ($\theta$): This parameter controls the distribution’s shape in its canonical form. For example, the natural parameter for the Poisson distribution is $\log \lambda$.
 2.  **Expectation Parameter** ($\mu$): This is the expected value of the sufficient statistic,[^1] computed as the mean of the data under the distribution. In exponential family distributions, it is related to the natural parameter through the gradient of the log-partition function:
 
 ```math
@@ -54,15 +56,13 @@ where $E_\theta$ is the expectation with respect to the distribution $p_\theta$.
 
 ## The Legendre Transform
 
-To understand the relationship between the natural parameters $\theta$ and the expectation parameters $\mu$, we introduce the concept of convex conjugates and the Legendre transform. For a convex function $F$, its convex conjugate $F^*$ is defined as:
+To understand the relationship between the natural parameters $\theta$ and the expectation parameters $\mu$, we introduce the concept of convex conjugates and the Legendre transform. For a convex function $F$, its convex conjugate (or dual) $F^*$ is defined as:[^2]
 
 ```math
 F^*(\theta) = \sup_{\mu} [\langle \theta, \mu \rangle - F(\mu)].
 ```
 
-Similarly, the convex conjugate of $F^*$ is $F$. Since the convex conjugate is an involution $F^{**} = F$, we also sometimes call $F^*$ the dual of $F$.[^2] 
-
-The Legendre transform allows us to convert between the natural and expectation parameter spaces. In the [next section](./objectives.md), we see how `ExpFamilyPCA.jl` exploits the rich mathematical structure of the Legendre transform to discover multiple specifications of the Bregman divergence.
+The convex conjugate is an involution ($F^{**} = F$) meaning the Legendre transform allows us to convert back and forth between the natural and expectation parameter spaces. In the [next section](./objectives.md), we see how `ExpFamilyPCA.jl` exploits the rich mathematical structure of the Legendre transform to discover multiple specifications of the Bregman divergence.
 
 [^2]: Duality also refers to the concept in convex analysis [convex](@cite).
 

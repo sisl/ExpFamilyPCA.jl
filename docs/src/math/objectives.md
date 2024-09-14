@@ -1,5 +1,13 @@
 # Deriving the EPCA Objective Function
 
+When working with custom distributions, certain specifications are often more convenient and computationally efficient than others. For example, expressing the log-partition function of the gamma distribution as $G(\theta) = -\log(-\theta)$ and its derivative $g(\theta) = -1/\theta$ is significantly simpler than implementing the Itakura-Saito distance [ItakuraSaito](@cite):
+
+```math
+\frac{1}{2\pi} \int_{-\pi}^{\pi} \Bigg[ \frac{P(\omega)}{\hat{P}(\omega)} - \log \frac{P(\omega)}{\hat{P}{\omega}} - 1\Bigg] \, d\omega
+```
+
+even though both formulations are equivalent (see the [appendix](./appendix/gamma.md)). This example highlights the importance of flexibility in specifying mathematical components when the EPCA model. Choosing convenient representations is simpler and sometimes more effecient.
+
 In this section, we demonstrate how the EPCA objective function and the decompression function $g$ can be derived using different combinations of mathematical components. This flexibility allows for efficient and adaptable implementations of EPCA in Julia.
 
 ## The Regularized EPCA Objective
@@ -45,14 +53,15 @@ To evaluate $g(a)$ for any $a$ in the domain of $g$, we solve for $x$ in the equ
 
 ### 3. Using $F$ Alone
 
-Julia's multiple dispatch system promotes high levels of generic code reuse [dispatch](@cite). This means that by defining the convex function $F$, we can leverage packages like 
-[`Symbolics.jl`](https://symbolics.juliasymbolics.org/stable/) [symbolics](@cite) to symbolically differentiate $F$ and obtain its derivative $f = F'$. Using the same procedure as above, we can then evaluate $g$ from $f$.
+`ExpFamilyPCA.jl`'s versatility is a direct result of two properties of Julia. The first is multiple dispatch. Julia's multiple dispatch system promotes high levels of generic code reuse [dispatch](@cite) meaning libraries used for symbolic differentiation like [`Symbolics.jl`](https://symbolics.juliasymbolics.org/stable/) [symbolics](@cite) can return base Julia atoms that work well with optimization libraries like [`Optim.jl`](https://julianlsolvers.github.io/Optim.jl/stable/) [optim](@cite).
 
-Because multiple dispatch allows functions and operations to be defined on top of base Julia atoms, the symbolic expressions returned by `Symbolics.jl` can seamlessly integrate with entirely separate packages like [`Optim.jl`](https://julianlsolvers.github.io/Optim.jl/stable/) [optim](@cite) to optimize the EPCA objective. Therefore, by defining $F$ alone, we can induce all necessary components to specify and compute the EPCA objective and decompression.
+To induce the EPCA objective from $F$ alone, we first use `Symbolics.jl` to recover $f$. We convert $f$ to base Julia's second useful property: metaprogramming (non-metaprogramming conversion is available, though it generally performs much slower). Since both $F$ and $f$ are represented using generic Julia code, they seamlessly integrate with `Optim.jl`.
+
+To recover $g$ for decompression, we can use the same procedure as described above (which is again possible because of multiple dispatch). Therefore, by defining $F$ alone, we can induce all necessary components to specify and compute the EPCA objective and decompression.
 
 ### 4. Using $G$ and $g$
 
-Alternatively, we can express the EPCA objective using the log-partition function $G$ and the link function $g$. Starting from the previous dervition (and dropping the constant), we have:
+Alternatively, we can express the EPCA objective using the log-partition function $G$ and the link function $g$. Starting from the first dervition (and dropping the constant), we have:
 
 ```math
 \begin{aligned}
@@ -73,7 +82,7 @@ If we already have the Bregman divergence $B_F$ and the link function $g$, speci
 
 ### 7. Using $\tilde{B}$ and $g$
 
-Similarly, using the transformed Bregman divergence $\tilde{B}(p, q) = B_F(p \| g(q))$ along with $g$ is straightforward. Given that $\tilde{B}$ is just $B_F$ evaluated at $g(q)$, and we already have the link function $g$, defining the EPCA objective is almost too obvious to mention. While mathematically uninteresting, this specification is useful in practice to avoid domain errors that make optimization difficult with certain exponential family members (e.g., gamma, negative binomial, Pareto).
+Similarly, using the transformed Bregman divergence $\tilde{B}(p, q) = B_F(p \| g(q))$ along with $g$ is straightforward. Given that $\tilde{B}$ is just $B_F$ evaluated at $g(q)$, and we already have the link function $g$, defining the EPCA objective is almost too obvious to mention. While mathematically plain, this specification is useful in practice to avoid domain errors that make optimization difficult with certain exponential family members (e.g., gamma, negative binomial, Pareto).
 
 ## Conclusion
 
