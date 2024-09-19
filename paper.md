@@ -31,21 +31,19 @@ bibliography: paper.bib
 
 # Summary
 
-Dimensionality reduction techniques like principal component analysis (PCA) [@PCA] are fundamental tools in machine learning and data science for managing high-dimensional data. While PCA is effective for continuous, real-valued data, it may not perform well for binary, count, or discrete distribution data. Exponential family PCA (EPCA) [@EPCA] generalizes PCA to accodate these data types, making it more a suitable choice for tasks like belief compression in reinforcement learning [@Roy]. `ExpFamilyPCA.jl` is the first Julia [@Julia] package for EPCA, offering fast implementations for common distributions and a flexible interface for custom objectives.
+Dimensionality reduction techniques like principal component analysis (PCA) [@PCA] are fundamental tools in machine learning and data science for managing high-dimensional data. While PCA is effective for continuous, real-valued data, it may not perform well for binary, count, or discrete distribution data. Exponential family PCA (EPCA) [@EPCA] generalizes PCA to accommodate these data types, making it a more suitable choice for tasks like belief compression in reinforcement learning [@Roy]. `ExpFamilyPCA.jl` is the first Julia [@Julia] package for EPCA, offering fast implementations for common distributions and a flexible interface for custom objectives.
 
 # Statement of Need
 
-To our knowledge, there are no open-source implementations of EPCA. There is MATLAB package [@epca-MATLAB], but it is limited to a single distribution. Modern data science applications in reinforcement learning [@Roy] and mass spectrometry [@spectrum] involve a diverse range of distributions. `ExpFamilyPCA.jl` addresses this gap by providing a fast, open-source solution written in Julia. It is numerically stable for large datasets and supports custom distributions, making it suitable for a wide range of applications.
+To our knowledge, there are no open-source implementations of EPCA and the sole proprietary package [@epca-MATLAB] is limited to a single distribution. Modern data science applications of EPCA in reinforcement learning [@Roy] and mass spectrometry [@spectrum] involve a diverse range of distributions and require numerical stability and the ability to handle large datasets. `ExpFamilyPCA.jl` addresses this gap by providing fast implementations for several exponential family distributions and multiple constructors for custom distributions. More implementation and mathematical details are in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/).
 
 # Related Work
 
 Exponential family PCA was introduced by [@EPCA], and several papers have extended the technique. While there have been advances, EPCA remains the most well-studied variation of PCA in the field of reinforcement learning and sequential decision-making [@Roy].
 
-## Features
+# Features
 
-`ExpFamilyPCA.jl` includes efficient EPCA implementations for several exponential family distributions and provides constructors for custom distributions. More details are in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/).
-
-### Supported Distributions:
+`ExpFamilyPCA.jl` includes efficient EPCA implementations for several exponential family distributions.
 
 | Distribution             | Julia Type                  | Description                                            |
 |--------------------------|-----------------------------|--------------------------------------------------------|
