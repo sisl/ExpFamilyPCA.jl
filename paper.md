@@ -39,7 +39,7 @@ To our knowledge, there are no open-source implementations of EPCA and the sole 
 
 # Related Work
 
-Exponential family PCA was introduced by [@EPCA], and several papers have extended the technique [@LitReview]. While there have been advances, EPCA remains the most well-studied variation of PCA in the field of reinforcement learning and sequential decision-making [@Roy].
+Exponential family PCA was introduced by [@EPCA], and several papers have extended the technique [@LitReview]. While there have been advances, EPCA remains the most well-studied variation of PCA in reinforcement learning and sequential decision-making [@Roy].
 
 # Features
 
