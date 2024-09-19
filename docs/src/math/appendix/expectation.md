@@ -22,8 +22,6 @@ Now, by taking the gradient of the log-partition function $G(\theta)$, we get:
 &= \frac{ \int x \exp(x \theta) h(x) \, dx}{ \exp(G(\theta))} \\
 &= \int x \exp(x \theta - G(\theta)) h(x) \, dx \\
 &= \int x p_\theta(x) \, dx \\
-&= \mathbb{E}_\theta[X],
+&= \mathbb{E}_\theta[X].
 \end{aligned}
 ```
-
-which is the desired result.
