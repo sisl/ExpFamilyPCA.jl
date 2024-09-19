@@ -39,7 +39,7 @@ To our knowledge, there are no open-source implementations of EPCA and the sole 
 
 # Related Work
 
-Exponential family PCA was introduced by [@EPCA], and several papers have extended the technique. While there have been advances, EPCA remains the most well-studied variation of PCA in the field of reinforcement learning and sequential decision-making [@Roy].
+Exponential family PCA was introduced by [@EPCA], and several papers have extended the technique [@LitReview]. While there have been advances, EPCA remains the most well-studied variation of PCA in the field of reinforcement learning and sequential decision-making [@Roy].
 
 # Features
 
@@ -49,7 +49,7 @@ Exponential family PCA was introduced by [@EPCA], and several papers have extend
 |--------------------------|-----------------------------|--------------------------------------------------------|
 | Bernoulli                | `BernoulliEPCA`             | For binary data                                        |
 | Binomial                 | `BinomialEPCA`              | For count data with a fixed number of trials           |
-| Continuous Bernoulli     | `ContinuousBernoulliEPCA`   | For modeling probabilities between 0 and 1             |
+| Continuous Bernoulli     | `ContinuousBernoulliEPCA`   | For modeling probabilities between $0$ and $1$         |
 | Gamma                    | `GammaEPCA`                 | For positive continuous data                           |
 | Gaussian                 | `GaussianEPCA`              | Standard PCA for real-valued data                      |
 | Negative Binomial        | `NegativeBinomialEPCA`      | For over-dispersed count data                          |
