@@ -11,7 +11,9 @@ using Symbolics
 using Statistics
 
 export
-    Options
+    Options,
+    NegativeDomain,
+    PositiveDomain
 include("options.jl")
 
 export

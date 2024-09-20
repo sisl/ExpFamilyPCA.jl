@@ -43,8 +43,6 @@ Exponential family PCA was introduced by [@EPCA], and several papers have extend
 
 # Math
 
-To understand how EPCA extends PCA, we first review the geometric interpretation of PCA.
-
 ## Principal Component Analysis
 
 PCA is a low-rank matrix approximation problem. For a data matrix $X \in \mathbb{R}^{n \times d}$, we want to find the low-rank matrix approximation $\Theta \in \mathbb{R}^{n \times d}$ such that $\mathrm{rank}(\Theta) = k \leq d$. Formally,
@@ -74,6 +72,7 @@ $$\begin{aligned}
 \end{aligned}$$
 
 In this formulation,
+
 *  $g(\theta)$ is the **link function** and the derivative of $G$,
 *  $F(\mu)$ is the **convex conjugate** or dual of $G$,
 *  $B_F(p \| q)$ is the **Bregman divergence** induced from $F$,
@@ -99,7 +98,7 @@ In this formulation,
 
 ## Custom Distributions
 
-When working with custom distributions, certain specifications are often more convenient and computationally efficient than others. For example, inducing the gamma EPCA objective from the log-parition $G(\theta) = -\log(-\theta)$ and its derivative $g(\theta) = -1/\theta$ is simpler and computationally more effecient than implementing the full the Itakura-Saito distance [@ItakuraSaito]:
+When working with custom distributions, certain specifications are often more convenient and computationally efficient than others. For example, inducing the gamma EPCA objective from the log-parition $G(\theta) = -\log(-\theta)$ and its derivative $g(\theta) = -1/\theta$ is much simpler than implementing the full the Itakura-Saito distance [@ItakuraSaito]:
 
 $$
 \frac{1}{2\pi} \int_{-\pi}^{\pi} \Bigg[ \frac{P(\omega)}{\hat{P}(\omega)} - \log \frac{P(\omega)}{\hat{P}{\omega}} - 1\Bigg] \, d\omega.
@@ -110,19 +109,13 @@ In `ExpFamilyPCA.jl`, we would write:
 ```julia
 G(θ) = -log(-θ)
 g(θ) = -1 / θ
-epca = EPCA(
-    indim,
-    outdim,
-    G,
-    g,
-    Val((:G, :g));
-    options = Options(
-        # Since dom(G) is negatives and Θ = AV, we constrain A and V
-        A_init_value = -1,
-        A_upper = -1e-4,
-        V_init_value = 1,
-        V_lower = 1e-4,
-    )
+gamma_epca = EPCA(
+  indim,
+  outdim,
+  G,
+  g,
+  Val((:G, :g));
+  options = NegativeDomain()
 )
 ```
 

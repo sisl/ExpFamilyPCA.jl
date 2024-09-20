@@ -22,3 +22,53 @@
     tol = 1e-10
     maxiter = 1e6
 end
+
+function NegativeDomain(;
+    metaprogramming::Bool = true,
+    μ::Real = 1,
+    ϵ::Real = eps(),
+    low = -1e10,
+    high = 1e10,
+    tol = 1e-10,
+    maxiter = 1e6,
+)
+    options = Options(
+        metaprogramming = metaprogramming,
+        μ = μ,
+        ϵ = ϵ,
+        low = low,
+        high = high,
+        tol = tol,
+        maxiter = maxiter,
+        A_init_value = -1,
+        A_upper = -1e-4,
+        V_init_value = 1,
+        V_lower = 1e-4,
+    )
+    return options
+end
+
+function PositiveDomain(
+    metaprogramming::Bool = true,
+    μ::Real = 1,
+    ϵ::Real = eps(),
+    low = -1e10,
+    high = 1e10,
+    tol = 1e-10,
+    maxiter = 1e6,
+)
+    options = Options(
+        metaprogramming = metaprogramming,
+        μ = μ,
+        ϵ = ϵ,
+        low = low,
+        high = high,
+        tol = tol,
+        maxiter = maxiter,
+        A_init_value = 1,
+        A_upper = 1e-4,
+        V_init_value = 1,
+        V_lower = 1e-4,
+    )
+    return options
+end
