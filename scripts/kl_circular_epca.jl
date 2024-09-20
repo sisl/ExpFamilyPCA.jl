@@ -38,15 +38,15 @@ function calc_kl(
 end
 
 n_corridors = 2
-corridor_length = 100
+corridor_length = 20
 maze = CircularMaze(n_corridors, corridor_length)
-sampler = PolicySampler(maze, n=200)
+sampler = PolicySampler(maze, n=500)
 raw_beliefs = sampler(maze)
 beliefs = make_numerical(raw_beliefs, maze)
 
 n, indim = size(beliefs)
 
-outdims = 1:10
+outdims = 1:5
 
 kl_divs_poisson_epca = []
 kl_divs_gaussian_epca = []
@@ -62,17 +62,21 @@ plot(
     outdims, 
     kl_divs_poisson_epca, 
     label="Poisson EPCA", 
+    yscale=:log10,
     marker=:cross, 
     linestyle=:solid, 
-    lw=2
+    lw=2,
+    dpi=600
 )
 plot!(
     outdims, 
     kl_divs_gaussian_epca, 
     label="Gaussian EPCA",
+    yscale=:log10,
     marker=:x,
     linestyle=:dash,
-    lw=2
+    lw=2,
+    dpi=600
 )
 xlabel!("Number of Bases")
 ylabel!("KL Divergence")

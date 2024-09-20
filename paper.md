@@ -98,7 +98,7 @@ In this formulation,
 
 ## Custom Distributions
 
-When working with custom distributions, certain specifications are often more convenient and computationally efficient than others. For example, inducing the gamma EPCA objective from the log-parition $G(\theta) = -\log(-\theta)$ and its derivative $g(\theta) = -1/\theta$ is much simpler than implementing the full the Itakura-Saito distance [@ItakuraSaito]:
+When working with custom distributions, certain specifications are often more convenient and computationally efficient than others. For example, inducing the gamma EPCA objective from the log-parition $G(\theta) = -\log(-\theta)$ and its derivative $g(\theta) = -1/\theta$ is much simpler than implementing the full the Itakura-Saito distance [@ItakuraSaito] (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gamma/)):
 
 $$
 \frac{1}{2\pi} \int_{-\pi}^{\pi} \Bigg[ \frac{P(\omega)}{\hat{P}(\omega)} - \log \frac{P(\omega)}{\hat{P}{\omega}} - 1\Bigg] \, d\omega.
@@ -123,8 +123,11 @@ A lengthier discussion of the `EPCA` constructors and math is provided in the [d
 
 # Applications
 
+To see the benefit of `ExpFamilyPCA.jl`, we recreate Figure 3a from @shortRoy using `CompressedBeliefMDPs.jl` [CITATION PENDING]. 
+
 ![](./scripts/kl_divergence_plot.png)
 
+The graph compares the average KL divergence between the reconstructions and original discrete belief data using a Poisson EPCA and regular PCA (Gaussian EPCA). The original belief profile has $41$ dimensions and Poisson EPCA achieves nearly perfect reconstruction with just $5$ bases. This makes sense since Poisson EPCA minimizes the generalized KL divergence (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/poisson/)).
 
 # Acknowledgments
 
