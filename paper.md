@@ -60,7 +60,7 @@ where $\| \cdot \|_F$ denotes the Frobenius norm.[^1]
 
 ## Exponential Family PCA
 
-EPCA is simlar to generalized linear models (GLMs) [@GLM]. Just as GLMs extend linear regression to handle a variety of response distributions, EPCA generalizes PCA to accommodate data with noise drawn from any exponential family distribution, rather than just Gaussian noise. This allows EPCA to address a broader range of real-world data scenarios where the Gaussian assumption may not hold (e.g., binary, count, discrete distribution data).
+EPCA is similar to generalized linear models (GLMs) [@GLM]. Just as GLMs extend linear regression to handle a variety of response distributions, EPCA generalizes PCA to accommodate data with noise drawn from any exponential family distribution, rather than just Gaussian noise. This allows EPCA to address a broader range of real-world data scenarios where the Gaussian assumption may not hold (e.g., binary, count, discrete distribution data).
 
 At its core, EPCA replaces the geometric PCA objective with a more general probabilistic objective that minimizes the generalized Bregman divergence—a measure closely related to the exponential family (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/))—rather than the Frobenius norm, which PCA uses. This makes EPCA particularly versatile for dimensionality reduction when working with non-Gaussian data distributions:
 
@@ -109,25 +109,18 @@ In `ExpFamilyPCA.jl`, we would write:
 ```julia
 G(θ) = -log(-θ)
 g(θ) = -1 / θ
-gamma_epca = EPCA(
-  indim,
-  outdim,
-  G,
-  g,
-  Val((:G, :g));
-  options = NegativeDomain()
-)
+gamma_epca = EPCA(indim, outdim, G, g, Val((:G, :g)); options = NegativeDomain())
 ```
 
 A lengthier discussion of the `EPCA` constructors and math is provided in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/objectives/).
 
 # Applications
 
-The practical applications of `ExpFamilyPCA.jl` span several domains that deal with non-Gaussian data. One notable example is in reinforcement learning, specifically in belief state compression for partially observable Markov decision processes (POMDPs). Using Poisson EPCA, the package effectively reduces high-dimensional belief spaces with minimal information loss, as demonstrated by recreating @shortRoy results. In this case, Poisson EPCA achieved nearly perfect reconstruction of a $41$-dimensional belief profile using just five basis components [CITE `CompressedBeleifMDPS.jl`, PAPER IN PRE-REVIEW].
+The practical applications of `ExpFamilyPCA.jl` span several domains that deal with non-Gaussian data. One notable example is in reinforcement learning, specifically in belief state compression for partially observable Markov decision processes (POMDPs). Using Poisson EPCA, the package effectively reduces high-dimensional belief spaces with minimal information loss, as demonstrated by recreating results from @shortRoy. In this case, Poisson EPCA achieved nearly perfect reconstruction of a $41$-dimensional belief profile using just five basis components [CITE `CompressedBeleifMDPS.jl`, PAPER IN PRE-REVIEW].
 
-![](./scripts/kl_divergence_plot.png){height="100pt"}
+![](./scripts/kl_divergence_plot.png)
 
-The package also finds applications in areas such as mass spectrometry and survival analysis, where specific data distributions like the gamma or Weibull may be more appropriate. By minimizing divergences suited to the distribution, `ExpFamilyPCA.jl` provides more accurate and interpretable dimensionality reduction compared to standard PCA.
+`ExpFamilyPCA.jl` can also be used in fields like mass spectrometry and survival analysis, where specific data distributions like the gamma or Weibull may be more appropriate. By minimizing divergences suited to the distribution, `ExpFamilyPCA.jl` provides more accurate and interpretable dimensionality reduction compared to standard PCA.
 
 # Acknowledgments
 
