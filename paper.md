@@ -123,7 +123,7 @@ A lengthier discussion of the `EPCA` constructors and math is provided in the [d
 
 # Applications
 
-[](/scripts/kl_divergence_plot.png)
+![](./scripts/kl_divergence_plot.png)
 
 
 # Acknowledgments
