@@ -123,11 +123,11 @@ A lengthier discussion of the `EPCA` constructors and math is provided in the [d
 
 # Applications
 
-To see the benefit of `ExpFamilyPCA.jl`, we recreate Figure 3a from @shortRoy using `CompressedBeliefMDPs.jl` [CITATION PENDING]. 
+The practical applications of `ExpFamilyPCA.jl` span several domains that deal with non-Gaussian data. One notable example is in reinforcement learning, specifically in belief state compression for partially observable Markov decision processes (POMDPs). Using Poisson EPCA, the package effectively reduces high-dimensional belief spaces with minimal information loss, as demonstrated by recreating @shortRoy results. In this case, Poisson EPCA achieved nearly perfect reconstruction of a $41$-dimensional belief profile using just five basis components [CITE `CompressedBeleifMDPS.jl`].
 
 ![](./scripts/kl_divergence_plot.png)
 
-The graph compares the average KL divergence between the reconstructions and original discrete belief data using a Poisson EPCA and regular PCA (Gaussian EPCA). The original belief profile has $41$ dimensions and Poisson EPCA achieves nearly perfect reconstruction with just $5$ bases. This makes sense since Poisson EPCA minimizes the generalized KL divergence (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/poisson/)).
+The package also finds applications in areas such as mass spectrometry and survival analysis, where specific data distributions like the gamma or Weibull may be more appropriate. By minimizing divergences suited to the distribution, `ExpFamilyPCA.jl` provides more accurate and interpretable dimensionality reduction compared to standard PCA.
 
 # Acknowledgments
 

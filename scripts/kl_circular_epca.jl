@@ -46,7 +46,7 @@ beliefs = make_numerical(raw_beliefs, maze)
 
 n, indim = size(beliefs)
 
-outdims = 1:5
+outdims = 1:6
 
 kl_divs_poisson_epca = []
 kl_divs_gaussian_epca = []
@@ -71,7 +71,7 @@ plot(
 plot!(
     outdims, 
     kl_divs_gaussian_epca, 
-    label="Gaussian EPCA",
+    label="PCA",
     yscale=:log10,
     marker=:x,
     linestyle=:dash,
