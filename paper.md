@@ -49,14 +49,13 @@ To understand how EPCA extends PCA, we first review the geometric interpretation
 
 PCA is a low-rank matrix approximation problem. For a data matrix $X \in \mathbb{R}^{n \times d}$, we are asked to find the low-rank matrix approximation $\Theta \in \mathbb{R}^{n \times d}$ such that $\mathrm{rank}(\Theta) = k \leq d$. Formally,
 
-```math
-\begin{aligned}
+$$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
 & & \|X - \Theta\|_F \\
 & \text{subject to}
 & & \mathrm{rank}\left(\Theta\right) = k
-\end{aligned}
-```
+\end{aligned}$$
+
 where $\| \cdot \|_F$ denotes the Frobenius norm.[^1]
 
 [^1]: The Frobenius norm is a generalization of the Euclidean distance and thus a special case of the Bregman divergence (induced from the log-partition of the normal distribution).
@@ -67,14 +66,13 @@ EPCA is simlar to generalized linear models (GLMs) [GLM](@cite). Just as GLMs ex
 
 At its core, EPCA replaces the geometric PCA objective with a more general probabilistic objective that minimizes the generalized Bregman divergence—a measure closely related to the exponential family (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/))—rather than the Frobenius norm, which PCA uses. This makes EPCA particularly versatile for dimensionality reduction when working with non-Gaussian data distributions:
 
-```math
-\begin{aligned}
+$$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
 & & B_F(X \| g(\Theta)) + \epsilon B_F(\mu_0 \| g(\Theta)) \\
 & \text{subject to}
 & & \mathrm{rank}\left(\Theta\right) = k.
-\end{aligned}
-```
+\end{aligned}$$
+
 In this formulation,
 *  $g(\theta)$ is the **link function** and the derivative of $G$,
 *  $F(\mu)$ is the **convex conjugate** or dual of $G$,
@@ -85,17 +83,18 @@ In this formulation,
 
 `ExpFamilyPCA.jl` includes efficient EPCA implementations for several exponential family distributions.
 
-| Distribution             | Julia Type                  | Description                                            |
-|--------------------------|-----------------------------|--------------------------------------------------------|
-| Bernoulli                | `BernoulliEPCA`             | For binary data                                        |
-| Binomial                 | `BinomialEPCA`              | For count data with a fixed number of trials           |
-| Continuous Bernoulli     | `ContinuousBernoulliEPCA`   | For modeling probabilities between $0$ and $1$         |
-| Gamma                    | `GammaEPCA`                 | For positive continuous data                           |
-| Gaussian                 | `GaussianEPCA`              | Standard PCA for real-valued data                      |
-| Negative Binomial        | `NegativeBinomialEPCA`      | For over-dispersed count data                          |
-| Pareto                   | `ParetoEPCA`                | For modeling heavy-tailed distributions                |
-| Poisson                  | `PoissonEPCA`               | For count and discrete distribution data               |
-| Weibull                  | `WeibullEPCA`               | For modeling life data and survival analysis           |
+| Julia                     | Description                                            |
+|---------------------------|--------------------------------------------------------|
+| `BernoulliEPCA`           | For binary data                                        |
+| `BinomialEPCA`            | For count data with a fixed number of trials           |
+| `ContinuousBernoulliEPCA` | For modeling probabilities between $0$ and $1$         |
+| `GammaEPCA`               | For positive continuous data                           |
+| `GaussianEPCA`            | Standard PCA for real-valued data                      |
+| `NegativeBinomialEPCA`    | For over-dispersed count data                          |
+| `ParetoEPCA`              | For modeling heavy-tailed distributions                |
+| `PoissonEPCA`             | For count and discrete distribution data               |
+| `WeibullEPCA`             | For modeling life data and survival analysis           |
+
 
 # Applications
 
