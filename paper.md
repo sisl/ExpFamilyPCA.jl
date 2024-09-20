@@ -47,7 +47,7 @@ To understand how EPCA extends PCA, we first review the geometric interpretation
 
 ## Principal Component Analysis
 
-PCA is a low-rank matrix approximation problem. For a data matrix $X \in \mathbb{R}^{n \times d}$, we are asked to find the low-rank matrix approximation $\Theta \in \mathbb{R}^{n \times d}$ such that $\mathrm{rank}(\Theta) = k \leq d$. Formally,
+PCA is a low-rank matrix approximation problem. For a data matrix $X \in \mathbb{R}^{n \times d}$, we want to find the low-rank matrix approximation $\Theta \in \mathbb{R}^{n \times d}$ such that $\mathrm{rank}(\Theta) = k \leq d$. Formally,
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
@@ -62,7 +62,7 @@ where $\| \cdot \|_F$ denotes the Frobenius norm.[^1]
 
 ## Exponential Family PCA
 
-EPCA is simlar to generalized linear models (GLMs) [GLM](@cite). Just as GLMs extend linear regression to handle a variety of response distributions, EPCA generalizes PCA to accommodate data with noise drawn from any exponential family distribution, rather than just Gaussian noise. This allows EPCA to address a broader range of real-world data scenarios where the Gaussian assumption may not hold (e.g., binary, count, discrete distribution data).
+EPCA is simlar to generalized linear models (GLMs) [@GLM]. Just as GLMs extend linear regression to handle a variety of response distributions, EPCA generalizes PCA to accommodate data with noise drawn from any exponential family distribution, rather than just Gaussian noise. This allows EPCA to address a broader range of real-world data scenarios where the Gaussian assumption may not hold (e.g., binary, count, discrete distribution data).
 
 At its core, EPCA replaces the geometric PCA objective with a more general probabilistic objective that minimizes the generalized Bregman divergence—a measure closely related to the exponential family (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/))—rather than the Frobenius norm, which PCA uses. This makes EPCA particularly versatile for dimensionality reduction when working with non-Gaussian data distributions:
 
@@ -81,6 +81,8 @@ In this formulation,
 
 # Features
 
+## Supported Distributions
+
 `ExpFamilyPCA.jl` includes efficient EPCA implementations for several exponential family distributions.
 
 | Julia                     | Description                                            |
@@ -95,10 +97,40 @@ In this formulation,
 | `PoissonEPCA`             | For count and discrete distribution data               |
 | `WeibullEPCA`             | For modeling life data and survival analysis           |
 
+## Custom Distributions
+
+When working with custom distributions, certain specifications are often more convenient and computationally efficient than others. For example, inducing the gamma EPCA objective from the log-parition $G(\theta) = -\log(-\theta)$ and its derivative $g(\theta) = -1/\theta$ is simpler and computationally more effecient than implementing the full the Itakura-Saito distance [@ItakuraSaito]:
+
+$$
+\frac{1}{2\pi} \int_{-\pi}^{\pi} \Bigg[ \frac{P(\omega)}{\hat{P}(\omega)} - \log \frac{P(\omega)}{\hat{P}{\omega}} - 1\Bigg] \, d\omega.
+$$
+
+In `ExpFamilyPCA.jl`, we would write:
+
+```julia
+G(θ) = -log(-θ)
+g(θ) = -1 / θ
+epca = EPCA(
+    indim,
+    outdim,
+    G,
+    g,
+    Val((:G, :g));
+    options = Options(
+        # Since dom(G) is negatives and Θ = AV, we constrain A and V
+        A_init_value = -1,
+        A_upper = -1e-4,
+        V_init_value = 1,
+        V_lower = 1e-4,
+    )
+)
+```
+
+A lengthier discussion of the `EPCA` constructors and math is provided in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/objectives/).
 
 # Applications
 
-[](./scripts/kl_divergence_plot.png)
+[](/scripts/kl_divergence_plot.png)
 
 
 # Acknowledgments
