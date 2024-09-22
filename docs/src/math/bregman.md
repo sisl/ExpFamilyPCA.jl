@@ -23,6 +23,9 @@ Intuitively, the Bregman divergence expresses the difference at $p$ between $F$ 
 
 Unlike traditional metrics, Bregman divergences are not generally symmetric (i.e., $B_F(p \| q) \neq B_F(q \| p)$) and do not usually satsify the triangle inequality. However, they are always non-negative ($B_F(p \| q) \geq 0$) and equal $0$ if and only if $p = q$.
 
+!!! info
+    While the full EPCA objective is always non-negative, the `EPCA` loss may be negative because `ExpFamilyPCA.jl` uses transformed objectives that are equivalent but not equal to minimizing a sum of Bregman divergences.  
+
 ## The Exponential Family
 
 The natural exponential family is a broad class of probability distributions that includes many common distributions such as the Gaussian, binomial, Poisson, and gamma distributions. A probability distribution belongs to the exponential family if its probability density function (or mass function for discrete variables) can be expressed in the following canonical form:
