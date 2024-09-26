@@ -8,7 +8,7 @@ end
 function _make_loss(epca::EPCA2, X)
     @unpack G, g = epca
     @unpack tol, μ, ϵ = epca.options
-    @assert ϵ > 0 "ϵ must be positive."
+    @assert ϵ >= 0 "ϵ must be non-negative."
 
     L(x, θ) = begin
         Gθ = G.(θ)
@@ -32,10 +32,6 @@ function EPCA(
     return epca
 end
 
-
-"""
- # NOTE: μ must be in the range of g, so g⁻¹(μ) is finite. It is up to the user to enforce this.
-"""
 function EPCA(
     indim::Integer,
     outdim::Integer,

@@ -1,12 +1,12 @@
 """
-    GaussianEPCA(indim::Integer, outdim::Integer; options::Options = Options(V_init_value = 0))
+    GaussianEPCA(indim::Integer, outdim::Integer; options::Options = Options())
 
 An EPCA model with Gaussian loss.
 
 # Arguments
 - `indim::Integer`: Dimension of the input space.
 - `outdim::Integer`: Dimension of the latent (output) space.
-- `options::Options`: Optional parameters (default: `V_init_value = 0`).
+- `options::Options`: Optional parameters.
 
 # Returns
 - `epca`: An EPCA subtype for the Gaussian distribution.
@@ -14,9 +14,7 @@ An EPCA model with Gaussian loss.
 function NormalEPCA(
     indim::Integer, 
     outdim::Integer;
-    options::Options = Options(
-        V_init_value = 0
-    )
+    options::Options = Options()
 )
     # NOTE: equivalent to generic PCA
     # assume χ = ℝ
@@ -39,9 +37,7 @@ Alias for [`NormalEPCA`](@ref).
 function GaussianEPCA(
     indim::Integer, 
     outdim::Integer;
-    options::Options = Options(
-        V_init_value = 0
-    )
+    options::Options = Options()
 )
     epca = NormalEPCA(indim, outdim; options = options)
     return epca

@@ -11,6 +11,9 @@ Gamma EPCA.
     - `A_upper`: The upper bound for the matrix `A`, default is `-eps()`.
     - `V_lower`: The lower bound for the matrix `V`, default is `eps()`.
 
+!!! tip
+    Try using `options = NegativeDomain()` if you encounter domain errors when calling `fit!` or `compress`.
+
 # Returns
 - `epca`: An instance of an `EPCA` subtype.
 """

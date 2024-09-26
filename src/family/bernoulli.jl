@@ -1,7 +1,7 @@
 """
     BernoulliEPCA(indim::Integer, outdim::Integer; options = Options(μ = 0.5))
 
-An EPCA model with Bernoulli loss.
+Bernoulli EPCA.
 
 # Arguments
 - `indim::Integer`: Dimension of the input space.

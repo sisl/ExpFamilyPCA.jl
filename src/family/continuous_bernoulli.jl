@@ -1,7 +1,7 @@
 """
     ContinuousBernoulliEPCA(indim::Integer, outdim::Integer; options::Options = Options(μ = 0.5))
 
-An EPCA model with continuous Bernoulli loss.
+Continuous Bernoulli EPCA.
 
 # Arguments
 - `indim::Integer`: Dimension of the input space.

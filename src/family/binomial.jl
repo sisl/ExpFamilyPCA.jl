@@ -1,7 +1,7 @@
 """
     BinomialEPCA(indim::Integer, outdim::Integer, n::Integer; options::Options = Options(μ = 0.5))
 
-An EPCA model with binomial loss.
+Binomial EPCA.
 
 # Arguments
 - `indim::Integer`: Dimension of the input space.

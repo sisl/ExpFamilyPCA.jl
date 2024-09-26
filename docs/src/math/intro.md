@@ -32,7 +32,7 @@ This can be formulated as an optimization problem where we find the rank-$k$ app
 ```math
 \begin{aligned}
 & \underset{\Theta}{\text{minimize}}
-& & \|X - \Theta\|_F \\
+& & \|X - \Theta\|_F^2 \\
 & \text{subject to}
 & & \mathrm{rank}\left(\Theta\right) = k
 \end{aligned}
@@ -41,7 +41,7 @@ This can be formulated as an optimization problem where we find the rank-$k$ app
 where $\| \cdot \|_F$ denotes the Frobenius norm. The Frobenius norm is calculated as the square root of the sum of the squared differences between corresponding elements of the two matrices:
 
 ```math
-\| X - \Theta \|_F = \sqrt{\sum_{i=1}^{n}\sum_{j=1}^{d}(X_{ij}-\Theta_{ij})^2}.
+\| X - \Theta \|_F^2 = \sum_{i=1}^{n}\sum_{j=1}^{d}(X_{ij}-\Theta_{ij})^2.
 ```
 
 Intuitively, it can be seen as an extension of the Euclidean distance for vectors, applied to matrices by flattening them into large vectors. This makes the Frobenius norm a natural way to measure how well the lower-dimensional representation approximates the original data.
@@ -64,13 +64,13 @@ The goal of PCA here is to find the parameters $\Theta = [\theta_1, \dots, \thet
 \ell(\Theta; X) = \frac{1}{2} \sum_{i=1}^{n} (x_i-\theta_i)^2
 ```
 
-which is equivalent to minimizing the Frobenius norm in the geometric interpretation.
+which is equivalent to minimizing the squared Frobenius norm in the geometric interpretation.
 
  ## Exponential Family PCA (EPCA)
 
 EPCA is similar to generalized linear models (GLMs) [GLM](@cite). Just as GLMs extend linear regression to handle a variety of response distributions, EPCA generalizes PCA to accommodate data with noise drawn from any exponential family distribution, rather than just Gaussian noise. This allows EPCA to address a broader range of real-world data scenarios where the Gaussian assumption may not hold (e.g., binary, count, discrete distribution data).
 
-At its core, EPCA replaces the geometric PCA objective with a more general probabilistic objective that minimizes the generalized Bregman divergence—a measure closely related to the exponential family—rather than the Frobenius norm, which PCA uses. This makes EPCA particularly versatile for dimensionality reduction when working with non-Gaussian data distributions:
+At its core, EPCA replaces the geometric PCA objective with a more general probabilistic objective that minimizes the generalized Bregman divergence—a measure closely related to the exponential family—rather than the squared Frobenius norm, which PCA uses. This makes EPCA particularly versatile for dimensionality reduction when working with non-Gaussian data distributions:
 
 ```math
 \begin{aligned}

@@ -1,5 +1,7 @@
+"""
+Supertype for exponential family principal component analysis models.
+"""
 abstract type EPCA end
-
 
 """
     fit!(epca::EPCA, X::AbstractMatrix{T}; maxiter::Integer = 100, verbose::Bool = false, steps_per_print::Integer = 10) where T <: Real

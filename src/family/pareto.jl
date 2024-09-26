@@ -1,7 +1,7 @@
 """
     ParetoEPCA(indim::Integer, outdim::Integer, m::Real; options::Options = Options(μ = 2, A_init_value = 2, A_lower = 1 / indim, V_init_value = -2, V_upper = -1))
 
-An EPCA model with Pareto loss.
+Pareto EPCA.
 
 # Arguments
 - `indim::Integer`: Dimension of the input space.

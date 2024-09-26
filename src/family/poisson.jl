@@ -1,7 +1,7 @@
 """
     PoissonEPCA(indim::Integer, outdim::Integer; options::Options = Options())
 
-An EPCA model with Poisson loss.
+Poisson EPCA.
 
 # Arguments
 - `indim::Integer`: Dimension of the input space.

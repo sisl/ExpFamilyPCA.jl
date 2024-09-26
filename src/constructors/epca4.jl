@@ -8,7 +8,7 @@ end
 function _make_loss(epca::EPCA4, X)
     Bg = epca.Bg
     @unpack μ, ϵ = epca.options
-    @assert ϵ > 0 "ϵ must be positive."
+    @assert ϵ >= 0 "ϵ must be non-negative."
     
     L(x, θ) = begin
         divergence = @. Bg(x, θ)

@@ -8,7 +8,7 @@ end
 function _make_loss(epca::EPCA1, X)
     @unpack F, g = epca
     @unpack μ, ϵ = epca.options
-    @assert ϵ > 0 "ϵ must be positive."
+    @assert ϵ >= 0 "ϵ must be non-negative."
 
     L(x, θ) = begin
         gθ = g.(θ)

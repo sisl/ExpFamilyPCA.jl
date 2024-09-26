@@ -31,32 +31,52 @@ bibliography: paper.bib
 
 # Summary
 
-Dimensionality reduction techniques like principal component analysis (PCA) [@PCA] are fundamental tools in machine learning and data science for managing high-dimensional data. While PCA is effective for continuous, real-valued data, it may not perform well for binary, count, or discrete distribution data. Exponential family PCA (EPCA) [@EPCA] generalizes PCA to accommodate these data types, making it a more suitable choice for tasks like belief compression in reinforcement learning [@Roy]. `ExpFamilyPCA.jl` is the first Julia [@Julia] package for EPCA, offering fast implementations for common distributions and a flexible interface for custom objectives.
+Principal component analysis (PCA) [@PCA] is a fundamental tool in data science and machine learning for dimensionality reduction and denoising. While PCA is effective for continuous, real-valued data, it may not perform well for binary, count, or discrete distribution data. Exponential family PCA (EPCA) [@EPCA] generalizes PCA to accommodate these data types, making it more suitable for tasks such as belief compression in reinforcement learning [@Roy]. `ExpFamilyPCA.jl` is the first Julia [@Julia] package for EPCA, offering fast implementations for common distributions and a flexible interface for custom distributions.
 
 # Statement of Need
 
-To our knowledge, there are no open-source implementations of EPCA and the sole proprietary package [@epca-MATLAB] is limited to a single distribution. Modern applications of EPCA in reinforcement learning [@Roy] and mass spectrometry [@spectrum] require multiple distributions, numerical stability, and the ability to handle large datasets. `ExpFamilyPCA.jl` addresses this gap by providing fast implementations for several exponential family distributions and multiple constructors for custom distributions. More implementation and mathematical details are in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/).
+<!-- REDO -->
+
+To our knowledge, there are no open-source implementations of EPCA, and the sole proprietary package [@epca-MATLAB] is limited to a single distribution. Modern applications of EPCA in reinforcement learning [@Roy] and mass spectrometry [@spectrum] require multiple distributions, numerical stability, and the ability to handle large datasets. `ExpFamilyPCA.jl` addresses this gap by providing fast implementations for several exponential family distributions and multiple constructors for custom distributions. More implementation and mathematical details are in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/).
 
 # Problem Formulation
 
+- PCA has a specific geometric objective in terms of projections
+- This can also be interpreted as a denoising process using Gaussian MLE
+- EPCA generalizes geometric objective using Bregman divergences which are related to exponential families
+
+TODO: read the original GLM paper
+
+PCA has many interpretations (e.g., a variance-maximizing compression, a distance-minimizing projection). The interpretation that is most useful for understanding EPCA is the denoising interpretration. Suppose we have $n$ noisy observations $x_1, \dots, x_n \in \mathbb{R}^{n \times d$
+
 ## Principal Component Analysis
 
-Traditional PCA is a low-rank matrix approximation problem. For a data matrix $X \in \mathbb{R}^{n \times d}$, we want to find the low-rank matrix approximation $\Theta \in \mathbb{R}^{n \times d}$ such that $\mathrm{rank}(\Theta) = k \leq d$. Formally,
+
+
+
+
+Traditional PCA is a low-rank matrix approximation problem. For a data matrix $X \in \mathbb{R}^{n \times d}$ with $n$ observations, we want to find the low-rank matrix approximation $\Theta \in \mathbb{R}^{n \times d}$ such that $\mathrm{rank}(\Theta) = k \leq d$. Formally,
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
-& & \|X - \Theta\|_F \\
+& & \|X - \Theta\|_F^2 \\
 & \text{subject to}
 & & \mathrm{rank}\left(\Theta\right) = k
 \end{aligned}$$
 
-where $\| \cdot \|_F$ denotes the Frobenius norm.[^1]
+where $\| \cdot \|_F$ denotes the Frobenius norm[^1] and $\Theta = AV$ where $A = X_k \in \mathbb{R}^{n \times k}$ and $V = X_k \in \mathbb{R}^{k \times d}$.
 
 [^1]: The Frobenius norm is a generalization of the Euclidean distance and thus a special case of the Bregman divergence (induced from the log-partition of the normal distribution).
 
 ## Exponential Family PCA
 
-EPCA is a generalization of PCA that replaces PCA's geometric objective with a more general probabilistic objective that minimizes the generalized Bregman divergence—a measure closely related to the exponential family (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/))—rather than the Frobenius norm. This makes EPCA particularly versatile for dimensionality reduction when working with non-Gaussian data distributions:
+EPCA is a generalization of PCA that replaces PCA's geometric objective with a more general probabilistic objective that minimizes the generalized Bregman divergence—a measure closely related to the exponential family (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/))—rather than the squared Frobenius norm. The Bregman divergence $B_F$ associated with $F$ is defined [@Bregman]:
+
+$$
+B_F(p, q) = F(p) - F(q) - \nabla F(q) \cdot (p - q).
+$$
+
+The Bregman-based objective makes EPCA particularly versatile for dimensionality reduction when working with non-Gaussian data distributions:
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
@@ -74,10 +94,6 @@ In this formulation,
 
 EPCA is similar to generalized linear models (GLMs) [@GLM]. Just as GLMs extend linear regression to handle a variety of response distributions, EPCA generalizes PCA to accommodate data with noise drawn from any exponential family distribution, rather than just Gaussian noise. This allows EPCA to address a broader range of real-world data scenarios where the Gaussian assumption may not hold (e.g., binary, count, discrete distribution data).
 
-## Related Work
-
-Exponential family PCA was introduced by @EPCA, and several papers have extended the technique [@LitReview]. While there have been advances, EPCA remains the most well-studied variation of PCA in reinforcement learning and sequential decision-making [@Roy].
-
 # API 
 
 ## Usage
@@ -88,9 +104,9 @@ Each `EPCA` object supports a three-method interface: `fit!`, `compress`, and `d
 X = rand(n1, indim) * 100
 Y = rand(n2, indim) * 100
 
-_ = fit!(gamma_epca, X)
-A = compress(gamma_epca, Y)
-Y_recon = decompress(gamma_epca, A)
+X_compressed = fit!(gamma_epca, X)
+Y_compressed = compress(gamma_epca, Y)
+Y_reconstructed = decompress(gamma_epca, Y_compressed)
 ```
 
 ## Supported Distributions

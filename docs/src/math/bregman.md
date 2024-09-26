@@ -9,7 +9,7 @@ Understanding Bregman divergences is essential for EPCA because they link the ex
 Formally, the Bregman divergence [Bregman](@cite) $B_F$ associated with a function $F(\theta)$ is defined as
 
 ```math
-B_F(p, q) = F(p) - F(q) - \langle f(p), p - q \rangle
+B_F(p \| q) = F(p) - F(q) - \langle f(p), p - q \rangle
 ```
 
 where 
