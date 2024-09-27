@@ -29,17 +29,18 @@ date: 9 September 2024
 bibliography: paper.bib
 ---
 
+
 # Summary
 
-Principal component analysis (PCA) [@PCA] is an important tool for compression, intepretability, and denoising that works best when data is continuous, real, and normally-distributed. Exponential family principal component analysis (EPCA) [@EPCA] generalizes PCA to accomodate observations from any exponential family, making it well-suited for working with binary, count, and discrete distribution data.`ExpFamilyPCA.jl` is the first Julia package [@Julia] to implement EPCA and the first package in any language to support EPCA with multiple distributions.
+Principal component analysis (PCA) [@PCA] is an important tool for compression, interpretability, and denoising that works best when data is continuous, real, and normally distributed. Exponential family principal component analysis (EPCA) [@EPCA] generalizes PCA to accommodate observations from any exponential family, making it well-suited for working with binary, count, and discrete distribution data.`ExpFamilyPCA.jl` is the first Julia package [@Julia] to implement EPCA and the first package in any language to support EPCA with multiple distributions.
 
 # Statement of Need
 
 `ExpFamilyPCA.jl` is a fast, numerically stable package for compressing, interpreting, and denoising high-dimensional datasets with data from exponential family distributions. It supports most common exponential family distributions (§ [Supported Distributions](#supported-distributions)) and includes multiple constructors for custom distributions (§ [Custom Distributions](#supported-distributions)).
 
-EPCA has been used in reinforcement learning and sequential decision making to effeciently process state uncertainty [@Roy]. Similar techniques are also used in mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], text analysis [@LitReview], and robust clustering [@clustering], suggesting that EPCA may have further applications in signal processing and machine learning.
+EPCA has been used in reinforcement learning and sequential decision making to efficiently process state uncertainty [@Roy]. Similar techniques are also used in mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], text analysis [@LitReview], and robust clustering [@clustering], suggesting that EPCA may have further applications in signal processing and machine learning.
 
-`ExpFamilyPCA.jl` is the written in Julia. Julia uses multiple dispatch which encourages high code reuse and interoperability between packages [@dispatch]. `ExpFamilyPCA.jl` relies on this interoperability and the languages innate support for high-performance scientific computing to support fast symbolic differentiation [@sybolics], optimization [@optim], and numerically stable exponential operations [@stable_exp, @logexp].
+`ExpFamilyPCA.jl` is the written in Julia. Julia uses multiple dispatch which encourages high code reuse and interoperability between packages [@dispatch]. `ExpFamilyPCA.jl` relies on this interoperability and the language's innate support for high-performance scientific computing to support fast symbolic differentiation [@sybolics], optimization [@optim], and numerically stable exponential operations [@stable_exp, @logexp].
 
 # Problem Formulation
 
@@ -58,7 +59,7 @@ $$\begin{aligned}
 
 where $\| \cdot \|_F$ denotes the Frobenius norm.
 
-### Probabalistic Interpretation
+### Probabilistic Interpretation
 
 Since the geometric PCA objective is equivalent to maximizing the Gaussian log-likelihood, PCA can be viewed as a denoising procedure that recovers the data's low-dimensional latent structure of the data from high-dimensional observations corrupted with Gaussian noise. Formally,
 
@@ -79,7 +80,7 @@ $$
 
 <!-- todo: double check if F is the cumulant or the conjugate of the cumulant or if it even matters -->
 
-When $F$ is chosen to be the convex conjugate of the log-partition of an exponential family distribution, minimizing the Bregman divergence aligns with maximizing the log-likelihood [@azoury, @forster]. This property makes Bregman divergences particularly suitable for extending PCA to the exponential family. A comprehensive discussion can be found in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/).
+When $F$ is chosen to be the convex conjugate of the log partition of an exponential family distribution, minimizing the Bregman divergence aligns with maximizing the log-likelihood [@azoury, @forster]. This property makes Bregman divergences particularly suitable for extending PCA to the exponential family. A comprehensive discussion can be found in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/).
 
 ## Exponential Family Principal Component Analysis
 
@@ -87,7 +88,7 @@ EPCA extends the classical PCA by replacing its geometric objective with a proba
 
 <!-- 
 
-EPCA is a generalization of PCA that replaces PCA's geometric objective with a more general probabilistic objective that minimizes the generalized Bregman divergence rather than the squared Frobenius norm (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/) to see why PCA is a special case of EPCA).The Bregman-based objective makes EPCA particularly versatile for dimensionality reduction when working with non-Gaussian data distributions: -->
+EPCA is a generalization of PCA that replaces PCA's geometric objective with a more general probabilistic objective that minimizes the generalized Bregman divergence rather than the squared Frobenius norm (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/) to see why PCA is a special case of EPCA). The Bregman-based objective makes EPCA particularly versatile for dimensionality reduction when working with non-Gaussian data distributions: -->
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
@@ -98,10 +99,10 @@ $$\begin{aligned}
 
 In this formulation,
 
-*  $g(\theta)$ is the **link function** and the derivative of $G$,
-*  $F(\mu)$ is the **convex conjugate** or dual of $G$,
-*  $B_F(p \| q)$ is the **Bregman divergence** induced from $F$,
-*  and both $\mu_0 \in \mathrm{range}(g)$ and $\epsilon > 0$ are regularization hyperparameters.
+* $g(\theta)$ is the **link function** and the derivative of $G$,
+* $F(\mu)$ is the **convex conjugate** or dual of $G$,
+* $B_F(p \| q)$ is the **Bregman divergence** induced from $F$,
+* and both $\mu_0 \in \mathrm{range}(g)$ and $\epsilon > 0$ are regularization hyperparameters.
 
 
 This objective allows EPCA to effectively perform dimensionality reduction on data drawn from any exponential family distribution, thereby broadening the applicability of PCA beyond Gaussian data. Notably, PCA itself is a special case of EPCA when the data follows a Gaussian distribution, as detailed in the [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/).
@@ -114,7 +115,7 @@ For the Poisson distribution, the associated EPCA objective is the generalized K
 
 <!-- todo: smooth out transition -->
 
-One notable example is in reinforcement learning, specifically in belief state compression for partially observable Markov decision processes (POMDPs). Using Poisson EPCA, the package effectively reduces high-dimensional belief spaces with minimal information loss, as demonstrated by recreating results from @shortRoy. In this case, Poisson EPCA achieved nearly perfect reconstruction of a $41$-dimensional belief profile using just five basis components [CITE `CompressedBeleifMDPS.jl`, PAPER IN PRE-REVIEW]. Poisson EPCA compression also produces a more interpretable compression than traditional PCA because it minimizes the generalized KL divergence rather than the Frobenius norm.
+One notable example is in reinforcement learning, specifically in belief state compression for partially observable Markov decision processes (POMDPs). Using Poisson EPCA, the package effectively reduces high-dimensional belief spaces with minimal information loss, as demonstrated by recreating results from @shortRoy. In this case, Poisson EPCA achieved a nearly perfect reconstruction of a $41$-dimensional belief profile using just five basis components [CITE `CompressedBeleifMDPS.jl`, PAPER IN PRE-REVIEW]. Poisson EPCA compression also produces a more interpretable compression than traditional PCA because it minimizes the generalized KL divergence rather than the Frobenius norm.
 
 ![](./scripts/kl_divergence_plot.png)
 
@@ -139,15 +140,15 @@ Y_reconstructed = decompress(gamma_epca, Y_compressed)
 
 | Julia                     | Description                                            |
 |---------------------------|--------------------------------------------------------|
-| `BernoulliEPCA`           | For binary data                                        |
-| `BinomialEPCA`            | For count data with a fixed number of trials           |
+| `BernoulliEPCA` | For binary data                                        |
+| `BinomialEPCA` | For count data with a fixed number of trials           |
 | `ContinuousBernoulliEPCA` | For modeling probabilities between $0$ and $1$         |
-| `GammaEPCA`               | For positive continuous data                           |
-| `GaussianEPCA`            | Standard PCA for real-valued data                      |
-| `NegativeBinomialEPCA`    | For over-dispersed count data                          |
-| `ParetoEPCA`              | For modeling heavy-tailed distributions                |
-| `PoissonEPCA`             | For count and discrete distribution data               |
-| `WeibullEPCA`             | For modeling life data and survival analysis           |
+| `GammaEPCA` | For positive continuous data                           |
+| `GaussianEPCA` | Standard PCA for real-valued data                      |
+| `NegativeBinomialEPCA` | For over-dispersed count data                          |
+| `ParetoEPCA` | For modeling heavy-tailed distributions                |
+| `PoissonEPCA` | For count and discrete distribution data               |
+| `WeibullEPCA` | For modeling life data and survival analysis           |
 
 ## Custom Distributions
 
