@@ -16,6 +16,32 @@
   publisher={Springer}
 }
 
+@article{clustering,
+  author  = {Arindam Banerjee and Srujana Merugu and Inderjit S. Dhillon and Joydeep Ghosh},
+  title   = {Clustering with Bregman Divergences},
+  journal = {Journal of Machine Learning Research},
+  year    = {2005},
+  volume  = {6},
+  number  = {58},
+  pages   = {1705--1749},
+  url     = {http://jmlr.org/papers/v6/banerjee05b.html}
+}
+
+@article{ultrasound,
+title = {Fast reduction of speckle noise in real ultrasound images},
+journal = {Signal Processing},
+volume = {93},
+number = {4},
+pages = {684-694},
+year = {2013},
+issn = {0165-1684},
+doi = {https://doi.org/10.1016/j.sigpro.2012.09.005},
+url = {https://www.sciencedirect.com/science/article/pii/S0165168412003258},
+author = {Jie Huang and Xiaoping Yang},
+keywords = {Real ultrasound image, Speckle reduction, Generalized Kullback–Leibler distance, Variable splitting, Bregman iterative},
+abstract = {In this paper, we concentrate on fast removing speckle noise in real ultrasound images. It is hard to design a fast algorithm to solve a speckle reduction model, since the data fitting term in a speckle reduction model is usually not convex. In this paper, we present a convex variational model to deal with speckle noise in real ultrasound images. The data-fitting term of the proposed model is obtained by using a generalized Kullback–Leibler distance. To fast solve the proposed model, we incorporate variable splitting method and Bregman iterative method to propose a fast ultrasound speckle reduction algorithm. The capability of the proposed method is shown both on synthetic images and real ultrasound images.}
+}
+
 @article{spectrum,
 title = {Itakura-{S}aito distance based autoencoder for dimensionality reduction of mass spectra},
 journal = {Chemometrics and Intelligent Laboratory Systems},
@@ -28,6 +54,30 @@ url = {https://www.sciencedirect.com/science/article/pii/S0169743917300436},
 author = {Yuji Nozaki and Takamichi Nakamoto},
 keywords = {Dimensionality reduction, Mass spectra, Autoencoder, Itakura-Saito distance},
 abstract = {Small signals may contain important information. Mass spectra of chemical compounds are usually given in a format of sparse high-dimensional data of large dynamic range. As peaks at high m/z (mass to charge ratio) region of a mass spectrum contribute to sensory information, they should not be ignored during the dimensionality reduction process even if the peak is small. However, in most of dimensionality reduction techniques, large peaks in a dataset are typically more emphasized than tiny peaks when Euclidean space is assessed. Autoencoders are widely used nonlinear dimensionality reduction technique, which is known as one special form of artificial neural networks to gain a compressed, distributed representation after learning. In this paper, we present an autoencoder which uses IS (Itakura-Saito) distance as its cost function to achieve a high capability of approximation of small target inputs in dimensionality reduction. The result of comparative experiments showed that our new autoencoder achieved the higher performance in approximation of small targets than that of the autoencoders with conventional cost functions such as the mean squared error and the cross-entropy.}
+}
+
+@article{azoury,
+  title={Relative Loss Bounds for On-Line Density Estimation with the Exponential Family of Distributions},
+  author={Azoury, Katy S and Warmuth, Manfred K},
+  journal={Machine learning},
+  volume={43},
+  pages={211--246},
+  year={2001},
+  publisher={Springer}
+}
+
+@article{forster,
+title = {Relative Expected Instantaneous Loss Bounds},
+journal = {Journal of Computer and System Sciences},
+volume = {64},
+number = {1},
+pages = {76-102},
+year = {2002},
+issn = {0022-0000},
+doi = {10.1006/jcss.2001.1798},
+url = {https://www.sciencedirect.com/science/article/pii/S0022000001917982},
+author = {Jürgen Forster and Manfred K. Warmuth},
+abstract = {In the literature a number of relative loss bounds have been shown for on-line learning algorithms. Here the relative loss is the total loss of the on-line algorithm in all trials minus the total loss of the best comparator that is chosen off-line. However, for many applications instantaneous loss bounds are more interesting where the learner first sees a batch of examples and then uses these examples to make a prediction on a new instance. We show relative expected instantaneous loss bounds for the case when the examples are i.i.d. with an unknown distribution. We bound the expected loss of the algorithm on the last example minus the expected loss of the best comparator on a random example. In particular, we study linear regression and density estimation problems and show how the leave-one-out loss can be used to prove instantaneous loss bounds for these cases. For linear regression we use an algorithm that is similar to a new on-line learning algorithm developed by Vovk. Recently a large number of relative total loss bounds have been shown that have the form O(lnT), where T is the number of trials/examples. Standard conversions of on-line algorithms to batch algorithms result in relative expected instantaneous loss bounds of the form O(lnTT). Our methods lead to O(1T) upper bounds. In many cases we give tight lower bounds.}
 }
 
 @misc{Julia,
@@ -68,6 +118,22 @@ doi = {10.1016/0041-5553(67)90040-7},
 url = {https://www.sciencedirect.com/science/article/pii/0041555367900407},
 author = {L.M. Bregman},
 abstract = {IN this paper we consider an iterative method of finding the common point of convex sets. This method can be regarded as a generalization of the methods discussed in [1–4]. Apart from problems which can be reduced to finding some point of the intersection of convex sets, the method considered can be applied to the approximate solution of problems in linear and convex programming.}
+}
+
+@misc{logexp,
+  title = {LogExpFunctions.jl},
+  year = {2024},
+  publisher = {GitHub},
+  url = {https://github.com/JuliaStats/LogExpFunctions.jl},
+}
+
+@unknown{stable_exp,
+author = {Mächler, Martin},
+year = {2015},
+month = {09},
+pages = {},
+title = {Accurately Computing {$\log(1 - \exp(-|a|)$} Assessed by the Rmpfr package},
+doi = {10.13140/RG.2.2.11834.70084}
 }
 
 @article{symbolics,

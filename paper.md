@@ -31,52 +31,63 @@ bibliography: paper.bib
 
 # Summary
 
-Principal component analysis (PCA) [@PCA] is a fundamental tool in data science and machine learning for dimensionality reduction and denoising. While PCA is effective for continuous, real-valued data, it may not perform well for binary, count, or discrete distribution data. Exponential family PCA (EPCA) [@EPCA] generalizes PCA to accommodate these data types, making it more suitable for tasks such as belief compression in reinforcement learning [@Roy]. `ExpFamilyPCA.jl` is the first Julia [@Julia] package for EPCA, offering fast implementations for common distributions and a flexible interface for custom distributions.
+Principal component analysis (PCA) [@PCA] is an important tool for compression, intepretability, and denoising that works best when data is continuous, real, and normally-distributed. Exponential family principal component analysis (EPCA) [@EPCA] generalizes PCA to accomodate observations from any exponential family, making it well-suited for working with binary, count, and discrete distribution data.`ExpFamilyPCA.jl` is the first Julia package [@Julia] to implement EPCA and the first package in any language to support EPCA with multiple distributions.
 
 # Statement of Need
 
-<!-- REDO -->
+`ExpFamilyPCA.jl` is a fast, numerically stable package for compressing, interpreting, and denoising high-dimensional datasets with data from exponential family distributions. It supports most common exponential family distributions (§ [Supported Distributions](#supported-distributions)) and includes multiple constructors for custom distributions (§ [Custom Distributions](#supported-distributions)).
 
-To our knowledge, there are no open-source implementations of EPCA, and the sole proprietary package [@epca-MATLAB] is limited to a single distribution. Modern applications of EPCA in reinforcement learning [@Roy] and mass spectrometry [@spectrum] require multiple distributions, numerical stability, and the ability to handle large datasets. `ExpFamilyPCA.jl` addresses this gap by providing fast implementations for several exponential family distributions and multiple constructors for custom distributions. More implementation and mathematical details are in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/).
+EPCA has been used in reinforcement learning and sequential decision making to effeciently process state uncertainty [@Roy]. Similar techniques are also used in mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], text analysis [@LitReview], and robust clustering [@clustering], suggesting that EPCA may have further applications in signal processing and machine learning.
+
+`ExpFamilyPCA.jl` is the written in Julia. Julia uses multiple dispatch which encourages high code reuse and interoperability between packages [@dispatch]. `ExpFamilyPCA.jl` relies on this interoperability and the languages innate support for high-performance scientific computing to support fast symbolic differentiation [@sybolics], optimization [@optim], and numerically stable exponential operations [@stable_exp, @logexp].
 
 # Problem Formulation
 
-- PCA has a specific geometric objective in terms of projections
-- This can also be interpreted as a denoising process using Gaussian MLE
-- EPCA generalizes geometric objective using Bregman divergences which are related to exponential families
-
-TODO: read the original GLM paper
-
-PCA has many interpretations (e.g., a variance-maximizing compression, a distance-minimizing projection). The interpretation that is most useful for understanding EPCA is the denoising interpretration. Suppose we have $n$ noisy observations $x_1, \dots, x_n \in \mathbb{R}^{n \times d$
-
 ## Principal Component Analysis
 
+### Geometric Interpretation
 
-
-
-
-Traditional PCA is a low-rank matrix approximation problem. For a data matrix $X \in \mathbb{R}^{n \times d}$ with $n$ observations, we want to find the low-rank matrix approximation $\Theta \in \mathbb{R}^{n \times d}$ such that $\mathrm{rank}(\Theta) = k \leq d$. Formally,
+Given a data matrix $X \in \mathbb{R}^{n \times d}$, the geometric goal of PCA is to find the closest low-rank approximation $\Theta \in \mathbb{R}^{n \times d}$. Formally,
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
-& & \|X - \Theta\|_F^2 \\
+& & \frac{1}{2}\|X - \Theta\|_F^2 \\
 & \text{subject to}
 & & \mathrm{rank}\left(\Theta\right) = k
 \end{aligned}$$
 
-where $\| \cdot \|_F$ denotes the Frobenius norm[^1] and $\Theta = AV$ where $A = X_k \in \mathbb{R}^{n \times k}$ and $V = X_k \in \mathbb{R}^{k \times d}$.
+where $\| \cdot \|_F$ denotes the Frobenius norm.
 
-[^1]: The Frobenius norm is a generalization of the Euclidean distance and thus a special case of the Bregman divergence (induced from the log-partition of the normal distribution).
+### Probabalistic Interpretation
 
-## Exponential Family PCA
-
-EPCA is a generalization of PCA that replaces PCA's geometric objective with a more general probabilistic objective that minimizes the generalized Bregman divergence—a measure closely related to the exponential family (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/))—rather than the squared Frobenius norm. The Bregman divergence $B_F$ associated with $F$ is defined [@Bregman]:
+Since the geometric PCA objective is equivalent to maximizing the Gaussian log-likelihood, PCA can be viewed as a denoising procedure that recovers the data's low-dimensional latent structure of the data from high-dimensional observations corrupted with Gaussian noise. Formally,
 
 $$
-B_F(p, q) = F(p) - F(q) - \nabla F(q) \cdot (p - q).
+x_i \sim \mathcal{N}(\theta_i, I)
 $$
 
-The Bregman-based objective makes EPCA particularly versatile for dimensionality reduction when working with non-Gaussian data distributions:
+where $x_i$ is a row of $X$, $\theta_i$ is a row of $\Theta$, and $i \in \{1, \dots, n\}$.
+
+
+## Bregman Divergences
+
+Bregman divergences [@Bregman] provide a flexible measure of statistical difference. For a strictly convex and continuously differentiable function $F$, the Bregman divergence between $p, q \in \mathrm{dom}(F)$ is
+
+$$
+B_F(p \| q) = F(p) - F(q) - \langle \nabla F(q), p - q \rangle.
+$$
+
+<!-- todo: double check if F is the cumulant or the conjugate of the cumulant or if it even matters -->
+
+When $F$ is chosen to be the convex conjugate of the log-partition of an exponential family distribution, minimizing the Bregman divergence aligns with maximizing the log-likelihood [@azoury, @forster]. This property makes Bregman divergences particularly suitable for extending PCA to the exponential family. A comprehensive discussion can be found in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/).
+
+## Exponential Family Principal Component Analysis
+
+EPCA extends the classical PCA by replacing its geometric objective with a probabilistic one that minimizes a generalized Bregman divergence instead of the squared Frobenius norm. Formally, EPCA seeks to solve:
+
+<!-- 
+
+EPCA is a generalization of PCA that replaces PCA's geometric objective with a more general probabilistic objective that minimizes the generalized Bregman divergence rather than the squared Frobenius norm (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/) to see why PCA is a special case of EPCA).The Bregman-based objective makes EPCA particularly versatile for dimensionality reduction when working with non-Gaussian data distributions: -->
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
@@ -92,7 +103,20 @@ In this formulation,
 *  $B_F(p \| q)$ is the **Bregman divergence** induced from $F$,
 *  and both $\mu_0 \in \mathrm{range}(g)$ and $\epsilon > 0$ are regularization hyperparameters.
 
-EPCA is similar to generalized linear models (GLMs) [@GLM]. Just as GLMs extend linear regression to handle a variety of response distributions, EPCA generalizes PCA to accommodate data with noise drawn from any exponential family distribution, rather than just Gaussian noise. This allows EPCA to address a broader range of real-world data scenarios where the Gaussian assumption may not hold (e.g., binary, count, discrete distribution data).
+
+This objective allows EPCA to effectively perform dimensionality reduction on data drawn from any exponential family distribution, thereby broadening the applicability of PCA beyond Gaussian data. Notably, PCA itself is a special case of EPCA when the data follows a Gaussian distribution, as detailed in the [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/).
+
+EPCA shares similarities with generalized linear models (GLMs) [@GLM]. Just as GLMs extend linear regression to accommodate various response distributions, EPCA generalizes PCA to handle data with noise from any exponential family distribution, not limited to Gaussian noise. This generalization allows EPCA to better model real-world data scenarios where the Gaussian assumption may not hold, such as binary, count, or other discrete distributions.
+
+### Example: Poisson EPCA
+
+For the Poisson distribution, the associated EPCA objective is the generalized Kullback-Leibler (KL) divergence (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/poisson/)), making Poisson EPCA particularly suitable for compressing discrete distribution data. This capability is crucial for applications like belief compression in reinforcement learning [@Roy], where high-dimensional belief states can be effectively reduced with minimal information loss.
+
+<!-- todo: smooth out transition -->
+
+One notable example is in reinforcement learning, specifically in belief state compression for partially observable Markov decision processes (POMDPs). Using Poisson EPCA, the package effectively reduces high-dimensional belief spaces with minimal information loss, as demonstrated by recreating results from @shortRoy. In this case, Poisson EPCA achieved nearly perfect reconstruction of a $41$-dimensional belief profile using just five basis components [CITE `CompressedBeleifMDPS.jl`, PAPER IN PRE-REVIEW]. Poisson EPCA compression also produces a more interpretable compression than traditional PCA because it minimizes the generalized KL divergence rather than the Frobenius norm.
+
+![](./scripts/kl_divergence_plot.png)
 
 # API 
 
@@ -142,14 +166,6 @@ gamma_epca = EPCA(indim, outdim, G, g, Val((:G, :g)); options = NegativeDomain()
 ```
 
 A lengthier discussion of the `EPCA` constructors and math is provided in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/objectives/).
-
-## Applications
-
-The practical applications of `ExpFamilyPCA.jl` span several domains that deal with non-Gaussian data. One notable example is in reinforcement learning, specifically in belief state compression for partially observable Markov decision processes (POMDPs). Using Poisson EPCA, the package effectively reduces high-dimensional belief spaces with minimal information loss, as demonstrated by recreating results from @shortRoy. In this case, Poisson EPCA achieved nearly perfect reconstruction of a $41$-dimensional belief profile using just five basis components [CITE `CompressedBeleifMDPS.jl`, PAPER IN PRE-REVIEW]. Poisson EPCA compression also produces a more interpretable compression than traditional PCA because it minimizes the generalized KL divergence rather than the Frobenius norm.
-
-![](./scripts/kl_divergence_plot.png)
-
-`ExpFamilyPCA.jl` can also be used in fields like mass spectrometry and survival analysis, where specific data distributions like the gamma or Weibull may be more appropriate. By minimizing divergences suited to the distribution, `ExpFamilyPCA.jl` provides more accurate and interpretable dimensionality reduction than standard PCA.
 
 # Acknowledgments
 
