@@ -1,25 +1,25 @@
 ---
 title: 'ExpFamilyPCA.jl: A Julia Package for Exponential Family Principal Component Analysis'
 tags:
-  - Julia
-  - compression
-  - dimensionality reduction
-  - PCA
-  - exponential family
-  - EPCA
-  - open-source
-  - POMDP
-  - MDP
-  - sequential decision making
-  - RL
+ - Julia
+ - compression
+ - dimensionality reduction
+ - PCA
+ - exponential family
+ - EPCA
+ - open-source
+ - POMDP
+ - MDP
+ - sequential decision making
+ - RL
 authors:
-  - name: Logan Mondal Bhamidipaty
+ - name: Logan Mondal Bhamidipaty
     orcid: 0009-0001-3978-9462
     affiliation: 1
-  - name: Mykel J. Kochenderfer
+ - name: Mykel J. Kochenderfer
     orcid: 0000-0002-7238-9663
     affiliation: 1
-  - name: Trevor Hastie
+ - name: Trevor Hastie
     orcid: 0000-0002-0164-3142
     affiliation: 1
 affiliations:
@@ -32,13 +32,13 @@ bibliography: paper.bib
 
 # Summary
 
-Principal component analysis (PCA) [@PCA] is an important tool for compression, interpretability, and denoising that works best when data is continuous, real, and normally distributed. Exponential family principal component analysis (EPCA) [@EPCA] generalizes PCA to accommodate observations from any exponential family, making it well-suited for binary, count, and discrete distribution data. `ExpFamilyPCA.jl` is the first Julia package [@Julia] to implement EPCA and the first package in any language to support EPCA with multiple distributions.
+Principal component analysis (PCA) [@PCA] is an important tool for compressing, interpreting, and denoising that works best on Gaussian data. Exponential family principal component analysis (EPCA) [@EPCA] generalizes PCA to handle data from any exponential family, making it more suitable for binary, count, and discrete distribution data. `ExpFamilyPCA.jl` is the first Julia package [@Julia] to implement EPCA, and the first in any language to support multiple distributions for EPCA.
 
 # Statement of Need
 
-EPCA has not been widely adopted due to the lack of general-purpose implementations that support multiple distributions [@LitReview]; existing work often relies on custom optimization routines specific to a single distribution [@Roy; @MatlabEPCA]. This is unfortunate since Bregman-based methods have succeeded in applications like mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], text analysis [@LitReview], and robust clustering [@clustering], suggesting that EPCA could be effectively applied in signal processing and machine learning.
+The limited adoption of EPCA stems from the lack of general-purpose packages supporting multiple distributions, with prior work relying on bespoke optimization routines for specific distributions [@Roy; epca-MATLAB]. This is a missed opportunity, as other Bregman-based methods have proven successful in areas such as mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], text analysis [@LitReview], and robust clustering [@clustering], indicating that EPCA could be valuable in signal processing and machine learning.
 
-Implementing a general-purpose EPCA algorithm is challenging in most languages because it requires symbolic differentiation and optimization, which often necessitates API-specific atoms that are not interoperable with optimization libraries in languages like Python or C. ExpFamilyPCA.jl overcomes these challenges by leveraging Julia's capabilities. Julia supports multiple dispatch, promoting high levels of code reuse [@dispatch], and allows symbolic manipulation [@symbolics], optimization [@optim], and numerically stable functions [@stable_exp] to work smoothly and efficiently together. This makes ExpFamilyPCA.jl a fast, numerically stable EPCA implementation that supports multiple distributions. It includes off-the-shelf models for most common distributions (§ [Supported Distributions](#supported-distributions)) and multiple constructors for custom distributions (§ [Custom Distributions](#supported-distributions)).
+Creating a general EPCA library is challenging in most languages due to poor interoperability between libraries. Julia, on the other hand, uses multiple dispatch which promotes generic code reuse [@dispatch]. This allows `ExpFamilyPCA.jl` to leverage fast symbolic differentiation [@symbolics], optimization [@optim], and numerically stable computation [@stable_exp] without costly API conversions. As a result, `ExpFamilyPCA.jl` offers speed, stability, and flexibility, with built-in support for common distributions (§ [Supported Distributions](#supported-distributions)) and multiple constructors for custom distributions (§ [Custom Distributions](#supported-distributions)).
 
 # Problem Formulation
 
@@ -76,7 +76,7 @@ $$
 B_F(p \| q) = F(p) - F(q) - \langle \nabla F(q), p - q \rangle.
 $$
 
-When $F$ is chosen to be the convex conjugate of the log partition of an exponential family distribution, minimizing the induced Bregman divergence is the same as maximizing the correspodning log-likelihood [@azoury; @forster] (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/)).
+When $F$ is chosen to be the convex conjugate of the log partition of an exponential family distribution, minimizing the induced Bregman divergence is the same as maximizing the corresponding log-likelihood [@azoury; @forster] (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/)).
 
 ## Exponential Family Principal Component Analysis
 
