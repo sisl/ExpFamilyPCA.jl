@@ -32,7 +32,7 @@ bibliography: paper.bib
 
 # Summary
 
-Principal component analysis (PCA) [@PCA] is a widely used tool for compressing, interpreting, and denoising data, but it works best with Gaussian data. Exponential family principal component analysis (EPCA) [@EPCA] generalizes PCA to handle data from any exponential family, making it better suited for binary, count, and probability data that are common in science and machine learning. `ExpFamilyPCA.jl` is the first Julia package [@Julia] to implement EPCA and the first in any language to support multiple distributions for EPCA, expanding its usability across various applications.
+Principal component analysis (PCA) [@PCA] is a widely used tool for compressing, interpreting, and denoising data, but it works best with Gaussian data. Exponential family principal component analysis (EPCA) [@EPCA] generalizes PCA to handle data from any exponential family, making it more appropriate for binary, count, and probability data common in science and machine learning. `ExpFamilyPCA.jl` is the first Julia package [@Julia] to implement EPCA and the first in any language to support multiple distributions for EPCA.
 
 # Statement of Need
 
@@ -75,7 +75,7 @@ $$
 B_F(p \| q) = F(p) - F(q) - \langle \nabla F(q), p - q \rangle.
 $$
 
-When $F$ is chosen to be the convex conjugate of the log partition of an exponential family distribution, minimizing the induced Bregman divergence is the same (up to a constant) as maximizing the corresponding log-likelihood [@azoury; @forster] (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/)). Since the Gaussian distribution is in the exponential family, this means that Bregman divergences generalize the PCA objective (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/)).
+When $F$ is chosen to be the convex conjugate of the log-partition of an exponential family distribution, minimizing the induced Bregman divergence is the same as maximizing the corresponding log-likelihood [@azoury; @forster] (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/)). Since the Gaussian distribution is in the exponential family, this means that Bregman divergences generalize the PCA objective (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/)).
 
 ## Exponential Family Principal Component Analysis
 
@@ -91,6 +91,7 @@ $$\begin{aligned}
 Here
 
 * $g(\theta)$ is the **link function** and the derivative of $G$,
+* $G(\theta)$ is an arbitrary convex, differentiable function (usually the **log-parition** of an exponential family distribution),
 * $F(\mu)$ is the **convex conjugate** or dual of $G$,
 * $B_F(p \| q)$ is the **Bregman divergence** induced from $F$,
 * and both $\mu_0 \in \mathrm{range}(g)$ and $\epsilon > 0$ are regularization terms.
@@ -99,24 +100,11 @@ EPCA can handle data from any exponential family distribution, making it more ve
 
 ### Example: Poisson EPCA
 
-For the Poisson distribution, the EPCA objective becomes the generalized Kullback-Leibler (KL) divergence (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/poisson/)), making Poisson EPCA ideal for compressing discrete distribution data. This is useful in applications like belief compression in reinforcement learning [@Roy], where high-dimensional belief states can be effectively reduced with minimal information loss. Below we recreate a figure from @shortRoy and observe that Poisson EPCA achieved a nearly perfect reconstruction of a $41$-dimensional belief profile using just $5% basis components.
+For the Poisson distribution, the EPCA objective becomes the generalized Kullback-Leibler (KL) divergence (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/poisson/)), making Poisson EPCA ideal for compressing discrete distribution data. This is useful in applications like belief compression in reinforcement learning [@Roy], where high-dimensional belief states can be effectively reduced with minimal information loss. Below we recreate a figure from @shortRoy and observe that Poisson EPCA achieved a nearly perfect reconstruction of a $41$-dimensional belief profile using just $5$ basis components.
 
 ![](./scripts/kl_divergence_plot.png)
 
 # API 
-
-## Usage
-
-Each `EPCA` object supports a three-method interface: `fit!`, `compress`, and `decompress`. `fit!` trains the model and returns the compressed training data; `compress` returns compressed input; and `decompress` reconstructs the original data from the compressed representation.
-
-```julia
-X = rand(n1, indim) * 100
-Y = rand(n2, indim) * 100
-
-X_compressed = fit!(gamma_epca, X)
-Y_compressed = compress(gamma_epca, Y)
-Y_reconstructed = decompress(gamma_epca, Y_compressed)
-```
 
 ## Supported Distributions
 
@@ -151,6 +139,19 @@ gamma_epca = EPCA(indim, outdim, G, g, Val((:G, :g)); options = NegativeDomain()
 ```
 
 A lengthier discussion of the `EPCA` constructors and math is provided in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/objectives/).
+
+## Usage
+
+Each `EPCA` object supports a three-method interface: `fit!`, `compress`, and `decompress`. `fit!` trains the model and returns the compressed training data; `compress` returns compressed input; and `decompress` reconstructs the original data from the compressed representation.
+
+```julia
+X = sample_from_gamma(n1, indim)
+Y = sample_from_gamma(n2, indim)
+
+X_compressed = fit!(gamma_epca, X)
+Y_compressed = compress(gamma_epca, Y)
+Y_reconstructed = decompress(gamma_epca, Y_compressed)
+```
 
 # Acknowledgments
 
