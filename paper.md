@@ -29,7 +29,6 @@ date: 9 September 2024
 bibliography: paper.bib
 ---
 
-
 # Summary
 
 Principal component analysis (PCA) [@PCA] is a widely used tool for compressing, interpreting, and denoising data, but it works best with Gaussian data. Exponential family principal component analysis (EPCA) [@EPCA] generalizes PCA to handle data from any exponential family, making it more appropriate for binary, count, and probability data common in science and machine learning. `ExpFamilyPCA.jl` is the first Julia package [@Julia] to implement EPCA and the first in any language to support multiple distributions for EPCA.
@@ -59,13 +58,22 @@ where $\| \cdot \|_F$ denotes the Frobenius norm.
 
 ### Probabilistic Interpretation
 
-This objective also maximizes the Gaussian log-likelihood, meaning PCA can also be viewed as a method to recover a low-dimensional structure from high-dimensional, noisy data. Specifically,
+This objective also maximizes the Gaussian log-likelihood, meaning PCA can also be viewed as a method to recover a low-dimensional structure from high-dimensional, noisy data. Specifically, for each data point $x_i$ (a row of $X$):
 
 $$
 x_i \sim \mathcal{N}(\theta_i, I)
 $$
 
-where $x_i$ is a row of $X$, $\theta_i$ is a row of $\Theta$, and $i \in \{1, \dots, n\}$.
+where $\theta_i$ (a row of $\Theta$) is the latent low-dimensional mean. The rank constraint $k$ in the geometric interpretation now corresponds to the parameter space
+
+$$\begin{aligned}
+& \underset{\Theta}{\text{maximize}}
+& & \sum_{i=1}^{n}\log \mathcal{L}(x_i; \theta_i) \\
+& \text{subject to}
+& & \mathrm{rank}\left(\Theta\right) = k
+\end{aligned}$$
+
+where $\mathcal{L}$ is the likelihood function.
 
 ## Bregman Divergences
 
