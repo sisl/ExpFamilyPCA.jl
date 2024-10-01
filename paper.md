@@ -31,13 +31,13 @@ bibliography: paper.bib
 
 # Summary
 
-Principal component analysis (PCA) [@PCA] is a widely used tool for compressing, interpreting, and denoising data, but it works best with Gaussian data. Exponential family principal component analysis (EPCA) [@EPCA] generalizes PCA to handle data from any exponential family, making it more appropriate for binary, count, and probability data common in science and machine learning. `ExpFamilyPCA.jl` is the first Julia package [@Julia] to implement EPCA and the first in any language to support multiple distributions for EPCA.
+Principal component analysis (PCA) [@PCA] is a widely used tool for compressing, interpreting, and denoising data that works best with Gaussian data. Exponential family principal component analysis (EPCA) [@EPCA] generalizes PCA to handle data from any exponential family, making it more appropriate for binary, count, and probability data common in science and machine learning. `ExpFamilyPCA.jl` is the first Julia package [@Julia] to implement EPCA and the first in any language to support multiple distributions for EPCA.
 
 # Statement of Need
 
 The limited adoption of EPCA likely stems from a lack of available tools, with the only existing package supporting just a single distribution [@epca-MATLAB]. This is surprising given that other Bregman-based optimization techniques have been successful in fields such as mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], text analysis [@LitReview], and robust clustering [@clustering]. These successes suggest that EPCA has untapped potential in signal processing and machine learning.
 
-The primary reason no general EPCA library exists may be the difficulty of implementation in most programming languages. In Python and C, for example, symbolic differentiation and optimization libraries are not typically interoperable. Julia, by contrast, uses multiple dispatch which facilitates high levels of generic code reuse [@dispatch]. This design allows `ExpFamilyPCA.jl` to integrate fast symbolic differentiation [@symbolics], optimization [@optim], and numerically stable computation [@stable_exp] without requiring costly API conversions. As a result, `ExpFamilyPCA.jl` delivers speed, stability, and flexibility, with built-in support for most common distributions (§ [Supported Distributions](#supported-distributions)) and flexible constructors for custom distributions (§ [Custom Distributions](#supported-distributions)).
+The primary reason no general EPCA library exists may be the difficulty of implementation in most programming languages. In Python and C, for example, symbolic differentiation and optimization libraries are not typically interoperable. Julia, by contrast, uses multiple dispatch which facilitates high levels of generic code reuse [@dispatch]. Multiple dispatch allows `ExpFamilyPCA.jl` to integrate fast symbolic differentiation [@symbolics], optimization [@optim], and numerically stable computation [@stable_exp] without requiring costly API conversions. As a result, `ExpFamilyPCA.jl` delivers speed, stability, and flexibility, with built-in support for most common distributions (§ [Supported Distributions](#supported-distributions)) and flexible constructors for custom distributions (§ [Custom Distributions](#supported-distributions)).
 
 # Problem Formulation
 
@@ -64,7 +64,7 @@ $$
 x_i \sim \mathcal{N}(\theta_i, I)
 $$
 
-where $\theta_i$ (a row of $\Theta$) is the latent low-dimensional mean. The rank constraint $k$ in the geometric interpretation now corresponds to the parameter space
+where $\theta_i$ (a row of $\Theta$) is the mean. The rank constraint $k$ in the geometric interpretation now corresponds to the parameter space
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{maximize}}

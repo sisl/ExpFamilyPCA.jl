@@ -3,7 +3,7 @@ import CompressedBeliefMDPs  # `import` rather than `using` to keep tidey namesp
 """
     EPCACompressor(epca::EPCA)
 
-    Compressor for [`CompressedBeliefMDPs.jl`](https://juliapomdp.github.io/CompressedBeliefMDPs.jl/stable/).
+    Compressor for `CompressedBeliefMDPs.jl`.
 """
 struct EPCACompressor <: CompressedBeliefMDPs.Compressor
     epca::EPCA
