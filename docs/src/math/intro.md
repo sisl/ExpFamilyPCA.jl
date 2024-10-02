@@ -12,7 +12,7 @@ This guide is organized into several pages, each building on the last:
 4. Appendix
    - [The Gamma EPCA Objective is the Itakura-Saito Distance](./appendix/gamma.md)
    - [The Poisson EPCA Objective is the Generalized KL-Divergence](./appendix/poisson.md)
-   - [EPCA Generalizes the PCA Objective with Bregman Divergences](./appendix/gaussian.md)
+   - [The Gaussian EPCA Objective is the PCA Objective](./appendix/gaussian.md)
    - [The Inverse of the Link Function is the Gradient of the Convex Conjugate](./appendix/inverses.md)
    - [The Link Function and the Expectation Parameter](./appendix/expectation.md)
 

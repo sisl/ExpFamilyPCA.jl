@@ -27,6 +27,14 @@ compress
 decompress
 ```
 
+# Options
+
+```@docs
+Options
+NegativeDomain
+PositiveDomain
+```
+
 # Miscellaneous 
 
 ```@docs

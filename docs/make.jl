@@ -21,7 +21,7 @@ makedocs(
             "Appendix" => [
                 "Gamma EPCA and the Itakura-Saito Distance" => "math/appendix/gamma.md",
                 "Poisson EPCA and Generalized KL-Divergence" => "math/appendix/poisson.md",
-                "EPCA Generalizes the PCA Objective via a Bregman Divergence" => "math/appendix/gaussian.md",
+                "Gaussian EPCA and the Squared Frobenius Norm" => "math/appendix/gaussian.md",
                 "Inverse Link Functions" => "math/appendix/inverses.md",
                 "Link Functions and Expectations" => "math/appendix/expectation.md"
 
