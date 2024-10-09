@@ -132,7 +132,7 @@ where
 PCA is a special case of EPCA when the data is Gaussian (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/)). By selecting the appropriate function $G$, EPCA can handle a wider range of data types, offering more versatility than PCA. Then $\theta_i = g(a_i V)$ and 
 
 $$
-a_i \in \argmin B_F
+a_i \in \mathrm{argmin} B_F
 $$
 
 # References
