@@ -122,3 +122,8 @@ $$\begin{aligned}
 & & \mathrm{rank}\left(\Theta\right) = k
 \end{aligned}$$
 
+where
+
+* $g(\theta)$ is the **link function** and the gradient of $G$,
+* $G(\theta)$ is an arbitrary convex, differentiable function (usually the **log-parition** of an exponential family distribution),
+* and $F(\mu)$ is the **convex conjugate** of $G$.
