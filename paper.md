@@ -31,13 +31,13 @@ bibliography: paper.bib
 
 # Summary
 
-Principal component analysis (PCA) [@PCA1; @PCA2; @PCA3] is popular for compressing, denoising, and interpreting high-dimensional data, but it underperforms on binary, count, and compositional data because the objective assumes data is normally distributed. Exponential family PCA (EPCA) [@EPCA] generalizes PCA to accomodate any exponential family distribution, making it more suitable for fields where these data types are common, such as geochemistry, marketing, genomics, political science, and machine learning [@composition; @elements].
+Principal component analysis (PCA) [@PCA1; @PCA2; @PCA3] is popular for compressing, denoising, and interpreting high-dimensional data, but it underperforms on binary, count, and compositional data because the objective assumes data is normally distributed. Exponential family PCA (EPCA) [@EPCA] generalizes PCA to accommodate data from any exponential family distribution, making it more suitable for fields where these data types are common, such as geochemistry, marketing, genomics, political science, and machine learning [@composition; @elements].
 
 `ExpFamilyPCA.jl` is a library for EPCA written in Julia, a dynamic language for scientific computing [@Julia]. It is the first EPCA package in Julia and the first in any language to support EPCA for multiple distributions.
 
 # Statement of Need
 
-EPCA is used in reinforcement learning [@Roy], sample debiasing [@debiasing], and compositional analysis [@gans]. Wider adoption, however, remains limited due to the lack of implementations. The only existing EPCA package is in MATLAB and only supports one distribution [@epca-MATLAB]. This is surprising, as other Bregman-based optimization techniques have been successful in areas like mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], topological data analysis [@topological], and robust clustering [@clustering]. These successes indicate that EPCA holds untapped potential in signal processing and machine learning.
+EPCA is used in reinforcement learning [@Roy], sample debiasing [@debiasing], and compositional analysis [@gans]. Wider adoption, however, remains limited due to the lack of implementations. The only existing EPCA package is written in MATLAB and supports just one distribution [@epca-MATLAB]. This is surprising, as other Bregman-based optimization techniques have been successful in areas like mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], topological data analysis [@topological], and robust clustering [@clustering]. These successes indicate that EPCA holds untapped potential in signal processing and machine learning.
 
 The lack of a general EPCA library is likely due to integration issues, as fast symbolic differentiation and optimization libraries in popular languages like Python and C are not typically interoperable. Julia, by contrast, uses multiple dispatch which promotes high levels of generic code reuse [@dispatch]. Multiple dispatch allows `ExpFamilyPCA.jl` to integrate fast symbolic differentiation [@symbolics], optimization [@optim], and numerically stable computation [@stable_exp] without requiring costly API conversions. As a result, `ExpFamilyPCA.jl` delivers speed, stability, and flexibility, with built-in support for most common distributions (§ [Supported Distributions](#supported-distributions)) and flexible constructors for custom distributions (§ [Custom Distributions](#supported-distributions)).
 
@@ -97,25 +97,15 @@ $$
 
 The link function serves a role analogous to that in generalized linear models (GLMs) [@GLM]. In GLMs, the link function connects the linear predictor to the mean of the distribution, enabling flexibility in modeling various data types. Similarly, in EPCA, the link function maps the low-dimensional latent variables to the expectation parameters of the exponential family, thereby generalizing the linear assumptions of traditional PCA to accommodate diverse distributions (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/)).
 
-### Parameter Duality
-
-A core aspect of EPCA is the relationship between the natural and expectation parameters of an exponential family distribution established through convex conjugation. Given the log-partition function $G(\theta)$, its convex conjugate $F(\mu)$ is defined as:
-
-$$
-F(\mu) = \sup_{\theta}(\langle \mu, \theta \rangle - G(\theta)).
-$$
-
-This duality ensures a smooth correspondence between the parameter spaces, facilitating efficient optimization and interpretation. It is a key advantage of EPCA over other dimensionality reduction methods.
-
 ### Bregman Divergences
 
-EPCA extends the probablistic interpretation of PCA using a measure of statistical difference called a Bregman divergence [@Bregman; @Brad]. The Bregman divergence $B_F$ for a strictly convex, continuously differentiable function $F$ is
+EPCA extends the probabilistic interpretation of PCA using a measure of statistical difference called a Bregman divergence [@Bregman; @Brad]. The Bregman divergence $B_F$ for a strictly convex, continuously differentiable function $F$ is
 
 $$
 B_F(p \| q) = F(p) - F(q) - \langle \nabla F(q), p - q \rangle.
 $$
 
-This can be interpreted as the difference between $F(p)$ and its linear approximation about $q$. When $F$ is the convex conjugate of the log-partition function of an exponential family distribution, minimizing the Bregman divergence corresponds to maximizing the log-likelihood of the data under the model [@azoury; @forster] (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/)).
+This can be interpreted as the difference between $F(p)$ and its linear approximation about $q$. When $F$ is the convex conjugate of the log-partition function of an exponential family distribution, minimizing the Bregman divergence corresponds to maximizing the associated log-likelihood [@azoury; @forster] (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/)).
 
 ### Objective
 
@@ -131,20 +121,22 @@ $$\begin{aligned}
 where
 
 * $g(\theta)$ is the **link function** and the gradient of $G$,
-* $G(\theta)$ is an strictly convex, continuously differentiable function (usually the **log-parition** of an exponential family distribution),
-* and $F(\mu)$ is the **convex conjugate** of $G$.
+* $G(\theta)$ is a strictly convex, continuously differentiable function (usually the **log-parition** of an exponential family distribution),
+* and $F(\mu)$ is the **convex conjugate** of $G$ defined by
 
-Under EPCA, $X$ is well-approximated by the *image* of the linear combination of $k$ basis vectors under the link function (for regular PCA, the link function is the identity $g(\theta) = \theta$)):
+$$
+F(\mu) = \langle \mu, \theta \rangle - G(\theta).
+$$
+
+This suggests that data from the exponential family is well-approximated by expectation parameters
 
 $$ 
 x_i \approx  g(\theta_i) = g(a_i V).
 $$
 
-This highlights one of the key benefits of EPCA, which is that we usually do not need to constrain $A$ or $V$ to ensure or approximation is in the same space as the data, because we select the range of the link function to match the support of the data distribution.
-
 ### Regularization
 
-The optimum may diverge, so we introduce a regularization term
+To ensure the optimum converges, we introduce a regularization term
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
@@ -153,7 +145,7 @@ $$\begin{aligned}
 & & \mathrm{rank}\left(\Theta\right) = k
 \end{aligned}$$
 
-where $\epsilon > 0$ and $\mu_0 \in \mathrm{range}(g)$ to ensure the solution is stationary.
+where $\epsilon > 0$ and $\mu_0 \in \mathrm{range}(g)$.
 
 
 ### Example: Poisson EPCA
