@@ -87,7 +87,9 @@ $$\begin{aligned}
 
 where $\mathcal{L}$ is the likelihood function.
 
-## Bregman Divergences
+## Exponential Family PCA
+
+### Bregman Divergences
 
 Bregman divergences [@Bregman; @Brad] are a measure of statistical difference that we can use to generalize the probablistic PCA objective to the exponential family. The Bregman divergence $B_F$ for a strictly convex, continuously differentiable function $F$ is
 
@@ -97,7 +99,7 @@ $$
 
 This can be interpreted as the difference between $F(p)$ and its linear approximation about $q$. When $F$ is taken to be the convex conjugate of the log-partition of an exponential family distribution, minimizing the Bregman divergence is the same as maximizing the corresponding log-likelihood [@azoury; @forster] (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/)). Since the Gaussian distribution is in the exponential family, this means that Bregman divergences generalize the PCA objective.
 
-## Parameter Duality
+### Parameter Duality
 
 A fundamental component of EPCA is the convex conjugate, which bridges the natural and expectation parameters of an exponential family distribution. Given the log-partition function $G(\theta)$, its convex conjugate $F(\mu)$ is defined by
 
@@ -109,7 +111,7 @@ where $\mu = \nabla G(\theta)$ represents the expectation parameter correspondin
 
 The link function $g(\theta) = \nabla G(\theta)$ serves a role analogous to that in generalized linear models (GLMs) [@GLM]. In GLMs, the link function connects the linear predictor to the mean of the distribution, enabling flexibility in modeling various data types. Similarly, in EPCA, the link function maps the low-dimensional latent variables to the expectation parameters of the exponential family, thereby generalizing the linear assumptions of traditional PCA to accommodate diverse distributions.
 
-## Exponential Family Principal Component Analysis
+## Exponential Family PCA
 
 EPCA generalizes the PCA objective as a Bregman divergence:
 
@@ -133,16 +135,3 @@ Then $\theta_i = g(a_i V)$ and
 $$
 a_i \in \argmin_{a \in \mathrm{R}^k}(x_i \| g(aV)).
 $$
-
-## Regularization
-
-The optimum may diverge, so we introduce a regularization term
-
-$$\begin{aligned}
-& \underset{\Theta}{\text{minimize}}
-& & B_F(X \| g(\Theta)) + \epsilon B_F(\mu_0 \| g(\Theta)) \\
-& \text{subject to}
-& & \mathrm{rank}\left(\Theta\right) = k
-\end{aligned}$$
-
-where $\epsilon > 0$ and $\mu_0 \in \mathrm{range}(g)$ to ensure the solution is stationary.
