@@ -33,7 +33,7 @@ bibliography: paper.bib
 
 Principal component analysis (PCA) [@PCA1; @PCA2; @PCA3] is popular for compressing, denoising, and interpreting high-dimensional data, but it can underperform on binary, count, and composition data because the model assumes data is normally distributed. Exponential family PCA (EPCA) [@EPCA] extends PCA to handle any exponential family distribution, making it more suitable for fields where these data types are common, such as geochemistry, marketing, genomics, political science, and machine learning [@composition; @elements].
 
-`ExpFamilyPCA.jl` is a library for EPCA written in Julia, a dynamic language for scientific computing [@Julia]. It is the first Julia package to implement EPCA and the first in any language to support multiple distributions for EPCA.
+`ExpFamilyPCA.jl` is a library for EPCA written in Julia, a dynamic language for scientific computing [@Julia]. It is the first EPCA package in Julia and the first in any language to support EPCA for multiple distributions.
 
 # Statement of Need
 
@@ -54,13 +54,13 @@ $$\begin{aligned}
 & & \mathrm{rank}\left(\Theta\right) = k
 \end{aligned}$$
 
-where $\| \cdot \|_F$ denotes the Frobenius norm. The optimal $\Theta$ is a rank-$k$ hyperplane that can be decomposed as a matrix product
+where $\| \cdot \|_F$ denotes the Frobenius norm. The optimal $\Theta$ is a $k$-dimensional linear subspace that can be decomposed as the product of the compressed observations $A \in \mathbb{R}^{n \times k}$ and the basis $V \in \mathbb{R}^{k \times d}$:
 
 $$
-X \approx \Theta = AV,
+X \approx \Theta = AV.
 $$
 
-where $A \in \mathbb{R}^{n \times k}$ is the score matrix and $V \in \mathbb{R}^{k \times d}$ is the matrix of the $k$-largest principal components (the eigenvectors of the covariance matrix). This suggests that each observation (a row of $X$) can be well-approximated by a linear combination of $k$ basis vectors (the rows of $V$):
+This suggests that each observation $x_i \in \mathrm{rows}(X)$ can be well-approximated by a linear combination of $k$ basis vectors (the rows of $V$):
 
 $$
 x_i \approx \theta_i = a_i V
@@ -70,7 +70,7 @@ for $i = 1, \dots, n$.
 
 ### Probabilistic Interpretation
 
-The PCA objective is equivalent to maximum likelihood estimation for a Gaussian model. Under this lens, PCA views the rows of $X$ as realizations of a $d$-dimensional Gaussian. Alternatively, each observation $x_i$ is a noisy observation of a latent, low-rank structure $\theta_i$ corrupted with high-dimensional Gaussian noise
+The PCA objective is equivalent to maximum likelihood estimation for a Gaussian model. Under this lens, each observation $x_i$ is a noisy observation of a latent, low-rank structure $\theta_i$ corrupted with high-dimensional Gaussian noise
 
 $$
 x_i \sim \mathcal{N}(\theta_i, I).
