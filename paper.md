@@ -87,9 +87,7 @@ $$\begin{aligned}
 
 where $\mathcal{L}$ is the likelihood function.
 
-## Exponential Family PCA
-
-### Bregman Divergences
+## Bregman Divergences
 
 Bregman divergences [@Bregman; @Brad] are a measure of statistical difference that we can use to generalize the probablistic PCA objective to the exponential family. The Bregman divergence $B_F$ for a strictly convex, continuously differentiable function $F$ is
 
@@ -99,7 +97,7 @@ $$
 
 This can be interpreted as the difference between $F(p)$ and its linear approximation about $q$. When $F$ is taken to be the convex conjugate of the log-partition of an exponential family distribution, minimizing the Bregman divergence is the same as maximizing the corresponding log-likelihood [@azoury; @forster] (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/)). Since the Gaussian distribution is in the exponential family, this means that Bregman divergences generalize the PCA objective.
 
-### Parameter Duality
+## Parameter Duality
 
 A fundamental component of EPCA is the convex conjugate, which bridges the natural and expectation parameters of an exponential family distribution. Given the log-partition function $G(\theta)$, its convex conjugate $F(\mu)$ is defined by
 
@@ -110,3 +108,41 @@ $$
 where $\mu = \nabla G(\theta)$ represents the expectation parameter correspondingto the natural parameter $\theta$. This duality ensures a smooth correspondence between the parameter spaces, facilitating efficient optimization and interpretation and is one of the principal benefits of EPCA over other similar methods. 
 
 The link function $g(\theta) = \nabla G(\theta)$ serves a role analogous to that in generalized linear models (GLMs) [@GLM]. In GLMs, the link function connects the linear predictor to the mean of the distribution, enabling flexibility in modeling various data types. Similarly, in EPCA, the link function maps the low-dimensional latent variables to the expectation parameters of the exponential family, thereby generalizing the linear assumptions of traditional PCA to accommodate diverse distributions.
+
+## Exponential Family Principal Component Analysis
+
+EPCA generalizes the PCA objective as a Bregman divergence:
+
+$$\begin{aligned}
+& \underset{\Theta}{\text{minimize}}
+& & B_F(X \| g(\Theta)) \\
+& \text{subject to}
+& & \mathrm{rank}\left(\Theta\right) = k
+\end{aligned}$$
+
+where
+
+* $g(\theta)$ is the **link function** and the gradient of $G$,
+* $G(\theta)$ is an arbitrary convex, differentiable function (usually the **log-parition** of an exponential family distribution),
+* and $F(\mu)$ is the **convex conjugate** of $G$.
+
+In this formulation, the data matrix $X$ is approximated by expectation parameters $g(\Theta)$. Similar to how linear regression is a special case of generalized linear models [@GLM], PCA is a special case of EPCA when the data is Gaussian (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/)). By selecting the appropriate function $G$, EPCA can handle a wider range of data types, offering more versatility than PCA.
+
+Then $\theta_i = g(a_i V)$ and 
+
+$$
+a_i \in \argmin_{a \in \mathrm{R}^k}(x_i \| g(aV)).
+$$
+
+## Regularization
+
+The optimum may diverge, so we introduce a regularization term
+
+$$\begin{aligned}
+& \underset{\Theta}{\text{minimize}}
+& & B_F(X \| g(\Theta)) + \epsilon B_F(\mu_0 \| g(\Theta)) \\
+& \text{subject to}
+& & \mathrm{rank}\left(\Theta\right) = k
+\end{aligned}$$
+
+where $\epsilon > 0$ and $\mu_0 \in \mathrm{range}(g)$ to ensure the solution is stationary.
