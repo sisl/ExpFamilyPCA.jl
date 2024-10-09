@@ -122,18 +122,3 @@ $$\begin{aligned}
 & & \mathrm{rank}\left(\Theta\right) = k
 \end{aligned}$$
 
-where
-
-
-* $g(\theta)$ is the **link function** and the gradient of $G$,
-* $G(\theta)$ is an arbitrary convex, differentiable function (usually the **log-parition** of an exponential family distribution),
-* and $F(\mu)$ is the **convex conjugate** of $G$.
-
-
-In this formulation, the data matrix $X$ is approximated by expectation parameters $g(\Theta)$. Similar to how linear regression is a special case of generalized linear models [@GLM], PCA is a special case of EPCA when the data is Gaussian (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/)). By selecting the appropriate function $G$, EPCA can handle a wider range of data types, offering more versatility than PCA.
-
-Then $\theta_i = g(a_i V)$ and 
-
-$$
-a_i \in \argmin_{a \in \mathrm{R}^k}(x_i \| g(aV)).
-$$
