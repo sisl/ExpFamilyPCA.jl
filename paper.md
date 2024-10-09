@@ -99,17 +99,8 @@ $$
 
 This can be interpreted as the difference between $F(p)$ and its linear approximation about $q$. When $F$ is taken to be the convex conjugate of the log-partition of an exponential family distribution, minimizing the Bregman divergence is the same as maximizing the corresponding log-likelihood [@azoury; @forster] (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/)). Since the Gaussian distribution is in the exponential family, this means that Bregman divergences generalize the PCA objective.
 
-### Convex Conjugates, Link Functions, and the GLM Analogy
+### Parameter Duality
 
-A fundamental component of EPCA is the convex conjugate, which bridges the natural and expectation parameters of an exponential family distribution. Given the log-partition function $G(\theta)$, its convex conjugate $F(\mu)$ is defined by
-
-$$
-F(\mu) = \sup_{\theta}(\langle \mu, \theta \rangle - G(\theta)),
-$$
-
-where $\mu = \nabla G(\theta)$ represents the expectation parameter correspondingto the natural parameter $\theta$. This duality ensures a smooth correspondence between the parameter spaces, facilitating efficient optimization and interpretation and is one of the principal benefits of EPCA over other similar methods. 
-
-<!-- The link function $g(\theta) = \nabla G(\theta)$ serves a role analogous to that in generalized linear models (GLMs) [@GLM]. In GLMs, the link function connects the linear predictor to the mean of the distribution, enabling flexibility in modeling various data types. Similarly, in EPCA, the link function maps the low-dimensional latent variables to the expectation parameters of the exponential family, thereby generalizing the linear assumptions of traditional PCA to accommodate diverse distributions. -->
 
 ## Exponential Family Principal Component Analysis
 
