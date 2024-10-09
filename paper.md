@@ -37,7 +37,7 @@ Principal component analysis (PCA) [@PCA1; @PCA2; @PCA3] is popular for compress
 
 # Statement of Need
 
-EPCA has been applied in reinforcement learning [@Roy] and more recently in sample debiasing [@debiasing] and finance [@finance]. Wider adoption, however, remains limited due to the lack of implementations, with the only existing package supporting a single distribution in MATLAB [@epca-MATLAB]. This is surprising, as other Bregman-based optimization techniques have been successful in areas like mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], topological data analysis [@topological], and robust clustering [@clustering]. These successes indicate that EPCA holds untapped potential in signal processing and machine learning.
+EPCA is used in reinforcement learning [@Roy], sample debiasing [@debiasing], and compositional analysis [@gans]. Wider adoption, however, remains limited due to the lack of implementations, with the only existing package supporting a single distribution in MATLAB [@epca-MATLAB]. This is surprising, as other Bregman-based optimization techniques have been successful in areas like mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], topological data analysis [@topological], and robust clustering [@clustering]. These successes indicate that EPCA holds untapped potential in signal processing and machine learning.
 
 The lack of a general EPCA library is likely due to engineering challenges. In widely used languages like Python and C, fast symbolic differentiation and optimization libraries are not typically interoperable. Julia, by contrast, uses multiple dispatch which promotes high levels of generic code reuse [@dispatch]. Multiple dispatch allows `ExpFamilyPCA.jl` to integrate fast symbolic differentiation [@symbolics], optimization [@optim], and numerically stable computation [@stable_exp] without requiring costly API conversions. As a result, `ExpFamilyPCA.jl` delivers speed, stability, and flexibility, with built-in support for most common distributions (§ [Supported Distributions](#supported-distributions)) and flexible constructors for custom distributions (§ [Custom Distributions](#supported-distributions)).
 
@@ -54,7 +54,7 @@ $$\begin{aligned}
 & & \mathrm{rank}\left(\Theta\right) = k
 \end{aligned}$$
 
-where $\| \cdot \|_F$ denotes the Frobenius norm. The optimal $\Theta$ is a $k$-dimensional linear subspace that can be decomposed as the product of the compressed observations $A \in \mathbb{R}^{n \times k}$ and the basis $V \in \mathbb{R}^{k \times d}$:
+where $\| \cdot \|_F$ denotes the Frobenius norm. The optimal $\Theta$ is a $k$-dimensional linear subspace that can be decomposed as the product of the projected observations $A \in \mathbb{R}^{n \times k}$ and the basis $V \in \mathbb{R}^{k \times d}$:
 
 $$
 X \approx \Theta = AV.
@@ -62,15 +62,14 @@ $$
 
 This suggests that each observation $x_i \in \mathrm{rows}(X)$ can be well-approximated by a linear combination of $k$ basis vectors (the rows of $V$):
 
-$$
-x_i \approx \theta_i = a_i V
-$$
+[$$x_i \approx \theta_i = a_i V$$]{label="eq:pca"}
+
 
 for $i = 1, \dots, n$.
 
 ### Probabilistic Interpretation
 
-The PCA objective is equivalent to maximum likelihood estimation for a Gaussian model. Under this lens, each observation $x_i$ is a noisy observation of a latent, low-rank structure $\theta_i$ corrupted with high-dimensional Gaussian noise
+The PCA objective is equivalent to maximum likelihood estimation for a Gaussian model. Under this lens, each observation $x_i$ is a noisy observation of a low-rank structure $\theta_i$ corrupted with high-dimensional Gaussian noise
 
 $$
 x_i \sim \mathcal{N}(\theta_i, I).
@@ -99,17 +98,27 @@ $$
 
 This can be interpreted as the difference between $F(p)$ and its linear approximation about $q$. When $F$ is taken to be the convex conjugate of the log-partition of an exponential family distribution, minimizing the Bregman divergence is the same as maximizing the corresponding log-likelihood [@azoury; @forster] (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/)). Since the Gaussian distribution is in the exponential family, this means that Bregman divergences generalize the PCA objective.
 
+### Link Function
+
+The link function $g(\theta)$ connects the natural parameter $\theta$ to the mean parameter $\mu$ of an exponential family distribution and is defined as the gradient of $G(\theta)$:
+
+$$
+\mu = g(\theta) = \nabla G(\theta).
+$$
+
+Here, $G(\theta)$ is typically the log-partition function of the distribution, which is convex and differentiable.
+
+The link function $g(\theta) = \nabla G(\theta)$ serves a role analogous to that in generalized linear models (GLMs) [@GLM]. In GLMs, the link function connects the linear predictor to the mean of the distribution, enabling flexibility in modeling various data types. Similarly, in EPCA, the link function maps the low-dimensional latent variables to the expectation parameters of the exponential family, thereby generalizing the linear assumptions of traditional PCA to accommodate diverse distribution (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/)).
+
 ### Parameter Duality
 
 A fundamental component of EPCA is the convex conjugate, which bridges the natural and expectation parameters of an exponential family distribution. Given the log-partition function $G(\theta)$, its convex conjugate $F(\mu)$ is defined by
 
 $$
-F(\mu) = \sup_{\theta}(\langle \mu, \theta \rangle - G(\theta)),
+F(\mu) = \sup_{\theta}(\langle \mu, \theta \rangle - G(\theta)).
 $$
 
-where $\mu = \nabla G(\theta)$ represents the expectation parameter correspondingto the natural parameter $\theta$. This duality ensures a smooth correspondence between the parameter spaces, facilitating efficient optimization and interpretation and is one of the principal benefits of EPCA over other similar methods. 
-
-The link function $g(\theta) = \nabla G(\theta)$ serves a role analogous to that in generalized linear models (GLMs) [@GLM]. In GLMs, the link function connects the linear predictor to the mean of the distribution, enabling flexibility in modeling various data types. Similarly, in EPCA, the link function maps the low-dimensional latent variables to the expectation parameters of the exponential family, thereby generalizing the linear assumptions of traditional PCA to accommodate diverse distributions.
+This duality ensures a smooth correspondence between the parameter spaces, facilitating efficient optimization and interpretation and is one of the principal benefits of EPCA over other similar methods. 
 
 ## Exponential Family PCA
 
@@ -128,12 +137,13 @@ where
 * $G(\theta)$ is an arbitrary convex, differentiable function (usually the **log-parition** of an exponential family distribution),
 * and $F(\mu)$ is the **convex conjugate** of $G$.
 
-
-PCA is a special case of EPCA when the data is Gaussian (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/)). By selecting the appropriate function $G$, EPCA can handle a wider range of data types, offering more versatility than PCA. Then 
+The EPCA approximation is simlpy the link function of the PCA approximation (\ref{pca})
 
 $$ 
-x_i \approx \theta_i = g(a_i V).
+x_i \approx  g(\theta_i) = g(a_i V).
 $$
+
+One of the main benefits of this is that we search for parameters in the natural space, meaning that $A$ and $V$ are usually unconstrained, and allow our expectation space parameter to move our approximation to the same space as the data.
 
 ### Regularization
 
@@ -149,17 +159,9 @@ $$\begin{aligned}
 where $\epsilon > 0$ and $\mu_0 \in \mathrm{range}(g)$ to ensure the solution is stationary.
 
 
-### Example: Gamma EPCA 
-
-old faithful stuff here
-
-![](./scripts/faithful_graphs/eruptions_plot.png)
-
 ### Example: Poisson EPCA
 
 The Poisson EPCA objective is the generalized Kullback-Leibler (KL) divergence (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/poisson/)), making Poisson EPCA ideal for compressing discrete distribution data. 
-
-Add some blurb about how Poisson EPCA is then an alternative to correspondance analysis. 
 
 This is useful in applications like belief compression in reinforcement learning [@Roy], where high-dimensional belief states can be effectively reduced with minimal information loss. Below we recreate a figure from @shortRoy and observe that Poisson EPCA achieved a nearly perfect reconstruction of a $41$-dimensional belief profile using just $5$ basis components.
 
