@@ -129,14 +129,97 @@ where
 * and $F(\mu)$ is the **convex conjugate** of $G$.
 
 
-PCA is a special case of EPCA when the data is Gaussian (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/)). By selecting the appropriate function $G$, EPCA can handle a wider range of data types, offering more versatility than PCA. Then $\theta_i = g(a_i V)$ and 
+PCA is a special case of EPCA when the data is Gaussian (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/)). By selecting the appropriate function $G$, EPCA can handle a wider range of data types, offering more versatility than PCA. Then 
+
+$$ 
+x_i \approx \theta_i = g(a_i V).
+$$
+
+### Regularization
+
+The optimum may diverge, so we introduce a regularization term
+
+$$\begin{aligned}
+& \underset{\Theta}{\text{minimize}}
+& & B_F(X \| g(\Theta)) + \epsilon B_F(\mu_0 \| g(\Theta)) \\
+& \text{subject to}
+& & \mathrm{rank}\left(\Theta\right) = k
+\end{aligned}$$
+
+where $\epsilon > 0$ and $\mu_0 \in \mathrm{range}(g)$ to ensure the solution is stationary.
+
+
+### Example: Gamma EPCA 
+
+old faithful stuff here
+
+![](./scripts/faithful_graphs/eruptions_plot.png)
+
+### Example: Poisson EPCA
+
+The Poisson EPCA objective is the generalized Kullback-Leibler (KL) divergence (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/poisson/)), making Poisson EPCA ideal for compressing discrete distribution data. 
+
+Add some blurb about how Poisson EPCA is then an alternative to correspondance analysis. 
+
+This is useful in applications like belief compression in reinforcement learning [@Roy], where high-dimensional belief states can be effectively reduced with minimal information loss. Below we recreate a figure from @shortRoy and observe that Poisson EPCA achieved a nearly perfect reconstruction of a $41$-dimensional belief profile using just $5$ basis components.
+
+![](./scripts/kl_divergence_plot.png)
+
+For a larger environment with $200$ states, PCA struggles even with $10$ basis.
+
+![](./scripts/reconstructions.png)
+
+# API 
+
+## Supported Distributions
+
+`ExpFamilyPCA.jl` includes efficient EPCA implementations for several exponential family distributions.
+
+| Julia                     | Description                                            |
+|---------------------------|--------------------------------------------------------|
+| `BernoulliEPCA` | For binary data                                        |
+| `BinomialEPCA` | For count data with a fixed number of trials           |
+| `ContinuousBernoulliEPCA` | For modeling probabilities between $0$ and $1$         |
+| `GammaEPCA` | For positive continuous data                           |
+| `GaussianEPCA` | Standard PCA for real-valued data                      |
+| `NegativeBinomialEPCA` | For over-dispersed count data                          |
+| `ParetoEPCA` | For modeling heavy-tailed distributions                |
+| `PoissonEPCA` | For count and discrete distribution data               |
+| `WeibullEPCA` | For modeling life data and survival analysis           |
+
+## Custom Distributions
+
+When working with custom distributions, certain specifications are often more convenient and computationally efficient than others. For example, inducing the gamma EPCA objective from the log-partition $G(\theta) = -\log(-\theta)$ and its derivative $g(\theta) = -1/\theta$ is much simpler than implementing the full the Itakura-Saito distance [@ItakuraSaito] (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gamma/)):
 
 $$
-a = \argmin B
+D(P(\omega), \hat{P}(\omega)) =\frac{1}{2\pi} \int_{-\pi}^{\pi} \Bigg[ \frac{P(\omega)}{\hat{P}(\omega)} - \log \frac{P(\omega)}{\hat{P}{\omega}} - 1\Bigg] \, d\omega.
 $$
 
-$$
-a_i \in \mathrm{argmin} B_F
-$$
+In `ExpFamilyPCA.jl`, we would write:
+
+```julia
+G(θ) = -log(-θ)
+g(θ) = -1 / θ
+gamma_epca = EPCA(indim, outdim, G, g, Val((:G, :g)); options = NegativeDomain())
+```
+
+A lengthier discussion of the `EPCA` constructors and math is provided in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/objectives/).
+
+## Usage
+
+Each `EPCA` object supports a three-method interface: `fit!`, `compress`, and `decompress`. `fit!` trains the model and returns the compressed training data; `compress` returns compressed input; and `decompress` reconstructs the original data from the compressed representation.
+
+```julia
+X = sample_from_gamma(n1, indim)
+Y = sample_from_gamma(n2, indim)
+
+X_compressed = fit!(gamma_epca, X)
+Y_compressed = compress(gamma_epca, Y)
+Y_reconstructed = decompress(gamma_epca, Y_compressed)
+```
+
+# Acknowledgments
+
+We thank Ryan Tibshirani, Arec Jamgochian, Robert Moss, and Dylan Asmar for their help and guidance.
 
 # References
