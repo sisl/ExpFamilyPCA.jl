@@ -91,7 +91,7 @@ where $\mathcal{L}$ is the likelihood function.
 
 ### Bregman Divergences
 
-Bregman divergences [@Bregman; @Brad] are a measure of statistical difference that we can use to generalize the probablistic PCA objective to the exponential family. The Bregman divergence $B_F$ for a strictly convex, continuously differentiable function $F$ is
+Bregman divergences [@Bregman] are a measure of statistical difference that we can use to generalize the probablistic PCA objective to the exponential family. The Bregman divergence $B_F$ for a strictly convex, continuously differentiable function $F$ is
 
 $$
 B_F(p \| q) = F(p) - F(q) - \langle \nabla F(q), p - q \rangle.
