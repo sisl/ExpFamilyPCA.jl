@@ -37,7 +37,7 @@ Principal component analysis (PCA) [@PCA1; @PCA2; @PCA3] is popular for compress
 
 # Statement of Need
 
-EPCA is used in reinforcement learning [@Roy], sample debiasing [@debiasing], and compositional analysis [@gans]. Wider adoption, however, remains limited due to the lack of implementations. The only existing EPCA package is written in MATLAB and supports just one distribution [@epca-MATLAB]. This is surprising, as other Bregman-based optimization techniques have been successful in areas like mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], topological data analysis [@topological], and robust clustering [@clustering]. These successes indicate that EPCA holds untapped potential in signal processing and machine learning.
+EPCA is used in reinforcement learning [@Roy], sample debiasing [@debiasing], and compositional analysis [@gans]. Wider adoption, however, remains limited due to the lack of implementations. The only other EPCA package is written in MATLAB and supports just one distribution [@epca-MATLAB]. This is surprising, as other Bregman-based optimization techniques have been successful in areas like mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], topological data analysis [@topological], and robust clustering [@clustering]. These successes indicate that EPCA holds untapped potential in signal processing and machine learning.
 
 The lack of a general EPCA library is likely due to integration issues, as fast symbolic differentiation and optimization libraries in popular languages like Python and C are not typically interoperable. Julia, by contrast, uses multiple dispatch which promotes high levels of generic code reuse [@dispatch]. Multiple dispatch allows `ExpFamilyPCA.jl` to integrate fast symbolic differentiation [@symbolics], optimization [@optim], and numerically stable computation [@stable_exp] without requiring costly API conversions. As a result, `ExpFamilyPCA.jl` delivers speed, stability, and flexibility, with built-in support for most common distributions (§ [Supported Distributions](#supported-distributions)) and flexible constructors for custom distributions (§ [Custom Distributions](#supported-distributions)).
 
@@ -68,7 +68,7 @@ for $i = 1, \dots, n$.
 
 ### Probabilistic Interpretation
 
-The PCA objective is equivalent to maximum likelihood estimation for a Gaussian model. Under this lens, each observation $x_i$ is a noisy observation of $\theta_i$ corrupted with $d$-dimensional Gaussian noise
+The PCA objective is equivalent to maximum likelihood estimation for a Gaussian model. Under this lens, each observation $x_i$ is a noisy realization of a $d$-dimensional Gaussian at $\theta_i \in \mathrm{rows}(\Theta)$:
 
 $$
 x_i \sim \mathcal{N}(\theta_i, I).
@@ -99,7 +99,7 @@ The link function serves a role analogous to that in generalized linear models (
 
 ### Bregman Divergences
 
-EPCA extends the probabilistic interpretation of PCA using a measure of statistical difference called a Bregman divergence [@Bregman; @Brad]. The Bregman divergence $B_F$ for a strictly convex, continuously differentiable function $F$ is
+EPCA extends the probabilistic interpretation of PCA using a measure of statistical difference called the Bregman divergence [@Bregman; @Brad]. The Bregman divergence $B_F$ for a strictly convex, continuously differentiable function $F$ is
 
 $$
 B_F(p \| q) = F(p) - F(q) - \langle \nabla F(q), p - q \rangle.
@@ -107,7 +107,7 @@ $$
 
 This can be interpreted as the difference between $F(p)$ and its linear approximation about $q$. When $F$ is the convex conjugate of the log-partition function of an exponential family distribution, minimizing the Bregman divergence corresponds to maximizing the associated log-likelihood [@azoury; @forster] (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/)).
 
-### Objective
+### Loss Function
 
 EPCA generalizes the PCA objective as a Bregman divergence between the data $X$ and the expectation parameters $g(\Theta)$:
 
