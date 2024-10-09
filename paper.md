@@ -62,8 +62,7 @@ $$
 
 This suggests that each observation $x_i \in \mathrm{rows}(X)$ can be well-approximated by a linear combination of $k$ basis vectors (the rows of $V$):
 
-[$$x_i \approx \theta_i = a_i V$$]{label="eq:pca"}
-
+$$x_i \approx \theta_i = a_i V \label{pca}$$
 
 for $i = 1, \dots, n$.
 
