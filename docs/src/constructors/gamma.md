@@ -4,7 +4,7 @@
 
 | Name             | `GammaEPCA` or `ItakuraSaitoEPCA`                |
 |------------------|---------------------------------|
-| ``G(\theta)``    | ``-log(-\theta)``         |
+| ``G(\theta)``    | ``-\log(-\theta)``         |
 | ``g(\theta)``    | ``-\frac{1}{\theta}`` |
 | ``\mu`` Space[^1]    | ``\mathbb{R} \setminus \{ 0 \}``                      |
 | ``\Theta`` Space | negative                 |

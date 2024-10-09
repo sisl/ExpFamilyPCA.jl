@@ -5,7 +5,7 @@
 | ``G(\theta)``    | ``-\log(-\theta) - \log k``     |
 | ``g(\theta)``    | ``-\frac{1}{\theta}``             |
 | ``\mu`` Space[^1]    | ``\mathbb{R} / \{ 0 \}``                   |
-| ``\Theta`` Space | `negative                  |
+| ``\Theta`` Space | negative                  |
 | Appropriate Data | nonnegative continuous               |
 
 `WeibullEPCA` omits it the known shape parameter ``k`` since it does not affect the Weibull EPCA objective.

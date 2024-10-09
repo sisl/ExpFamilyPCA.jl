@@ -31,13 +31,15 @@ bibliography: paper.bib
 
 # Summary
 
-Principal component analysis (PCA) [@PCA] is a widely used tool for compressing, interpreting, and denoising data that works best with Gaussian data. Exponential family principal component analysis (EPCA) [@EPCA] generalizes PCA to handle data from any exponential family, making it more appropriate for binary, count, and probability data common in science and machine learning. `ExpFamilyPCA.jl` is the first Julia package [@Julia] to implement EPCA and the first in any language to support multiple distributions for EPCA.
+Principal component analysis (PCA) [@PCA1; @PCA2; @PCA3] is effective at compressing, denoising, and interpreting normally distributed data, but it struggles with binary, count, and compositional data, which are common in fields like geochemistry, marketing, genomics, and political science, and machine learning [@composition; @elements]. Exponential family PCA (EPCA) [@EPCA] extends PCA to handle data from any exponential family distribution, making it a better fit for these diverse data types.
+
+`ExpFamilyPCA.jl` is a library for exponential family principal component analysis (EPCA) [@EPCA] written in Julia, a dynamic language for scientific computing [@Julia]. This is the first Julia package to implement EPCA and the first in any language to support multiple distributions for EPCA.
 
 # Statement of Need
 
-The limited adoption of EPCA likely stems from a lack of available tools, with the only existing package supporting just a single distribution [@epca-MATLAB]. This is surprising given that other Bregman-based optimization techniques have been successful in fields such as mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], text analysis [@LitReview], and robust clustering [@clustering]. These successes suggest that EPCA has untapped potential in signal processing and machine learning.
+EPCA has been applied in reinforcement learning [@Roy] and more recently in sample debiasing [@debiasing] and finance [@finance]. Wider adoption, however, remains limited due to the lack of implementations, with the only existing package supporting a single distribution in MATLAB [@epca-MATLAB]. This is surprising, as other Bregman-based optimization techniques have been successful in areas like mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], topological data analysis [@topological], and robust clustering [@clustering]. These successes indicate that EPCA holds untapped potential in signal processing and machine learning.
 
-The primary reason no general EPCA library exists is likely engineering difficulty. In popular languages like Python and C, fast symbolic differentiation and optimization libraries are not generally interoperable. Julia, by contrast, uses multiple dispatch which facilitates high levels of generic code reuse [@dispatch]. Multiple dispatch allows `ExpFamilyPCA.jl` to integrate fast symbolic differentiation [@symbolics], optimization [@optim], and numerically stable computation [@stable_exp] without requiring costly API conversions. As a result, `ExpFamilyPCA.jl` delivers speed, stability, and flexibility, with built-in support for most common distributions (§ [Supported Distributions](#supported-distributions)) and flexible constructors for custom distributions (§ [Custom Distributions](#supported-distributions)).
+The lack of a general EPCA library is likely due to engineering challenges. In widely used languages like Python and C, fast symbolic differentiation and optimization libraries are not typically interoperable. Julia, by contrast, uses multiple dispatch which promotes high levels of generic code reuse [@dispatch]. Multiple dispatch allows `ExpFamilyPCA.jl` to integrate fast symbolic differentiation [@symbolics], optimization [@optim], and numerically stable computation [@stable_exp] without requiring costly API conversions. As a result, `ExpFamilyPCA.jl` delivers speed, stability, and flexibility, with built-in support for most common distributions (§ [Supported Distributions](#supported-distributions)) and flexible constructors for custom distributions (§ [Custom Distributions](#supported-distributions)).
 
 # Problem Formulation
 
@@ -45,7 +47,7 @@ The primary reason no general EPCA library exists is likely engineering difficul
 
 ### Geometric Interpretation
 
-Given a data matrix $X \in \mathbb{R}^{n \times d}$, the goal of PCA is to find the best low-rank approximation $\Theta \in \mathbb{R}^{n \times d}$. Formally, this can be expressed as:
+Given a data matrix $X \in \mathbb{R}^{n \times d}$ with $n$ observations and $d$ features, PCA seeks the closest low-rank approximation $\Theta \in \mathbb{R}^{n \times d}$ by minimizing the reconstruction error
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
@@ -54,17 +56,29 @@ $$\begin{aligned}
 & & \mathrm{rank}\left(\Theta\right) = k
 \end{aligned}$$
 
-where $\| \cdot \|_F$ denotes the Frobenius norm.
+where $\| \cdot \|_F$ denotes the Frobenius norm. The optimal $\Theta$ is a rank-$k$ hyperplane that can be decomposed as a matrix product
+
+$$
+X \approx \Theta = AV,
+$$
+
+where $A \in \mathbb{R}^{n \times k}$ is the score matrix and $V \in \mathbb{R}^{k \times d}$ is the matrix of the $k$-largest principal components (the eigenvectors of the covariance matrix). This suggests that each observation (a row of $X$) can be well-approximated by a linear combination of $k$ basis vectors (the rows of $V$):
+
+$$
+x_i \approx \theta_i = a_i V
+$$
+
+for $i = 1, \dots, n$.
 
 ### Probabilistic Interpretation
 
-This objective also maximizes the Gaussian log-likelihood, meaning PCA can be viewed as a method to recover a low-dimensional structure from high-dimensional observations corrupted with Gaussian noise. Specifically, for each data point $x_i$ (a row of $X$):
+The PCA objective is equivalent to maximum likelihood estimation for a Gaussian model. Under this lens, PCA views the rows of $X$ as realizations of a $d$-dimensional Gaussian. Alternatively, each observation $x_i$ is a noisy observation of a latent, low-rank structure $\theta_i$ corrupted with high-dimensional Gaussian noise
 
 $$
-x_i \sim \mathcal{N}(\theta_i, I)
+x_i \sim \mathcal{N}(\theta_i, I).
 $$
 
-where $\theta_i$ (a row of $\Theta$) is the mean. The rank constraint $k$ in the geometric interpretation now corresponds to the parameter space
+To recover the structure $\Theta$, PCA solves
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{maximize}}
@@ -83,7 +97,7 @@ $$
 B_F(p \| q) = F(p) - F(q) - \langle \nabla F(q), p - q \rangle.
 $$
 
-When $F$ is chosen to be the convex conjugate of the log-partition of an exponential family distribution, minimizing the Bregman divergence is the same as maximizing the corresponding log-likelihood [@azoury; @forster] (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/)). Since the Gaussian distribution is in the exponential family, this means that Bregman divergences generalize the PCA objective.
+When $F$ is taken to be the convex conjugate of the log-partition of an exponential family distribution, minimizing the Bregman divergence is the same as maximizing the corresponding log-likelihood [@azoury; @forster] (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/bregman/)). Since the Gaussian distribution is in the exponential family, this means that Bregman divergences generalize the PCA objective.
 
 ## Exponential Family Principal Component Analysis
 
@@ -101,16 +115,36 @@ where
 * $g(\theta)$ is the **link function** and the derivative of $G$,
 * $G(\theta)$ is an arbitrary convex, differentiable function (usually the **log-parition** of an exponential family distribution),
 * $F(\mu)$ is the **convex conjugate** or dual of $G$,
-* $B_F(p \| q)$ is the **Bregman divergence** induced from $F$,
 * and both $\mu_0 \in \mathrm{range}(g)$ and $\epsilon > 0$ are regularization terms.
+
+Then $\theta_i = g(a_i V)$ and 
+
+$$
+a_i \in \argmin_{a \in \mathrm{R}^k}(x_i \| g(aV))
+$$
 
 In this formulation, the data matrix $X$ is approximated by expectation parameters $g(\Theta)$. Similar to how linear regression is a special case of generalized linear models [@GLM], PCA is a special case of EPCA when the data is Gaussian (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/gaussian/)). By selecting the appropriate function $G$, EPCA can handle a wider range of data types, offering more versatility than PCA.
 
+
+### Example: Gamma EPCA 
+
+old faithful stuff here
+
+![](./scripts/faithful_graphs/eruptions_plot.png)
+
 ### Example: Poisson EPCA
 
-For the Poisson distribution, the EPCA objective becomes the generalized Kullback-Leibler (KL) divergence (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/poisson/)), making Poisson EPCA ideal for compressing discrete distribution data. This is useful in applications like belief compression in reinforcement learning [@Roy], where high-dimensional belief states can be effectively reduced with minimal information loss. Below we recreate a figure from @shortRoy and observe that Poisson EPCA achieved a nearly perfect reconstruction of a $41$-dimensional belief profile using just $5$ basis components.
+The Poisson EPCA objective is the generalized Kullback-Leibler (KL) divergence (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/poisson/)), making Poisson EPCA ideal for compressing discrete distribution data. 
+
+Add some blurb about how Poisson EPCA is then an alternative to correspondance analysis. 
+
+This is useful in applications like belief compression in reinforcement learning [@Roy], where high-dimensional belief states can be effectively reduced with minimal information loss. Below we recreate a figure from @shortRoy and observe that Poisson EPCA achieved a nearly perfect reconstruction of a $41$-dimensional belief profile using just $5$ basis components.
 
 ![](./scripts/kl_divergence_plot.png)
+
+For a larger environment with $200$ states, PCA struggles even with $10$ basis.
+
+![](./scripts/reconstructions.png)
 
 # API 
 

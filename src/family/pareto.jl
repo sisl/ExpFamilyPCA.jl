@@ -24,28 +24,23 @@ function ParetoEPCA(
     options::Options = Options(
         μ = 2,
         A_init_value = 2,
-        A_lower = 1 / indim,
+        A_lower = 1 / outdim,
         V_init_value = -2,
         V_upper = -1,
     )
 )
     @assert m > 0 "Minimum value m must be positive."
     @assert options.μ != log(m) "μ must be in the range of g."
-    Bg(x, θ) = -log(-1 - θ) + xlogy(θ, m) - x * θ 
+    G(θ) = -log(-1 - θ) + (1 + θ) * log(m)
     g(θ) = log(m) - 1 / (θ + 1)
+
     epca = EPCA(
         indim,
         outdim,
-        Bg,
+        G,
         g,
-        Val((:Bg, :g));
-        options = Options(
-            μ = 2,
-            A_init_value = 2,
-            A_lower = 1 / indim,
-            V_init_value = -2,
-            V_upper = -1,
-        )
+        Val((:G, :g));
+        options = options
     )
     return epca
 end

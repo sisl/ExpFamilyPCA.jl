@@ -85,7 +85,7 @@ Alternatively, we can express the EPCA objective using the log-partition functio
 
 ```math
 \begin{aligned}
--F(g(\Theta)) - \Theta(X - G(\Theta)) &= G(\Theta) - g(\Theta) \Theta - \Theta(X - G(\Theta)) \\
+-F(g(\Theta)) - \Theta(X - g(\Theta)) &= G(\Theta) - g(\Theta) \Theta - \Theta(X - g(\Theta)) \\
 &= G(\Theta) - \Theta X
 \end{aligned}
 ```

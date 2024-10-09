@@ -119,6 +119,7 @@ function _single_compress_iter(
 ) where T <: Real
     @unpack A_lower, A_upper = options
     total_loss = 0.0
+
     A_new = similar(A)
     for (i, a) in enumerate(eachrow(A))
         x = X[i, :]
@@ -264,9 +265,8 @@ function _fit(
 end
 
 function _make_sobol_matrix(m, n)
-    # TODO: add support for arbitrary hypercube rescaling
     s = SobolSeq(n)
-    result = reduce(vcat, [next!(s) for _ = 1:m]')
+    result = reduce(vcat, [next!(s) for _ = 1:m]') |> Matrix
     return result
 end
 
