@@ -109,7 +109,7 @@ $$
 
 where $\mu = \nabla G(\theta)$ represents the expectation parameter correspondingto the natural parameter $\theta$. This duality ensures a smooth correspondence between the parameter spaces, facilitating efficient optimization and interpretation and is one of the principal benefits of EPCA over other similar methods. 
 
-The link function $g(\theta) = \nabla G(\theta)$ serves a role analogous to that in generalized linear models (GLMs) [@GLM]. In GLMs, the link function connects the linear predictor to the mean of the distribution, enabling flexibility in modeling various data types. Similarly, in EPCA, the link function maps the low-dimensional latent variables to the expectation parameters of the exponential family, thereby generalizing the linear assumptions of traditional PCA to accommodate diverse distributions.
+<!-- The link function $g(\theta) = \nabla G(\theta)$ serves a role analogous to that in generalized linear models (GLMs) [@GLM]. In GLMs, the link function connects the linear predictor to the mean of the distribution, enabling flexibility in modeling various data types. Similarly, in EPCA, the link function maps the low-dimensional latent variables to the expectation parameters of the exponential family, thereby generalizing the linear assumptions of traditional PCA to accommodate diverse distributions. -->
 
 ## Exponential Family Principal Component Analysis
 
