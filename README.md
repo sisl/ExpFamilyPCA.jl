@@ -5,8 +5,6 @@
 
 **ExpFamilyPCA.jl** is a Julia package for [exponential family principal component analysis (EPCA)](https://papers.nips.cc/paper_files/paper/2001/hash/f410588e48dc83f2822a880a68f78923-Abstract.html), a versatile generalization of PCA designed to handle non-Gaussian data, enabling dimensionality reduction and data analysis across a wide variety of distributions (e.g., binary, count, and compositional data). It is designed for applications in machine learning (belief compression, text analysis), signal processing (denoising), and data science (sample debiasing, clustering, dimensionality reduction), but can be applied to other fields with diverse data types.
 
-
-
 - Website: https://sisl.github.io/ExpFamilyPCA.jl/dev/
 - Math: https://sisl.github.io/ExpFamilyPCA.jl/dev/math/intro/
 - API Documentation: https://sisl.github.io/ExpFamilyPCA.jl/dev/api/
