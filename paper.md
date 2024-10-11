@@ -154,11 +154,7 @@ The Poisson EPCA objective is the generalized Kullback-Leibler (KL) divergence (
 
 This is useful in applications like belief compression in reinforcement learning [@Roy], where high-dimensional belief states can be effectively reduced with minimal information loss. Below we recreate a figure from @shortRoy and observe that Poisson EPCA achieved a nearly perfect reconstruction of a $41$-dimensional belief profile using just $5$ basis components.
 
-<div style="display: flex; justify-content: space-between;">
-  <img src="./scripts/kl_divergence_plot.png" style="width:45%;" />
-  <img src="./scripts/reconstructions.png" style="width:45%;" />
-</div>
-<p style="text-align: center;">Figure 1: Left - KL Divergence for Poisson EPCA vs PCA. Right - Reconstructions from the models.</p>
+![Figure 1: Left - KL Divergence for Poisson EPCA vs PCA. Right - Reconstructions from the models.](./scripts/combo.png)
 
 For a larger environment with $200$ states, PCA struggles even with $10$ basis.
 
