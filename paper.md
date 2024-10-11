@@ -74,7 +74,7 @@ $$
 x_i \sim \mathcal{N}(\theta_i, I).
 $$
 
-To recover the structure $\Theta$, PCA solves
+To recover the latent structure $\Theta$, PCA solves
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{maximize}}
