@@ -121,7 +121,7 @@ $$\begin{aligned}
 where
 
 * $g(\theta)$ is the **link function** and the gradient of $G$,
-* $G(\theta)$ is a strictly convex, continuously differentiable function (usually the **log-parition** of an exponential family distribution),
+* $G(\theta)$ is a strictly convex, continuously differentiable function (usually the **log-partition** of an exponential family distribution),
 * and $F(\mu)$ is the **convex conjugate** of $G$ defined by
 
 $$
