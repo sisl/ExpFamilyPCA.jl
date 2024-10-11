@@ -37,9 +37,9 @@ Principal component analysis (PCA) [@PCA1; @PCA2; @PCA3] is popular for compress
 
 # Statement of Need
 
-EPCA is used in reinforcement learning [@Roy], sample debiasing [@debiasing], and compositional analysis [@gans]. Wider adoption, however, remains limited due to the lack of implementations. The only other EPCA package is written in MATLAB and supports just one distribution [@epca-MATLAB]. This is surprising, as other Bregman-based optimization techniques have been successful in areas like mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], topological data analysis [@topological], and robust clustering [@clustering]. These successes indicate that EPCA holds untapped potential in signal processing and machine learning.
+EPCA is used in reinforcement learning [@Roy], sample debiasing [@debiasing], and compositional analysis [@gans]. Wider adoption, however, remains limited due to the lack of implementations. The only other EPCA package is written in MATLAB and supports just one distribution [@epca-MATLAB]. This is surprising, as other Bregman-based optimization techniques have been successful in areas like mass spectrometry [@spectrum], ultrasound denoising [@ultrasound], topological data analysis [@topological], and robust clustering [@clustering]. These successes suggest that EPCA holds untapped potential in signal processing and machine learning.
 
-The lack of a general EPCA library is likely due to integration issues, as fast symbolic differentiation and optimization libraries in popular languages like Python and C are not typically interoperable. Julia, by contrast, uses multiple dispatch which promotes high levels of generic code reuse [@dispatch]. Multiple dispatch allows `ExpFamilyPCA.jl` to integrate fast symbolic differentiation [@symbolics], optimization [@optim], and numerically stable computation [@stable_exp] without requiring costly API conversions. As a result, `ExpFamilyPCA.jl` delivers speed, stability, and flexibility, with built-in support for most common distributions (§ [Supported Distributions](#supported-distributions)) and flexible constructors for custom distributions (§ [Custom Distributions](#supported-distributions)).
+The absence of a general EPCA library likely stems from the limited interoperability between fast symbolic differentiation and optimization libraries in popular languages like Python and C. Julia, by contrast, uses multiple dispatch which promotes high levels of generic code reuse [@dispatch]. Multiple dispatch allows `ExpFamilyPCA.jl` to integrate fast symbolic differentiation [@symbolics], optimization [@optim], and numerically stable computation [@stable_exp] without requiring costly API conversions. As a result, `ExpFamilyPCA.jl` delivers speed, stability, and flexibility, with built-in support for most common distributions (§ [Supported Distributions](#supported-distributions)) and flexible constructors for custom distributions (§ [Custom Distributions](#supported-distributions)).
 
 ## Principal Component Analysis
 
@@ -154,11 +154,13 @@ The Poisson EPCA objective is the generalized Kullback-Leibler (KL) divergence (
 
 This is useful in applications like belief compression in reinforcement learning [@Roy], where high-dimensional belief states can be effectively reduced with minimal information loss. Below we recreate a figure from @shortRoy and observe that Poisson EPCA achieved a nearly perfect reconstruction of a $41$-dimensional belief profile using just $5$ basis components.
 
-![](./scripts/kl_divergence_plot.png)
+<div style="display: flex; justify-content: space-between;">
+  <img src="./scripts/kl_divergence_plot.png" style="width:45%;" />
+  <img src="./scripts/reconstructions.png" style="width:45%;" />
+</div>
+<p style="text-align: center;">Figure 1: Left - KL Divergence for Poisson EPCA vs PCA. Right - Reconstructions from the models.</p>
 
 For a larger environment with $200$ states, PCA struggles even with $10$ basis.
-
-![](./scripts/reconstructions.png)
 
 # API 
 
