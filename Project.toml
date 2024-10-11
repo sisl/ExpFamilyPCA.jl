@@ -1,7 +1,7 @@
 name = "ExpFamilyPCA"
 uuid = "9c724b78-6801-4402-8a63-53f028696012"
 authors = ["Logan-Mondal-Bhamidipaty"]
-version = "1.0.0"
+version = "1.1.0"
 
 [deps]
 CompressedBeliefMDPs = "0a809e47-b8eb-4578-b4e8-4c2c5f9f833c"
