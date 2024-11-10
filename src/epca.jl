@@ -121,7 +121,7 @@ function fit!(
         steps_per_print,
         epca.options
     )
-    epca.V[:] = V
+    epca.V[:] = V  # TODO: delete this line?
     return A
 end
 

@@ -120,7 +120,7 @@ function _single_compress_iter(
     (; A_lower, A_upper) = options
     total_loss = 0.0
 
-    A_new = similar(A)
+    A_new = copy(A)
     for (i, a) in enumerate(eachrow(A))
         x = X[i, :]
         a_new, loss = _optimize(
@@ -152,7 +152,7 @@ function _single_fit_iter(
     options::Options
 ) where {F<:Function, T <: Real}
     (; V_lower, V_upper) = options
-    V_new = similar(V)
+    V_new = copy(V)
     for (i, v) in enumerate(eachcol(V))
         x = X[:, i]
         v_new, _ = _optimize(
