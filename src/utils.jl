@@ -84,11 +84,11 @@ function is_constant_matrix(A::AbstractMatrix)
 end
 
 function _optimize(
-    f::Function, 
+    f::F, 
     lower::Union{Real, Nothing}, 
     upper::Union{Real, Nothing}, 
     x0
-)
+) where {F}
     x0 = Vector(x0)
     if isnothing(lower) && isnothing(upper)
         result = optimize(f, x0)
