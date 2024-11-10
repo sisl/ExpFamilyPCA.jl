@@ -65,7 +65,7 @@ end
 
 """Invert Legendre transformation"""
 function _invert_legendre(f, options::Options)
-    @unpack low, high, tol, maxiter = options
+    (; low, high, tol, maxiter) = options
     _check_binary_search_arguments(low, high, tol, maxiter)
     g(x) = _binary_search_monotone(
         f, 
@@ -107,7 +107,7 @@ function _optimize(
 end
 
 function _single_compress_iter(
-    L::Function,
+    L::F,
     V::AbstractMatrix{T},
     A::AbstractMatrix{T},
     X::AbstractMatrix,
@@ -116,8 +116,8 @@ function _single_compress_iter(
     steps_per_print::Integer,
     maxiter::Integer,
     options::Options
-) where T <: Real
-    @unpack A_lower, A_upper = options
+) where {F<:Function, T <: Real}
+    (; A_lower, A_upper) = options
     total_loss = 0.0
 
     A_new = similar(A)
@@ -141,7 +141,7 @@ end
 
 
 function _single_fit_iter(
-    L::Function,
+    L::F,
     V::AbstractMatrix{T},
     A::AbstractMatrix{T},
     X::AbstractMatrix,
@@ -150,8 +150,8 @@ function _single_fit_iter(
     steps_per_print::Integer,
     maxiter::Integer,
     options::Options
-) where T <: Real
-    @unpack V_lower, V_upper = options
+) where {F<:Function, T <: Real}
+    (; V_lower, V_upper) = options
     V_new = similar(V)
     for (i, v) in enumerate(eachcol(V))
         x = X[:, i]
@@ -203,7 +203,7 @@ function _check_convergence(loss, last_loss; verbose=false)
 end
 
 function _compress(
-    L::Function,
+    L::F,
     V::AbstractMatrix{T},
     A::AbstractMatrix{T},
     X::AbstractMatrix,
@@ -211,7 +211,7 @@ function _compress(
     verbose::Bool,
     steps_per_print::Integer,
     options::Options
-) where T <: Real
+) where {F<:Function, T <: Real}
     last_loss = missing
     for i in 1:maxiter
         A, loss = _single_compress_iter(
@@ -234,7 +234,7 @@ function _compress(
 end
 
 function _fit(
-    L::Function,
+    L::F,
     V::AbstractMatrix{T},
     A::AbstractMatrix{T},
     X::AbstractMatrix,
@@ -242,7 +242,7 @@ function _fit(
     verbose::Bool,
     steps_per_print::Integer,
     options::Options
-) where T <: Real
+) where {F<:Function, T <: Real}
     last_loss = missing
     for i in 1:maxiter
         V, A, loss = _single_fit_iter(

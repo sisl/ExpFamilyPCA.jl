@@ -1,13 +1,18 @@
-struct EPCA3 <: EPCA
-    B::Union{Function, FunctionWrapper, PreMetric}  # Bregman divergence
-    g::Union{Function, FunctionWrapper}  # link function
-    V::AbstractMatrix{<:Real}
-    options::Options
+struct EPCA3{
+    FT1<:Union{Function, FunctionWrapper, PreMetric},
+    FT2<:Union{Function, FunctionWrapper},
+    MT<:AbstractMatrix{<:Real},
+    OT<:Options
+} <: EPCA
+    B::FT1  # Bregman divergence
+    g::FT2  # link function
+    V::MT
+    options::OT
 end
 
 function _make_loss(epca::EPCA3, X)
-    @unpack B, g = epca
-    @unpack μ, ϵ = epca.options
+    (; B, g) = epca
+    (; μ, ϵ) = epca.options
     @assert ϵ >= 0 "ϵ must be non-negative."
 
     L(x, θ) = begin

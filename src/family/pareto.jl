@@ -22,11 +22,11 @@ function ParetoEPCA(
     outdim::Integer, 
     m::Real; 
     options::Options = Options(
-        μ = 2,
-        A_init_value = 2,
+        μ = 2.0,
+        A_init_value = 2.0,
         A_lower = 1 / outdim,
-        V_init_value = -2,
-        V_upper = -1,
+        V_init_value = -2.0,
+        V_upper = -1.0,
     )
 )
     @assert m > 0 "Minimum value m must be positive."

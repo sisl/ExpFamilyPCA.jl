@@ -1,13 +1,18 @@
-struct EPCA2 <: EPCA
-    G::Union{Function, FunctionWrapper}  # log-parition function
-    g::Union{Function, FunctionWrapper}  # link function
-    V::AbstractMatrix{<:Real}
-    options::Options
+struct EPCA2{
+    FT1<:Union{Function, FunctionWrapper},
+    FT2<:Union{Function, FunctionWrapper},
+    MT<:AbstractMatrix{<:Real},
+    OT<:Options
+} <: EPCA
+    G::FT1  # log-parition function
+    g::FT2  # link function
+    V::MT
+    options::OT
 end
 
 function _make_loss(epca::EPCA2, X)
-    @unpack G, g = epca
-    @unpack tol, μ, ϵ = epca.options
+    (; G, g) = epca
+    (; tol, μ, ϵ) = epca.options
     @assert ϵ >= 0 "ϵ must be non-negative."
 
     L(x, θ) = begin

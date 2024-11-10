@@ -4,7 +4,6 @@ using Distances
 using FunctionWrappers: FunctionWrapper
 using LogExpFunctions
 using Optim
-using Parameters
 using Sobol
 using Symbolics
 
