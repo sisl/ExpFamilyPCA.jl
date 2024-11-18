@@ -21,7 +21,7 @@ function GammaEPCA(
     indim::Integer, 
     outdim::Integer;
     options::Options = Options(
-        A_init_value = -2,
+        A_init_value = -2.0,
         A_upper = -eps(),
         V_lower = eps()
     )
@@ -47,7 +47,7 @@ function ItakuraSaitoEPCA(
     indim::Integer, 
     outdim::Integer; 
     options::Options = Options(
-        A_init_value = -2,
+        A_init_value = -2.0,
         A_upper = -eps(),
         V_lower = eps()
     )

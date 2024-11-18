@@ -3,10 +3,10 @@ import CompressedBeliefMDPs  # `import` rather than `using` to keep tidey namesp
 """
     EPCACompressor(epca::EPCA)
 
-    Compressor for `CompressedBeliefMDPs.jl`.
+Compressor for `CompressedBeliefMDPs.jl`.
 """
-struct EPCACompressor <: CompressedBeliefMDPs.Compressor
-    epca::EPCA
+struct EPCACompressor{E<:EPCA} <: CompressedBeliefMDPs.Compressor
+    epca::E
 end
 
 function (c::EPCACompressor)(beliefs)

@@ -1,13 +1,18 @@
-struct EPCA4 <: EPCA
-    Bg::Function  # Bregman divergence composed with the link function in the 2nd slot, that is Bg(⋅, ⋅) = B_F(⋅, g(⋅)).
-    g::Function  # link function
-    V::AbstractMatrix{<:Real}
-    options::Options
+struct EPCA4{
+    FT1<:Function,
+    FT2<:Function,
+    MT<:AbstractMatrix{<:Real},
+    OT<:Options
+} <: EPCA
+    Bg::FT1  # Bregman divergence composed with the link function in the 2nd slot, that is Bg(⋅, ⋅) = B_F(⋅, g(⋅)).
+    g::FT2  # link function
+    V::MT
+    options::OT
 end
 
 function _make_loss(epca::EPCA4, X)
     Bg = epca.Bg
-    @unpack μ, ϵ = epca.options
+    (; μ, ϵ) = epca.options
     @assert ϵ >= 0 "ϵ must be non-negative."
     
     L(x, θ) = begin

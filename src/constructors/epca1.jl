@@ -1,13 +1,18 @@
-struct EPCA1 <: EPCA
-    F::Union{Function, FunctionWrapper}  # Legendre dual of the log-partition
-    g::Union{Function, FunctionWrapper}  # link function
-    V::AbstractMatrix{<:Real}
-    options::Options
+struct EPCA1{
+    FT1<:Union{Function, FunctionWrapper},
+    FT2<:Union{Function, FunctionWrapper},
+    MT<:AbstractMatrix{<:Real},
+    OT<:Options
+} <: EPCA
+    F::FT1  # Legendre dual of the log-partition
+    g::FT2  # link function
+    V::MT
+    options::OT
 end
 
 function _make_loss(epca::EPCA1, X)
-    @unpack F, g = epca
-    @unpack μ, ϵ = epca.options
+    (; F, g) = epca
+    (; μ, ϵ) = epca.options
     @assert ϵ >= 0 "ϵ must be non-negative."
 
     L(x, θ) = begin
@@ -44,7 +49,7 @@ function EPCA(
     options = Options()
 )
     @assert isfinite(f(options.μ)) "μ must be in the range of g meaning f(μ) should be finite."
-    @unpack low, high, tol, maxiter = options
+    (; low, high, tol, maxiter) = options
     g = _invert_legendre(f, options)
     V = _initialize_V(indim, outdim, options)
     epca = EPCA1(F, g, V, options)

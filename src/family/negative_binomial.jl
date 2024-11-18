@@ -23,7 +23,7 @@ function NegativeBinomialEPCA(
     outdim::Integer, 
     r::Integer;
     options::Options = Options(
-        A_init_value = -1,
+        A_init_value = -1.0,
         A_upper = -eps(),
         V_lower = eps()
     )
