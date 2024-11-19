@@ -138,7 +138,7 @@ $$
 
 ### Regularization
 
-To ensure the optimum converges, we introduce a regularization term
+Following @EPCA, we introduce a regularization term to ensure the optimum converges
 
 $$\begin{aligned}
 & \underset{\Theta}{\text{minimize}}
@@ -147,8 +147,9 @@ $$\begin{aligned}
 & & \mathrm{rank}\left(\Theta\right) = k
 \end{aligned}$$
 
-where $\epsilon > 0$ and $\mu_0 \in \mathrm{range}(g)$.
+where $\epsilon > 0$ and $\mu_0 \in \mathrm{range}(g)$.[^2] 
 
+[^2]: In practice, we allow $\epsilon \geq 0$, because special cases of EPCA like traditional PCA are well-known to converge without regularization.
 
 ### Example: Poisson EPCA
 
@@ -158,7 +159,7 @@ This is useful in applications like belief compression in reinforcement learning
 
 ![Left - KL Divergence for Poisson EPCA versus PCA. Right - Reconstructions from the models.](./scripts/combo.png)
 
-For a larger environment with $200$ states, PCA struggles even with $10$ basis.
+For a larger environment with $200$ states, PCA struggles even with $10$ basis components.
 
 # API 
 
