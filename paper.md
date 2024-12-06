@@ -89,6 +89,16 @@ where $\mathcal{L}$ is the likelihood function.
 
 ## Exponential Family PCA
 
+### Exponential Family
+
+Following @forster, we define the exponential family as the set of distributions with densities of the form
+
+$$
+p_\theta(x) = \exp(\theta \cdot x - G(\theta))
+$$
+
+where $\theta$ is the natural parameter and $G$ is the log-partition function.
+
 ### Link Function
 
 The link function $g(\theta)$ connects the natural parameter $\theta$ to the mean parameter $\mu$ of an exponential family distribution. It is defined as the gradient of the log-partition function $G(\theta)$:
