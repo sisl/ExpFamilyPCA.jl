@@ -165,11 +165,9 @@ where $\epsilon > 0$ and $\mu_0 \in \mathrm{range}(g)$.[^2]
 
 The Poisson EPCA objective is the generalized Kullback-Leibler (KL) divergence (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/poisson/)), making Poisson EPCA ideal for compressing discrete distribution data. 
 
-This is useful in applications like belief compression in reinforcement learning [@Roy], where high-dimensional belief states can be effectively reduced with minimal information loss. Below we recreate similar figures[^3] to @shortRoy and @Roy and observe that Poisson EPCA almost perfectly reconstructs a $41$-dimensional belief distribution using just $5$ basis components.
+This is useful in applications like belief compression in reinforcement learning [@Roy], where high-dimensional belief states can be effectively reduced with minimal information loss. Below we recreate similar figures[^3] to @shortRoy and @Roy and observe that Poisson EPCA almost perfectly reconstructs a $41$-dimensional belief distribution using just $5$ basis components. For a larger environment with $200$ states, PCA struggles even with $10$ basis components.
 
 ![Left - KL Divergence for Poisson EPCA versus PCA. Right - Reconstructions from the models.](./scripts/combo.png)
-
-For a larger environment with $200$ states, PCA struggles even with $10$ basis components.
 
 [^3]: See Figure 3(a) in @shortRoy and Figure 12(c) in @Roy.
 
@@ -214,7 +212,7 @@ A lengthier discussion of the `EPCA` constructors and math is provided in the [d
 Each `EPCA` object supports a three-method interface: `fit!`, `compress`, and `decompress`. `fit!` trains the model and returns the compressed training data; `compress` returns compressed input; and `decompress` reconstructs the original data from the compressed representation.
 
 ```julia
-X = sample_from_gamma(n1, indim)
+X = sample_from_gamma(n1, indim)  # matrix of gamma-distributed data
 Y = sample_from_gamma(n2, indim)
 
 X_compressed = fit!(gamma_epca, X)
