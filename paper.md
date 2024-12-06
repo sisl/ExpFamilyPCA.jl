@@ -159,17 +159,19 @@ $$\begin{aligned}
 
 where $\epsilon > 0$ and $\mu_0 \in \mathrm{range}(g)$.[^2] 
 
-[^2]: In practice, we allow $\epsilon \geq 0$, because special cases of EPCA like traditional PCA are well-known to converge without regularization.
+[^2]: In practice, we allow $\epsilon \geq 0$, because special cases of EPCA like traditional PCA are well-known to converge without regularization. Similarly, we pick $\mu_0$ to simplify terms in the objective.
 
 ### Example: Poisson EPCA
 
 The Poisson EPCA objective is the generalized Kullback-Leibler (KL) divergence (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/dev/math/appendix/poisson/)), making Poisson EPCA ideal for compressing discrete distribution data. 
 
-This is useful in applications like belief compression in reinforcement learning [@Roy], where high-dimensional belief states can be effectively reduced with minimal information loss. Below we recreate a figure from @shortRoy and observe that Poisson EPCA achieved a nearly perfect reconstruction of a $41$-dimensional belief profile using just $5$ basis components.
+This is useful in applications like belief compression in reinforcement learning [@Roy], where high-dimensional belief states can be effectively reduced with minimal information loss. Below we recreate similar figures[^3] to @shortRoy and @Roy and observe that Poisson EPCA almost perfectly reconstructs a $41$-dimensional belief distribution using just $5$ basis components.
 
 ![Left - KL Divergence for Poisson EPCA versus PCA. Right - Reconstructions from the models.](./scripts/combo.png)
 
 For a larger environment with $200$ states, PCA struggles even with $10$ basis components.
+
+[^3]: See Figure 3(a) in @shortRoy and Figure 12(c) in @Roy.
 
 # API 
 
