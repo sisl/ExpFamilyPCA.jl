@@ -6,7 +6,9 @@ abstract type EPCA end
 """
     fit!(epca::EPCA, X::AbstractMatrix{T}; maxiter::Integer = 100, verbose::Bool = false, steps_per_print::Integer = 10) where T <: Real
 
-Fits the EPCA model on the dataset `X`.
+Fits the EPCA model on the dataset `X`. Call this function after creating an EPCA struct or to continue training on more data.
+
+Should be called after creating an EPCA object or when you want to fit on new data.
 
 # Arguments
 - `epca::EPCA`: The EPCA model. 
