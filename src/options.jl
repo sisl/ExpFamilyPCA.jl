@@ -19,6 +19,9 @@ Defines a struct `Options` for configuring various parameters used in optimizati
 - `high::Real`: Upper bound for binary search. Default is `1e10`.
 - `tol::Real`: Tolerance for stopping binary search. Default is `1e-10`.
 - `maxiter::Real`: Maximum iterations for binary search. Default is `1e6`.
+
+!!! info
+    The `metaprogramming` flag controls whether metaprogramming is used during symbolic differentiation conversion. While conversion between Symbolics.jl atoms and base Julia can occur without it, this approach is slower and requires more calls. Nonetheless, the flag is provided for users who keenly want to avoid metaprogramming in their pipeline.
 """
 @kwdef struct Options{T<:Real}
     # symbolic calculus 

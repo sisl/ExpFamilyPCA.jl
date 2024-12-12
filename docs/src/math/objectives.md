@@ -15,7 +15,7 @@ In this section, we demonstrate how the EPCA objective function and the decompre
 Recall from the [introduction](./intro.md) that the regularized EPCA objective aims to minimize the following expression:
 
 ```math
-B_{F}(X \| g(\Theta)) + \epsilon B_{F}(\mu \| g(\Theta)).
+B_{F}(X \| g(\Theta)) + \epsilon B_{F}(\mu_0 \| g(\Theta)).
 ```
 
 where:
@@ -26,7 +26,7 @@ where:
 *  $g$ is the link function,
 *  $X$ is the data matrix,
 *  $\Theta$ is the parameter matrix, and
-*  $\mu \in \mathrm{range}(g)$ and $\epsilon > 0$ are regularization parameters.
+*  $\mu_0 \in \mathrm{range}(g)$ and $\epsilon > 0$ are regularization parameters.
 
 Our goal is to show that both $B_F$ and $g$ can be induced from various base components, namely $F$, $G$, $f$ and $g$. This allows for multiple pathways to define and compute the EPCA objective in Julia.
 

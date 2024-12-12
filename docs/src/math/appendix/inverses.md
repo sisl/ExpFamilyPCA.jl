@@ -14,3 +14,8 @@ f(g(\theta))
 ```
 
 The converse is similar, so $f = g^{-1}$.
+
+## Remark
+
+Since $f$ is the inverse link function $g^{-1}$ and $\mu = g(\theta)$, we also have $f(\mu) = \theta$.
+

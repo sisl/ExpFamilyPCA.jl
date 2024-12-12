@@ -1,12 +1,10 @@
 # Bregman Divergences
 
-Bregman divergences [Bregman](@cite) play a central role in the probabilistic framework of EPCA. They generalize the concept of distance between two points but do not necessarily satisfy the properties of a traditional metric (such as symmetry or the triangle inequality). Instead, Bregman divergences provide a flexible way to measure differences between data points, making them useful in applications like clustering, optimization, and information theory.
-
-Understanding Bregman divergences is essential for EPCA because they link the exponential family of probability distributions to loss functions used in optimization, allowing us to generalize PCA to non-Gaussian data.
+The EPCA objective is formulated as a Bregman divergence [Bregman](@cite). Bregman divergences are a measure of difference between two points (often probability distributions); however, they are not proper metrics, because they do not always satisfy symmetry and the triangle inequality.
 
 ## Definition
 
-Formally, the Bregman divergence [Bregman](@cite) $B_F$ associated with a function $F(\theta)$ is defined as
+Formally, the Bregman divergence $B_F$ associated with a function $F(\theta)$ is defined as
 
 ```math
 B_F(p \| q) = F(p) - F(q) - \langle f(p), p - q \rangle
@@ -14,14 +12,14 @@ B_F(p \| q) = F(p) - F(q) - \langle f(p), p - q \rangle
 
 where 
 *  $F(\mu)$ is a strictly convex and continuously differentiable function, 
-*  $f(\mu) = \nabla_\mu F(\mu)$ is the convex conjugate (defined later) of $F$, 
+*  $f(\mu) = \nabla_\mu F(\mu)$ is the gradient of $F$, 
 *  and $\langle \cdot, \cdot \rangle$ denotes an inner product.
 
 Intuitively, the Bregman divergence expresses the difference at $p$ between $F$ and its first-order Taylor expansion about $q$.
 
-### Properties
+### Aside: Properties
 
-Unlike traditional metrics, Bregman divergences are not generally symmetric (i.e., $B_F(p \| q) \neq B_F(q \| p)$) and do not usually satsify the triangle inequality. However, they are always non-negative ($B_F(p \| q) \geq 0$) and equal $0$ if and only if $p = q$.
+Bregman divergences vanish $B_F(p \| q) = 0$ if and only if their inputs also vanish $p = q = 0$. They are also always non-negative $B_F(p \| q) \geq 0$ for all $p, q \in \mathrm{domain}(F)$.
 
 !!! info
     While the full EPCA objective is always non-negative, the `EPCA` loss may be negative because `ExpFamilyPCA.jl` uses transformed objectives that are equivalent but not equal to minimizing a sum of Bregman divergences.  
@@ -47,45 +45,43 @@ The log-partition function $G(\theta)$ ensures that the probability distribution
 
 ### Key Parameters
 
-1.  **Natural Parameter** ($\theta$): This parameter controls the distribution’s shape in its canonical form. For example, the natural parameter for the Poisson distribution is $\log \lambda$.
-2.  **Expectation Parameter** ($\mu$): This is the expected value of the sufficient statistic,[^1] computed as the mean of the data under the distribution. In exponential family distributions, it is related to the natural parameter through the gradient of the log-partition function:
+1. The **natural parameter** $\theta$ controls the distribution’s shape in its canonical form. For example, the natural parameter for the Poisson distribution is $\log \lambda$.
+2. The **expectation parameter** $\mu$ is the expected value of the sufficient statistic,[^1] computed as the mean of the data under the distribution. In exponential family distributions, it is related to the natural parameter through the **link function** $g$:
 
 ```math
 \mu = \mathbb{E}_{\theta}[X] = \nabla_\theta G(\theta) = g(\theta)
 ```
-where $E_\theta$ is the expectation with respect to the distribution $p_\theta$. A derivation is provided in the [appendix](./appendix/expectation.md). Similarly, we also have $\theta = f(\mu)$.
+where $E_\theta$ is the expectation with respect to the distribution $p_\theta$ (see [appendix](./appendix/expectation.md)). Similarly, we also have $\theta = f(\mu)$ (see [appendix])(./appendix/inverses.md).
 
 [^1]: The sufficient statistic for the natural exponential family is simply the identity.
 
-## The Legendre Transform
+## Convex Conjugation
 
-To understand the relationship between the natural parameters $\theta$ and the expectation parameters $\mu$, we introduce the concept of convex conjugates and the Legendre transform. For a convex function $F$, its convex conjugate (or dual) $F^*$ is defined as:[^2]
+The fact that $f$ and $g$ are inverses follows from the stronger claim that $F$ and $G$ are convex conjugates. For a convex function $F$, its convex conjugate (or dual)[^2] $F^*$ is
 
 ```math
 F^*(\theta) = \sup_{\mu} [\langle \theta, \mu \rangle - F(\mu)].
 ```
 
-The convex conjugate is an involution ($F^{**} = F$) meaning the Legendre transform allows us to convert back and forth between the natural and expectation parameter spaces. In the [next section](./objectives.md), we see how `ExpFamilyPCA.jl` exploits the rich mathematical structure of the Legendre transform to discover multiple specifications of the Bregman divergence.
+Convex conjugation is also an involution meaning it inverts itself, so $F^{**} = F$. Conjugation provides a rich structure for converting between natural and expectation parameters and, as we explain in the [next section](./objectives.md), helps induce multiple useful specifications of the EPCA objective.
 
 [^2]: Duality also refers to the concept in convex analysis [convex](@cite).
 
 ## Bregman Loss Functions
 
-An important relationship connects exponential family distributions and Bregman divergences: minimizing the negative log-likelihood of an exponential family distribution is equivalent (up to a constant) to minimizing a Bregman divergence between the observed data and the distribution's expectation parameter [azoury, forster](@cite). This connection is fundamental in extending PCA to EPCA.
-
-Consider the negative log-likelihood of an exponential family distribution:
+Bregman divergences are crucial to EPCA, because they are equivalent (up to a constant) to maximum likelihood estimation for the exponential family [azoury, forster](@cite). To see this, consider the negative log-likelihood of such a distribution:
 
 ```math
 -\ell(x; \theta) = G(\theta) - \langle x, \theta \rangle.
 ```
 
-Our goal is to show that this expression is equivalent (up to a constant) to the Bregman divergence $B_F(x \| \mu)$. First, recall that $G$ is the convex conjugate (dual) of $F$, so:
+We want to show that this is equivalent to the Bregman divergence $B_F(x \| \mu)$. From the previous subsection, we know $G$ is the convex conjugate of $F$, so:
 
 ```math
 G(\theta) = \langle \theta, \mu \rangle - F(\mu).
 ```
 
-Next, substitute $G$ back into the negative log-likelihood:
+Substituting $G$ back into the negative log-likelihood, then yields:
 
 ```math
 \begin{aligned}
