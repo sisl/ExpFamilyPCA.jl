@@ -216,5 +216,21 @@ function run_EPCA_tests(
             X;
             rtol=1e-7
         )
+
+        test_equivalence(
+            "Bg, G",
+            M1,
+            A1,
+            EPCA(
+                indim,
+                outdim,
+                Bg,
+                G,
+                Val((:Bg, :G));
+                options = options
+            ),
+            X;
+            rtol=1e-7
+        )
     end
 end

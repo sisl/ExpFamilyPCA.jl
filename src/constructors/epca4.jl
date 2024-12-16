@@ -1,6 +1,6 @@
 struct EPCA4{
     FT1<:Function,
-    FT2<:Function,
+    FT2<:Union{Function, FunctionWrapper},
     MT<:AbstractMatrix{<:Real},
     OT<:Options
 } <: EPCA
@@ -29,7 +29,7 @@ function EPCA(
     indim::Integer,
     outdim::Integer,
     Bg::Function,
-    g::Function,
+    g::Union{Function, FunctionWrapper},
     ::Val{(:Bg, :g)};
     options::Options = Options()
 )
