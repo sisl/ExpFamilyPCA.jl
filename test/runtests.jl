@@ -20,4 +20,5 @@ include("utils.jl")
     include("family/test_negative_binomial.jl")
     include("family/test_pareto.jl")
     include("family/test_weibull.jl")
+    include("options_tests.jl")
 end

@@ -78,11 +78,6 @@ function _invert_legendre(f, options::Options)
     return g
 end
 
-function is_constant_matrix(A::AbstractMatrix)
-    flag = length(unique(A)) == 1
-    return flag
-end
-
 function _optimize(
     f::F, 
     lower::Union{Real, Nothing}, 

@@ -93,7 +93,7 @@ Returns an instance of `Options` configured for optimization over the positive d
 
 # Specific Settings
 - `A_init_value = 1`: Initializes `A` with a positive value.
-- `A_upper = 1e-4`: Upper bound for `A` is constrained to a small positive value.
+- `A_lower = 1e-4`: Lower bound for `A` is constrained to a small positive value.
 - `V_init_value = 1`: Initializes `V` with a positive value.
 - `V_lower = 1e-4`: Lower bound for `V` is constrained to a small positive value.
 
@@ -117,7 +117,7 @@ function PositiveDomain(
         tol = tol,
         maxiter = maxiter,
         A_init_value = 1.0,
-        A_upper = 1e-4,
+        A_lower = 1e-4,
         V_init_value = 1.0,
         V_lower = 1e-4,
     )

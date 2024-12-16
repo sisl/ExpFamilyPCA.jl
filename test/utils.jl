@@ -55,9 +55,15 @@ function run_EPCA_tests(
     f::Function, 
     g::Function, 
     B::Union{Function, PreMetric}, 
-    X::AbstractMatrix
+    X::AbstractMatrix;
+    custom_options::Union{Nothing, Options} = nothing
 )
-    M1 = epca_constructor(indim, outdim)
+    if !isnothing(custom_options)
+        M1 = epca_constructor(indim, outdim; options=custom_options)
+    else
+        M1 = epca_constructor(indim, outdim)
+    end
+
     A1 = fit!(M1, X)
 
     smoke_test(
