@@ -67,8 +67,9 @@ export
     WeibullEPCA
 include("family/weibull.jl")
 
-export
-    EPCACompressor
-include("compressor.jl")
+# DEPRECATED
+# export
+#     EPCACompressor
+# include("compressor.jl")
 
 end # module ExpFamilyPCA

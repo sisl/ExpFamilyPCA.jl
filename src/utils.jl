@@ -1,11 +1,11 @@
-function _check_dimensions(
-    indim::Integer, 
-    outdim::Integer
-)
-    @assert indim > 0 "Input dimension (indim) must be a positive integer."
-    @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
-    @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
-end
+# function _check_dimensions(
+#     indim::Integer, 
+#     outdim::Integer
+# )
+#     @assert indim > 0 "Input dimension (indim) must be a positive integer."
+#     @assert outdim > 0 "Output dimension (outdim) must be a positive integer."
+#     @assert indim >= outdim "Input dimension (indim) must be greater than or equal to output dimension (outdim)."
+# end
 
 function _check_binary_search_arguments(
     low::Real,

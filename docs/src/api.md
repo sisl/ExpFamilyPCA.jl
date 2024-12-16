@@ -34,9 +34,3 @@ Options
 NegativeDomain
 PositiveDomain
 ```
-
-# Miscellaneous 
-
-```@docs
-EPCACompressor
-```
