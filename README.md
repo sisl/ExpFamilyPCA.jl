@@ -59,6 +59,18 @@ Y_compressed = compress(epca, Y)
 Y_reconstructed = decompress(epca, Y_compressed)
 ```
 
+The `sample_from_poisson` function is a placeholder for generating random Poisson-distributed data. It is not implemented in the code snippet to maintain clarity and focus on the core functionality of the example. If you wish to implement it, you can use the [`Distributions.jl`](https://github.com/JuliaStats/Distributions.jl) package. For instance, you could define it as:
+
+```julia
+using Distributions
+
+function sample_from_poisson(n::Int, dim::Int)
+    d = Poisson()
+    rand(d, n, dim)
+end
+```
+
+
 ## Custom Distributions
 
 When working with custom distributions, certain specifications are often more convenient and computationally efficient than others. For example, inducing the gamma EPCA objective from the log-partition $G(\theta) = -\log(-\theta)$ and its derivative $g(\theta) = -1/\theta$ is much simpler than implementing the full the Itakura-Saito distance:
