@@ -10,6 +10,9 @@ Fits the EPCA model on the dataset `X`. Call this function after creating an EPC
 
 Should be called after creating an EPCA object or when you want to fit on new data.
 
+!!! warning
+    The default `fit!` may have long run times depending on the dataset size and model complexity. Consider adjusting the verbosity (`verbose`) and number of iterations (`maxiter`) to better balance runtime and model performance.
+
 # Arguments
 - `epca::EPCA`: The EPCA model. 
 - `X::AbstractMatrix{T}`: (`n`, `indim`) - The input training data matrix. Rows are observations. Columns are features or variables. 
