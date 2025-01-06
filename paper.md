@@ -41,7 +41,7 @@ EPCA is used in reinforcement learning [@Roy], sample debiasing [@debiasing], an
 
 The absence of a general EPCA library likely stems from the limited interoperability between fast symbolic differentiation and optimization libraries in popular languages like Python and C. Julia, by contrast, uses multiple dispatch which promotes high levels of generic code reuse [@dispatch]. Multiple dispatch allows `ExpFamilyPCA.jl` to integrate fast symbolic differentiation [@symbolics], optimization [@optim], and numerically stable computation [@stable_exp] without requiring costly API conversions.[^1] As a result, `ExpFamilyPCA.jl` delivers speed, stability, and flexibility, with built-in support for most common distributions (§ [Supported Distributions](#supported-distributions)) and flexible constructors for custom distributions (§ [Custom Distributions](#supported-distributions)).
 
-[^1]: Symbolic differentiation is essential for flexibly specifying the EPCA objective (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/v1.1.0/math/objectives/#2.-Using-F-and-f)). While numeric differentiation is faster, symbolic differentiation is performed only once to generate a closed form for the optimizer (e.g., `Optim.jl` [@optim]), making it more efficient in practice. @logexp (which implements ideas from @stable_exp) mitigates overflow and underflow in exponential and logarithmic operations.
+[^1]: Symbolic differentiation is essential for flexibly specifying the EPCA objective (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/v2.0/math/objectives/#2.-Using-F-and-f)). While numeric differentiation is faster, symbolic differentiation is performed only once to generate a closed form for the optimizer (e.g., `Optim.jl` [@optim]), making it more efficient in practice. @logexp (which implements ideas from @stable_exp) mitigates overflow and underflow in exponential and logarithmic operations.
 
 ## Principal Component Analysis
 
@@ -107,7 +107,7 @@ $$
 \mu = g(\theta) = \nabla G(\theta).
 $$
 
-The link function serves a role analogous to that in generalized linear models (GLMs) [@GLM]. In GLMs, the link function connects the linear predictor to the mean of the distribution, enabling flexibility in modeling various data types. Similarly, in EPCA, the link function maps the low-dimensional latent variables to the expectation parameters of the exponential family, thereby generalizing the linear assumptions of traditional PCA to accommodate diverse distributions (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/v1.1.0/math/appendix/gaussian/)).
+The link function serves a role analogous to that in generalized linear models (GLMs) [@GLM]. In GLMs, the link function connects the linear predictor to the mean of the distribution, enabling flexibility in modeling various data types. Similarly, in EPCA, the link function maps the low-dimensional latent variables to the expectation parameters of the exponential family, thereby generalizing the linear assumptions of traditional PCA to accommodate diverse distributions (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/v2.0/math/appendix/gaussian/)).
 
 ### Bregman Divergences
 
@@ -117,7 +117,7 @@ $$
 B_F(p \| q) = F(p) - F(q) - \langle \nabla F(q), p - q \rangle.
 $$
 
-This can be interpreted as the difference between $F(p)$ and its linear approximation about $q$. When $F$ is the convex conjugate of the log-partition function of an exponential family distribution, minimizing the Bregman divergence corresponds to maximizing the associated log-likelihood [@azoury; @forster] (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/v1.1.0/math/bregman/)).
+This can be interpreted as the difference between $F(p)$ and its linear approximation about $q$. When $F$ is the convex conjugate of the log-partition function of an exponential family distribution, minimizing the Bregman divergence corresponds to maximizing the associated log-likelihood [@azoury; @forster] (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/v2.0/math/bregman/)).
 
 ### Loss Function
 
@@ -163,7 +163,7 @@ where $\epsilon > 0$ and $\mu_0 \in \mathrm{range}(g)$.[^2]
 
 ### Example: Poisson EPCA
 
-The Poisson EPCA objective is the generalized Kullback-Leibler (KL) divergence (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/v1.1.0/math/appendix/poisson/)), making Poisson EPCA ideal for compressing discrete distribution data. 
+The Poisson EPCA objective is the generalized Kullback-Leibler (KL) divergence (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/v2.0/math/appendix/poisson/)), making Poisson EPCA ideal for compressing discrete distribution data. 
 
 This is useful in applications like belief compression in reinforcement learning [@Roy], where high-dimensional belief states can be effectively reduced with minimal information loss. Below we recreate similar figures[^3] to @shortRoy and @Roy and observe that Poisson EPCA almost perfectly reconstructs a $41$-dimensional belief distribution using just $5$ basis components. For a larger environment with $200$ states, PCA struggles even with $10$ basis components.
 
@@ -191,7 +191,7 @@ This is useful in applications like belief compression in reinforcement learning
 
 ## Custom Distributions
 
-When working with custom distributions, certain specifications are often more convenient and computationally efficient than others. For example, inducing the gamma EPCA objective from the log-partition $G(\theta) = -\log(-\theta)$ and its derivative $g(\theta) = -1/\theta$ is much simpler than implementing the full the Itakura-Saito distance [@ItakuraSaito] (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/v1.1.0/math/appendix/gamma/)):
+When working with custom distributions, certain specifications are often more convenient and computationally efficient than others. For example, inducing the gamma EPCA objective from the log-partition $G(\theta) = -\log(-\theta)$ and its derivative $g(\theta) = -1/\theta$ is much simpler than implementing the full the Itakura-Saito distance [@ItakuraSaito] (see [appendix](https://sisl.github.io/ExpFamilyPCA.jl/v2.0/math/appendix/gamma/)):
 
 $$
 D(P(\omega), \hat{P}(\omega)) =\frac{1}{2\pi} \int_{-\pi}^{\pi} \Bigg[ \frac{P(\omega)}{\hat{P}(\omega)} - \log \frac{P(\omega)}{\hat{P}{\omega}} - 1\Bigg] \, d\omega.
@@ -205,7 +205,7 @@ g(θ) = -1 / θ
 gamma_epca = EPCA(indim, outdim, G, g, Val((:G, :g)); options = NegativeDomain())
 ```
 
-A lengthier discussion of the `EPCA` constructors and math is provided in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/v1.1.0/math/objectives/).
+A lengthier discussion of the `EPCA` constructors and math is provided in the [documentation](https://sisl.github.io/ExpFamilyPCA.jl/v2.0/math/objectives/).
 
 ## Usage
 

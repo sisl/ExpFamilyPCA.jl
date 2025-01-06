@@ -11,4 +11,4 @@ B_\psi(A \| B) &= \psi(A) - \psi(B) - \langle \nabla \psi(B), A - B \rangle \\
 &= \frac{1}{2} \| A - B \|_F^2.
 \end{aligned}$$
 
-Similarly, the Bregman divergence induced from the log-partition of the Gaussian $G(\theta) = \theta^2/2$ is the squared Euclidean distance.
+Similarly, the Bregman divergence induced from the log-partition of the Gaussian $G(\theta) = \theta^2/2$ is the squared Euclidean distance. Thus, EPCA generalizes PCA.
