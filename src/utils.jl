@@ -126,6 +126,7 @@ function _single_compress_iter(
         )
         A_new[i, :] = a_new
         total_loss += loss
+        yield()
     end
 
     if verbose && (i % steps_per_print == 0 || i == 1)
@@ -157,6 +158,7 @@ function _single_fit_iter(
             v
         )
         V_new[:, i] = v_new
+        yield()
     end
 
     A_new, loss = _single_compress_iter(
