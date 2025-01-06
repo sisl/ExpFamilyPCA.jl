@@ -2,12 +2,11 @@ using ExpFamilyPCA
 using CompressedBeliefMDPs
 using POMDPs, POMDPTools
 
+using StableRNGs
 using JSON
-using Random
 using Plots
 using Statistics
 
-Random.seed!(1)
 
 function kl_div(p, q; ϵ=eps())
     return sum(@. p * log((p + ϵ) / (q + ϵ)))
@@ -23,7 +22,6 @@ function calc_kl(
     epca::EPCA, 
     X::AbstractMatrix{T}
 ) where T<:Real
-    V = epca.V
     A = ExpFamilyPCA.fit!(epca, X; maxiter=100, verbose=true, steps_per_print=10)
     X_recon = decompress(epca, A)
     Q = to_probability(X_recon)
@@ -41,16 +39,16 @@ n_corridors = 2
 corridor_length = 20
 maze = CircularMaze(n_corridors, corridor_length)
 
-rng = MersenneTwister(100)
+rng = StableRNG(100)
 policy = RandomPolicy(maze; rng=rng)
-sampler = PolicySampler(maze; policy=policy, rng=rng, n=100)
+sampler = PolicySampler(maze; policy=policy, rng=rng, n=200)
 
 raw_beliefs = sampler(maze)
 beliefs = make_numerical(raw_beliefs, maze)
 
 n, indim = size(beliefs)
 
-outdims = 1:7
+outdims = 1:6
 
 kl_divs_poisson_epca = []
 kl_divs_gaussian_epca = []
