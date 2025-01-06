@@ -41,7 +41,7 @@ EPCA is used in reinforcement learning [@Roy], sample debiasing [@debiasing], an
 
 The absence of a general EPCA library likely stems from the limited interoperability between fast symbolic differentiation and optimization libraries in popular languages like Python and C. Julia, by contrast, uses multiple dispatch which promotes high levels of generic code reuse [@dispatch]. Multiple dispatch allows `ExpFamilyPCA.jl` to integrate fast symbolic differentiation [@symbolics], optimization [@optim], and numerically stable computation [@stable_exp] without requiring costly API conversions.[^1] As a result, `ExpFamilyPCA.jl` delivers speed, stability, and flexibility, with built-in support for most common distributions (§ [Supported Distributions](#supported-distributions)) and flexible constructors for custom distributions (§ [Custom Distributions](#supported-distributions)).
 
-[^1]: Symbolic differentiation is essential for flexibly specifying the EPCA objective (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/v2.0/math/objectives/#2.-Using-F-and-f)). While numeric differentiation is faster, symbolic differentiation is performed only once to generate a closed form for the optimizer (e.g., `Optim.jl` [@optim]), making it more efficient in practice. @logexp (which implements ideas from @stable_exp) mitigates overflow and underflow in exponential and logarithmic operations.
+[^1]: Symbolic differentiation is essential for flexibly specifying the EPCA objective (see [documentation](https://sisl.github.io/ExpFamilyPCA.jl/v2.0/math/objectives/#2.-Using-F-and-f)). While algorithmic differentiation is faster in general, symbolic differentiation is performed only once to generate a closed form for the optimizer (e.g., `Optim.jl` [@optim]), making it more efficient here. @logexp (which implements ideas from @stable_exp) mitigates overflow and underflow in exponential and logarithmic operations.
 
 ## Principal Component Analysis
 
@@ -137,7 +137,7 @@ where
 * and $F(\mu)$ is the **convex conjugate** of $G$ defined by
 
 $$
-F(\mu) = \langle \mu, \theta \rangle - G(\theta).
+F(\mu) = \max_{\theta} \langle \mu, \theta \rangle - G(\theta).
 $$
 
 This suggests that data from the exponential family is well-approximated by expectation parameters
