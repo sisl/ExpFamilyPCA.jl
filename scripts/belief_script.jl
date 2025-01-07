@@ -68,7 +68,9 @@ ylims!(0.003, 0.008)
 
 plot!(legend=:topright, legendfontsize=10, framestyle=:box)
 p1 = plot!(xtickfontsize=10, ytickfontsize=10)
-savefig("ExpFamilyPCA/scripts/PCA_recon.png")
+# savefig("ExpFamilyPCA/scripts/PCA_recon.png")
+savefig("PCA_recon.png")
+
 
 epca = PoissonEPCA(indim, outdim)
 A2 = ExpFamilyPCA.fit!(epca, beliefs; verbose=true)
@@ -109,7 +111,9 @@ ylims!(0.003, 0.008)
 
 plot!(legend=:topright, legendfontsize=10, framestyle=:box)
 figure2 = plot!(xtickfontsize=tick_size, ytickfontsize=tick_size)
-savefig("ExpFamilyPCA/scripts/reconstructions.png")
+# savefig("ExpFamilyPCA/scripts/reconstructions.png")
+savefig("reconstructions.png")
+
 
 epca_data = Dict(parse(Int, k) => v for (k, v) in JSON.parsefile("ExpFamilyPCA/scripts/jsons/epca_data.json"))
 pca_data = Dict(parse(Int, k) => v for (k, v) in JSON.parsefile("ExpFamilyPCA/scripts/jsons/pca_data.json"))
@@ -158,9 +162,11 @@ figure1 = plot!(
     markerstrokewidth = 2,  # Makes markers more prominent
     markeralpha = 0.7  # Adds transparency to markers
 )
-savefig("ExpFamilyPCA/scripts/kl_divergence_plot.png")
+# savefig("ExpFamilyPCA/scripts/kl_divergence_plot.png")
+savefig("kl_divergence_plot.png")
 
 
 page_length_in_pixels = 11 * 72  # 11 inches at 72 DPI ~ 800 pixels
 combined_plot = plot(figure1, figure2, layout = (1, 2),  size = (page_length_in_pixels, 400), left_margin = 2 * Plots.mm, bottom_margin = 2 * Plots.mm, dpi=800)
-savefig("ExpFamilyPCA/scripts/combo.png")
+# savefig("ExpFamilyPCA/scripts/combo.png")
+savefig("combo.png")
