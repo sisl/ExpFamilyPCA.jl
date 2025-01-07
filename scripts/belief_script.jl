@@ -29,17 +29,18 @@ policy = RandomPolicy(pomdp; rng = rng)
 sampler = PolicySampler(pomdp; policy = policy, rng = rng, n = 40)
 beliefs = drop_terminal_beliefs(sampler(pomdp))
 
+x = 1:length(states(pomdp)) - 1
+b1 = beliefs[1, :]
+n, indim = size(beliefs)
+outdim = 10
+
 @show size(beliefs)
 plot(x, b1, linestyle=:solid, linewidth=2, legend=false)
 xlabel!("State")
 ylabel!("Probability")
 title!("Initial Belief State")
-savefig("ExpFamilyPCA/scripts/init_belief.png")
-
-x = 1:length(states(pomdp)) - 1
-b1 = beliefs[1, :]
-n, indim = size(beliefs)
-outdim = 10
+# savefig("ExpFamilyPCA/scripts/init_belief.png")
+savefig("init_belief.png")
 
 pca = GaussianEPCA(indim, outdim)
 A1 = ExpFamilyPCA.fit!(pca, beliefs; verbose=true)
