@@ -4,7 +4,7 @@
 [![Dev-Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://sisl.github.io/ExpFamilyPCA.jl/latest)
 [![status](https://joss.theoj.org/papers/8c617a932d19b28d5ac0299b23d2c8dc/status.svg)](https://joss.theoj.org/papers/8c617a932d19b28d5ac0299b23d2c8dc)
 [![Build Status](https://github.com/sisl/ExpFamilyPCA.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/sisl/ExpFamilyPCA.jl/actions/workflows/CI.yml?query=branch%3Amain)
-[![codecov](https://codecov.io/github/sisl/ExpFamilyPCA.jl/graph/badge.svg?token=kJESb0GybB)](https://codecov.io/github/sisl/ExpFamilyPCA.jl)
+[![codecov](https://codecov.io/github/sisl/ExpFamilyPCA.jl/branch/main/graph/badge.svg?token=kJESb0GybB)](https://codecov.io/github/sisl/ExpFamilyPCA.jl)
 
 **ExpFamilyPCA.jl** is a Julia package for [exponential family principal component analysis (EPCA)](https://papers.nips.cc/paper_files/paper/2001/hash/f410588e48dc83f2822a880a68f78923-Abstract.html), a versatile generalization of PCA designed to handle non-Gaussian data, enabling dimensionality reduction and data analysis across a wide variety of distributions (e.g., binary, count, and compositional data). It is designed for applications in machine learning (belief compression, text analysis), signal processing (denoising), and data science (sample debiasing, clustering, dimensionality reduction), but can be applied to other fields with diverse data types.
 
