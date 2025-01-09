@@ -1,7 +1,7 @@
 # This file is machine-generated - editing it directly is not advised
 
 julia_version = "1.11.2"
-manifest_format = "2.1.0"
+manifest_format = "2.0"
 project_hash = "8ef0c9b65336c828559101161febffa2790779c1"
 
 [[deps.ADTypes]]
