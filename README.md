@@ -2,7 +2,7 @@
 
 [![Docs](https://img.shields.io/badge/docs-stable-blue.svg)](https://sisl.github.io/ExpFamilyPCA.jl/stable)
 [![Dev-Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://sisl.github.io/ExpFamilyPCA.jl/latest)
-[![status](https://joss.theoj.org/papers/8c617a932d19b28d5ac0299b23d2c8dc/status.svg)](https://joss.theoj.org/papers/8c617a932d19b28d5ac0299b23d2c8dc)
+[![status](https://joss.theoj.org/papers/8c617a932d19b28d5ac0299b23d2c8dc/status.svg)](https://joss.theoj.org/papers/8c617a932d19b28d5ac0299b23d2c8dc)]
 [![Build Status](https://github.com/sisl/ExpFamilyPCA.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/sisl/ExpFamilyPCA.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![codecov](https://codecov.io/github/sisl/ExpFamilyPCA.jl/graph/badge.svg?token=kJESb0GybB)](https://codecov.io/github/sisl/ExpFamilyPCA.jl)
 
