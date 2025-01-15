@@ -1,0 +1,40 @@
+cff-version: "1.2.0"
+authors:
+- family-names: Bhamidipaty
+  given-names: Logan Mondal
+  orcid: "https://orcid.org/0009-0001-3978-9462"
+- family-names: Kochenderfer
+  given-names: Mykel J.
+  orcid: "https://orcid.org/0000-0002-7238-9663"
+- family-names: Hastie
+  given-names: Trevor
+  orcid: "https://orcid.org/0000-0002-0164-3142"
+doi: 10.5281/zenodo.14624991
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Bhamidipaty
+    given-names: Logan Mondal
+    orcid: "https://orcid.org/0009-0001-3978-9462"
+  - family-names: Kochenderfer
+    given-names: Mykel J.
+    orcid: "https://orcid.org/0000-0002-7238-9663"
+  - family-names: Hastie
+    given-names: Trevor
+    orcid: "https://orcid.org/0000-0002-0164-3142"
+  date-published: 2025-01-14
+  doi: 10.21105/joss.07403
+  issn: 2475-9066
+  issue: 105
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 7403
+  title: "ExpFamilyPCA.jl: A Julia Package for Exponential Family
+    Principal Component Analysis"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.07403"
+  volume: 10
+title: "ExpFamilyPCA.jl: A Julia Package for Exponential Family
+  Principal Component Analysis"
