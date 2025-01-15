@@ -93,3 +93,22 @@ A lengthier discussion of the `EPCA` constructors and math is provided in the [d
 ## Contributing
 
 Contributions are welcome! If you want to contribute, please fork the repository, create a new branch, and submit a pull request. Before contributing, please make sure to update tests as appropriate.
+
+## Citing
+
+If ExpFamilyPCA.jl is useful in your research and you would like to acknowledge it, please cite this [paper](https://joss.theoj.org/papers/10.21105/joss.07403):
+
+```bib
+@article{bhamidipaty2025expfamilypca,
+  title     = {{ExpFamilyPCA}.jl: A {J}ulia Package for Exponential Family Principal Component Analysis},
+  author    = {Bhamidipaty, Logan Mondal and Kochenderfer, Mykel J. and Hastie, Trevor},
+  journal   = {Journal of Open Source Software},
+  volume    = {10},
+  number    = {105},
+  pages     = {7403},
+  year      = {2025},
+  month     = {jan},
+  doi       = {10.21105/joss.07403},
+  url       = {https://joss.theoj.org/papers/10.21105/joss.07403}
+}
+```
