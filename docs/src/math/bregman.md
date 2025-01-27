@@ -51,7 +51,7 @@ The log-partition function $G(\theta)$ ensures that the probability distribution
 ```math
 \mu = \mathbb{E}_{\theta}[X] = \nabla_\theta G(\theta) = g(\theta)
 ```
-where $E_\theta$ is the expectation with respect to the distribution $p_\theta$ (see [appendix](./appendix/expectation.md)). Similarly, we also have $\theta = f(\mu)$ (see [appendix])(./appendix/inverses.md).
+where $E_\theta$ is the expectation with respect to the distribution $p_\theta$ (see [appendix](./appendix/expectation.md)). Similarly, we also have $\theta = f(\mu)$ (see [appendix](./appendix/inverses.md)).
 
 [^1]: The sufficient statistic for the natural exponential family is simply the identity.
 
